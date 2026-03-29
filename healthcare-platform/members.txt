@@ -1,0 +1,5 @@
+Group ID: <your_group_id>
+Member 1: Full Name | Registration Number | Student ID
+Member 2: Full Name | Registration Number | Student ID
+Member 3: Full Name | Registration Number | Student ID
+Member 4: Full Name | Registration Number | Student ID (if applicable)

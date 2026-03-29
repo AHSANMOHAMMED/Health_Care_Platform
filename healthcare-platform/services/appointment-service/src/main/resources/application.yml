@@ -1,0 +1,62 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: appointment-service
+  datasource:
+    url: jdbc:postgresql://localhost:5435/appointmentdb
+    username: health
+    password: health
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+healthcare:
+  rabbit:
+    exchange: healthcare.events
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+clients:
+  user-service-url: http://localhost:8081
+  doctor-service-url: http://localhost:8082
+  telemedicine-service-url: http://localhost:8084
+
+jwt:
+  secret: ${JWT_SECRET:dev-change-me-use-at-least-32-bytes-secret-key!!}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://postgres-appointment:5432/appointmentdb}
+    username: ${SPRING_DATASOURCE_USERNAME:health}
+    password: ${SPRING_DATASOURCE_PASSWORD:health}
+  rabbitmq:
+    host: ${RABBITMQ_HOST:rabbitmq}
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://discovery-service:8761/eureka/}
+clients:
+  user-service-url: ${USER_SERVICE_URL:http://user-service:8081}
+  doctor-service-url: ${DOCTOR_SERVICE_URL:http://doctor-service:8082}
+  telemedicine-service-url: ${TELEMEDICINE_SERVICE_URL:http://telemedicine-service:8084}
