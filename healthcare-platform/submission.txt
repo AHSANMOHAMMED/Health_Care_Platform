@@ -1,0 +1,2 @@
+GitHub repository URL: <paste your public repo URL after push>
+YouTube demo / presentation URL: <paste unlisted/public link, max 12 minutes total>
