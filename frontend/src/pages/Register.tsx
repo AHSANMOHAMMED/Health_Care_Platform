@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Eye, EyeOff, AlertCircle, Loader2, Check, X } from 'lucide-react';
 import { api } from '../api/axios';
 import { useNavigate } from 'react-router-dom';
+import { authService } from '../utils/auth';
 
 interface FormErrors {
   email?: string;
@@ -129,8 +130,7 @@ export default function Register() {
     setErrors({ ...errors, general: undefined });
     
     try {
-      const { register } = useAuthStore.getState();
-      await register({ 
+      await authService.register({ 
         email, 
         password, 
         role: role as 'PATIENT' | 'DOCTOR',
