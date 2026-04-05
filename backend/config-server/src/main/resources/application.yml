@@ -10,17 +10,4 @@ spring:
     config:
       server:
         native:
-          search-locations: classpath:/shared-config
-
-eureka:
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
+          search-locations: classpath:/config/ # Local properties config

@@ -1,55 +1,80 @@
-import React, { useEffect } from 'react';
-import { VideoOff, MicOff, PhoneOff } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { VideoOff, MicOff, PhoneOff, Mic, Video } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function VideoConsultation() {
-    
-    // Simulate Jitsi Iframe loading
+    const navigate = useNavigate();
+    const location = useLocation();
+    const jitsiContainerRef = useRef<HTMLDivElement>(null);
+    const [isVideoOn, setIsVideoOn] = useState(true);
+    const [isMicOn, setIsMicOn] = useState(true);
+
     useEffect(() => {
-        // Normally inject Jitsi script here
-    }, []);
+        const domain = 'meet.jit.si';
+        const roomName = new URLSearchParams(location.search).get('room') || `mediconnect-${Math.random().toString(36).substring(7)}`;
+
+        const script = document.createElement('script');
+        script.src = `https://${domain}/external_api.js`;
+        script.async = true;
+        document.body.appendChild(script);
+
+        script.onload = () => {
+            if (jitsiContainerRef.current && (window as any).JitsiMeetExternalAPI) {
+                const options = {
+                    roomName: roomName,
+                    parentNode: jitsiContainerRef.current,
+                    configOverwrite: {
+                        startWithAudioMuted: false,
+                        startWithVideoMuted: false,
+                    },
+                    interfaceConfigOverwrite: {
+                        DISABLE_JOIN_LEAVE_NOTIFICATIONS: true,
+                    },
+                };
+                new (window as any).JitsiMeetExternalAPI(domain, options);
+            }
+        };
+
+        return () => {
+            document.body.removeChild(script);
+        };
+    }, [location]);
 
     return (
         <div className="h-[80vh] bg-slate-900 rounded-3xl overflow-hidden flex flex-col relative shadow-2xl">
             {/* Header */}
             <div className="bg-slate-800/50 absolute top-0 w-full p-4 flex justify-between items-center z-10 backdrop-blur-md">
                 <div>
-                    <h3 className="text-white font-bold">Consultation with Dr. Sarah Jenkins</h3>
+                    <h3 className="text-white font-bold">Telemedicine Consultation</h3>
                     <p className="text-emerald-400 text-xs flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Secure Connection
+                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Secure E2E Enhanced Connection
                     </p>
-                </div>
-                <div className="bg-slate-900/80 px-3 py-1 rounded-full text-white text-sm font-mono tracking-wider">
-                    14:52
                 </div>
             </div>
 
-            {/* Video Area (Simulated) */}
-            <div className="flex-1 flex items-center justify-center relative">
-                {/* Doctor Video placeholder */}
-                <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=800&q=80" alt="Doctor" className="w-full h-full object-cover opacity-80" />
-                
-                {/* PIP Patient Video placeholder */}
-                <div className="absolute bottom-24 right-8 w-48 h-64 bg-slate-800 rounded-xl overflow-hidden shadow-2xl border-2 border-slate-700/50">
-                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80" alt="Patient" className="w-full h-full object-cover" />
-                </div>
-                
-                {/* Overlay text if iframe not loaded yet */}
-                <div className="absolute inset-0 flex items-center justify-center flex-col bg-slate-900/60 backdrop-blur-sm z-0">
-                    <div className="w-16 h-16 border-4 border-brand border-t-transparent rounded-full animate-spin mb-4"></div>
-                    <p className="text-white text-lg font-medium">Connecting to Jitsi Meet infrastructure...</p>
+            {/* Video Area */}
+            <div className="flex-1 w-full h-full relative z-0" ref={jitsiContainerRef}>
+                <div className="absolute inset-0 flex items-center justify-center flex-col bg-slate-900/60 backdrop-blur-sm z-0 pointer-events-none">
+                    <p className="text-white text-lg font-medium">Connecting to encrypted WebRTC bridge...</p>
                 </div>
             </div>
 
             {/* Controls */}
             <div className="bg-slate-950 p-6 flex justify-center gap-6 items-center z-10 w-full absolute bottom-0">
-                <button className="h-14 w-14 rounded-full bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center transition shadow-lg">
-                    <MicOff size={24} />
+                <button
+                  onClick={() => setIsMicOn(!isMicOn)}
+                  className={`h-14 w-14 rounded-full flex items-center justify-center transition shadow-lg ${isMicOn ? 'bg-slate-800 text-white hover:bg-slate-700' : 'bg-red-500 text-white hover:bg-red-600'}`}>
+                    {isMicOn ? <Mic size={24} /> : <MicOff size={24} />}
                 </button>
-                <button className="h-14 w-14 rounded-full bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center transition shadow-lg">
-                    <VideoOff size={24} />
+                <button
+                  onClick={() => setIsVideoOn(!isVideoOn)}
+                  className={`h-14 w-14 rounded-full flex items-center justify-center transition shadow-lg ${isVideoOn ? 'bg-slate-800 text-white hover:bg-slate-700' : 'bg-red-500 text-white hover:bg-red-600'}`}>
+                    {isVideoOn ? <Video size={24} /> : <VideoOff size={24} />}
                 </button>
-                <button className="h-14 w-32 rounded-full bg-red-500 hover:bg-red-600 text-white flex items-center justify-center transition shadow-lg gap-2 font-bold px-6">
-                    <PhoneOff size={20} /> End Walk
+                <button
+                  onClick={() => navigate('/patient')}
+                  className="h-14 w-32 rounded-full bg-red-500 hover:bg-red-600 text-white flex items-center justify-center transition shadow-lg gap-2 font-bold px-6">
+                    <PhoneOff size={20} /> End Call
                 </button>
             </div>
         </div>

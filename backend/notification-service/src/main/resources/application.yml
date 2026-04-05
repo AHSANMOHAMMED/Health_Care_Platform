@@ -1,9 +1,13 @@
 server:
   port: 8086
+
 spring:
   application:
     name: notification-service
   config:
     import: "optional:configserver:http://localhost:8888/"
   rabbitmq:
-    host: localhost
+    host: ${SPRING_RABBITMQ_HOST:localhost}
+    username: ${SPRING_RABBITMQ_USERNAME:root}
+    password: ${SPRING_RABBITMQ_PASSWORD:rootpassword}
+    port: 5672

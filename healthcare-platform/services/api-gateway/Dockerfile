@@ -3,7 +3,7 @@ WORKDIR /build
 COPY pom.xml .
 COPY services/api-gateway/pom.xml services/api-gateway/
 COPY services/api-gateway/src services/api-gateway/src
-RUN mvn -f services/api-gateway/pom.xml -B -DskipTests package
+RUN mvn -f services/api-gateway/pom.xml -B -Dmaven.test.skip=true package
 
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app

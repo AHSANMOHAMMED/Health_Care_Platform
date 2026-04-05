@@ -8,14 +8,12 @@ spring:
     import: "optional:configserver:http://localhost:8888/"
   datasource:
     url: jdbc:postgresql://localhost:5432/doctor_db
-    username: ${DB_USER:postgres}
-    password: ${DB_PASSWORD:postgres}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:rootpassword}
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-  flyway:
-    enabled: true

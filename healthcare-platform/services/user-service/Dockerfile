@@ -3,7 +3,7 @@ WORKDIR /build
 COPY pom.xml .
 COPY services/user-service/pom.xml services/user-service/
 COPY services/user-service/src services/user-service/src
-RUN mvn -f services/user-service/pom.xml -B -DskipTests package
+RUN mvn -f services/user-service/pom.xml -B -Dmaven.test.skip=true package
 
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app

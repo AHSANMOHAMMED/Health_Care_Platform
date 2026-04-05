@@ -8,29 +8,52 @@ spring:
     import: "optional:configserver:http://localhost:8888/"
   cloud:
     gateway:
-      discovery:
-        locator:
-          enabled: true
-          lower-case-service-id: true
       globalcors:
         corsConfigurations:
           '[/**]':
             allowedOrigins: "*"
-            allowedMethods:
-              - GET
-              - POST
-              - PUT
-              - DELETE
-              - OPTIONS
+            allowedMethods: "*"
             allowedHeaders: "*"
+      routes:
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/api/auth/**
+          filters:
+            - StripPrefix=1
+            - AuthenticationFilter
+        
+        - id: patient-service
+          uri: lb://PATIENT-SERVICE
+          predicates:
+            - Path=/api/patients/**
+          filters:
+            - StripPrefix=1
+            - AuthenticationFilter
+            
+        - id: doctor-service
+          uri: lb://DOCTOR-SERVICE
+          predicates:
+            - Path=/api/doctors/**
+          filters:
+            - StripPrefix=1
+            - AuthenticationFilter
+            
+        - id: appointment-service
+          uri: lb://APPOINTMENT-SERVICE
+          predicates:
+            - Path=/api/appointments/**
+          filters:
+            - StripPrefix=1
+            - AuthenticationFilter
+            
+        - id: ai-service
+          uri: lb://AI-SERVICE
+          predicates:
+            - Path=/api/ai/**
+          filters:
+            - StripPrefix=1
+            - AuthenticationFilter
 
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
+jwt:
+  secret: ${JWT_SECRET:mediconnect_super_secret_jwt_key_that_must_be_long_enough}

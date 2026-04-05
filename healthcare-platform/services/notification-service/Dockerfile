@@ -3,7 +3,7 @@ WORKDIR /build
 COPY pom.xml .
 COPY services/notification-service/pom.xml services/notification-service/
 COPY services/notification-service/src services/notification-service/src
-RUN mvn -f services/notification-service/pom.xml -B -DskipTests package
+RUN mvn -f services/notification-service/pom.xml -B -Dmaven.test.skip=true package
 
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app

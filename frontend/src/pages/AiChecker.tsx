@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Sparkles, Activity, AlertCircle } from 'lucide-react';
-import axios from 'axios';
+import { api } from '../api/axios';
 
 export default function AiChecker() {
     const [symptoms, setSymptoms] = useState('');
@@ -8,13 +8,14 @@ export default function AiChecker() {
     const [loading, setLoading] = useState(false);
 
     const handleAnalyze = async () => {
+        if (!symptoms.trim()) return;
+        
         setLoading(true);
         try {
-            const apiGatewayUrl = import.meta.env.VITE_API_GATEWAY_URL || 'http://localhost:8080';
-            const response = await axios.post(`${apiGatewayUrl}/ai-service/ai/symptom-checker`, { symptoms });
-            setResult(response.data.analysis);
+            const response = await api.post('/ai/symptom-checker', { symptoms });
+            setResult(response.data.analysis || response.data);
         } catch (error) {
-            console.error(error);
+            console.error('AI Service Error:', error);
             setResult("We couldn't reach the AI service right now. Please try again later.");
         } finally {
             setLoading(false);

@@ -3,7 +3,7 @@ WORKDIR /build
 COPY pom.xml .
 COPY services/doctor-service/pom.xml services/doctor-service/
 COPY services/doctor-service/src services/doctor-service/src
-RUN mvn -f services/doctor-service/pom.xml -B -DskipTests package
+anaRUN mvn -f services/doctor-service/pom.xml -B -Dmaven.test.skip=true package
 
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app

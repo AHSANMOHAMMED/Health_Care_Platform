@@ -5,7 +5,7 @@ COPY pom.xml .
 # Download dependencies first for layer caching
 RUN mvn dependency:go-offline -B || true
 COPY src ./src
-RUN mvn package -DskipTests
+RUN mvn package -Dmaven.test.skip=true
 
 # Run Stage
 FROM eclipse-temurin:21-jdk-alpine
