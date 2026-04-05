@@ -1,0 +1,232 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: mediconnect-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./infrastructure/db-init:/docker-entrypoint-initdb.d
+    networks:
+      - mediconnect-network
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: mediconnect-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RMQ_USER:-guest}
+      RABBITMQ_DEFAULT_PASS: ${RMQ_PASSWORD:-guest}
+    networks:
+      - mediconnect-network
+
+  config-server:
+    build:
+      context: ./backend/config-server
+    container_name: mediconnect-config-server
+    ports:
+      - "8888:8888"
+    environment:
+      - SPRING_PROFILES_ACTIVE=native
+    networks:
+      - mediconnect-network
+
+  service-registry:
+    build:
+      context: ./backend/service-registry
+    container_name: mediconnect-service-registry
+    ports:
+      - "8761:8761"
+    environment:
+      - EUREKA_CLIENT_REGISTERWITH_EUREKA=false
+      - EUREKA_CLIENT_FETCHREGISTRY=false
+    networks:
+      - mediconnect-network
+    depends_on:
+      - config-server
+
+  api-gateway:
+    build:
+      context: ./backend/api-gateway
+    container_name: mediconnect-api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8888/
+    networks:
+      - mediconnect-network
+    depends_on:
+      - service-registry
+
+  auth-service:
+    build:
+      context: ./backend/auth-service
+    container_name: mediconnect-auth-service
+    ports:
+      - "8081:8081"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8888/
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/auth_db
+      - SPRING_DATASOURCE_USERNAME=${DB_USER:-postgres}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD:-postgres}
+      - JWT_SECRET=${JWT_SECRET:-8e9df6466f8acabdc21c27cc84310d54026f8d38645fb8bfa923ba3ac425abf1}
+      - JWT_EXPIRATION=${JWT_EXPIRATION:-86400000}
+    networks:
+      - mediconnect-network
+    depends_on:
+      - postgres
+      - service-registry
+
+  patient-service:
+    build:
+      context: ./backend/patient-service
+    container_name: mediconnect-patient-service
+    ports:
+      - "8082:8082"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8888/
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/patient_db
+      - SPRING_DATASOURCE_USERNAME=${DB_USER:-postgres}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD:-postgres}
+    networks:
+      - mediconnect-network
+    depends_on:
+      - postgres
+      - service-registry
+
+  doctor-service:
+    build:
+      context: ./backend/doctor-service
+    container_name: mediconnect-doctor-service
+    ports:
+      - "8083:8083"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8888/
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/doctor_db
+      - SPRING_DATASOURCE_USERNAME=${DB_USER:-postgres}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD:-postgres}
+    networks:
+      - mediconnect-network
+    depends_on:
+      - postgres
+      - service-registry
+
+  appointment-service:
+    build:
+      context: ./backend/appointment-service
+    container_name: mediconnect-appointment-service
+    ports:
+      - "8084:8084"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8888/
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/appointment_db
+      - SPRING_DATASOURCE_USERNAME=${DB_USER:-postgres}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD:-postgres}
+      - SPRING_RABBITMQ_HOST=rabbitmq
+    networks:
+      - mediconnect-network
+    depends_on:
+      - postgres
+      - rabbitmq
+      - service-registry
+
+  payment-service:
+    build:
+      context: ./backend/payment-service
+    container_name: mediconnect-payment-service
+    ports:
+      - "8085:8085"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8888/
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/payment_db
+      - SPRING_DATASOURCE_USERNAME=${DB_USER:-postgres}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD:-postgres}
+      - SPRING_RABBITMQ_HOST=rabbitmq
+    networks:
+      - mediconnect-network
+    depends_on:
+      - postgres
+      - rabbitmq
+      - service-registry
+
+  notification-service:
+    build:
+      context: ./backend/notification-service
+    container_name: mediconnect-notification-service
+    ports:
+      - "8086:8086"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8888/
+      - SPRING_RABBITMQ_HOST=rabbitmq
+    networks:
+      - mediconnect-network
+    depends_on:
+      - rabbitmq
+      - service-registry
+
+  telemedicine-service:
+    build:
+      context: ./backend/telemedicine-service
+    container_name: mediconnect-telemedicine-service
+    ports:
+      - "8087:8087"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8888/
+    networks:
+      - mediconnect-network
+    depends_on:
+      - service-registry
+
+  ai-service:
+    build:
+      context: ./backend/ai-service
+    container_name: mediconnect-ai-service
+    ports:
+      - "8088:8088"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8888/
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/ai_db
+      - SPRING_DATASOURCE_USERNAME=${DB_USER:-postgres}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD:-postgres}
+    networks:
+      - mediconnect-network
+    depends_on:
+      - postgres
+      - service-registry
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: mediconnect-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_GATEWAY_URL=http://localhost:8080
+    networks:
+      - mediconnect-network
+    depends_on:
+      - api-gateway
+
+networks:
+  mediconnect-network:
+    driver: bridge
+
+volumes:
+  postgres-data:

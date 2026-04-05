@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-registry
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-registry
+  template:
+    metadata:
+      labels:
+        app: service-registry
+    spec:
+      containers:
+        - name: service-registry
+          image: mediconnect-service-registry:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8761
+          envFrom:
+            - configMapRef:
+                name: platform-config
+            - secretRef:
+                name: platform-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-registry
+spec:
+  selector:
+    app: service-registry
+  ports:
+    - protocol: TCP
+      port: 8761
+      targetPort: 8761

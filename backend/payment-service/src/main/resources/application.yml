@@ -1,0 +1,18 @@
+server:
+  port: 8085
+spring:
+  application:
+    name: payment-service
+  config:
+    import: "optional:configserver:http://localhost:8888/"
+  datasource:
+    url: jdbc:postgresql://localhost:5432/payment_db
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  rabbitmq:
+    host: localhost
+  flyway:
+    enabled: true

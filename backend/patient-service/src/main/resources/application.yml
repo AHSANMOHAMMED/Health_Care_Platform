@@ -1,0 +1,21 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: patient-service
+  config:
+    import: "optional:configserver:http://localhost:8888/"
+  datasource:
+    url: jdbc:postgresql://localhost:5432/patient_db
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  flyway:
+    enabled: true

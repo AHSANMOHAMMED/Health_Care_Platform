@@ -1,0 +1,15 @@
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: ${RMQ_USER:guest}
+    password: ${RMQ_PASSWORD:guest}
+
+jwt:
+  secret: ${JWT_SECRET:8e9df6466f8acabdc21c27cc84310d54026f8d38645fb8bfa923ba3ac425abf1}
+  expiration: ${JWT_EXPIRATION:86400000}
