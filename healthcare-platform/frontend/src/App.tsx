@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { Link, Navigate, Route, Routes } from 'react-router-dom';
 import api from './api';
 import { AgoraVideoRoom } from './components/AgoraVideoRoom';
+import { DoctorProfile } from './components/DoctorProfile';
+import { DoctorSearch } from './components/DoctorSearch';
+import { PublicDoctorProfile } from './components/PublicDoctorProfile';
 
 type Role = 'PATIENT' | 'DOCTOR' | 'ADMIN';
 
@@ -124,13 +127,26 @@ function Patient() {
   const [channel, setChannel] = useState('demo-channel');
   const [token, setToken] = useState('mock-token');
   const [appId, setAppId] = useState(import.meta.env.VITE_AGORA_APP_ID || 'demo-app-id');
+  const [selectedDoctor, setSelectedDoctor] = useState<any>(null);
+
+  if (selectedDoctor) {
+    return (
+      <PublicDoctorProfile 
+        doctorId={selectedDoctor.userId} 
+        onBack={() => setSelectedDoctor(null)} 
+      />
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div className="rounded-xl bg-white p-4 shadow-sm">
         <h2 className="font-semibold">Patient dashboard</h2>
         <p className="text-sm text-slate-600">Book via API: POST /api/appointments (requires profile).</p>
       </div>
+      <DoctorSearch onSelectDoctor={setSelectedDoctor} />
       <div className="rounded-xl bg-white p-4 shadow-sm">
+        <h3 className="font-semibold mb-3">Telemedicine Settings</h3>
         <label className="block text-sm font-medium">Agora channel</label>
         <input className="mt-1 w-full rounded border px-2 py-1" value={channel} onChange={(e) => setChannel(e.target.value)} />
         <label className="mt-2 block text-sm font-medium">Token</label>
@@ -144,12 +160,7 @@ function Patient() {
 }
 
 function Doctor() {
-  return (
-    <div className="rounded-xl bg-white p-4 shadow-sm">
-      <h2 className="font-semibold">Doctor dashboard</h2>
-      <p className="text-sm text-slate-600">Use API to manage availability and appointments.</p>
-    </div>
-  );
+  return <DoctorProfile />;
 }
 
 function Admin() {
