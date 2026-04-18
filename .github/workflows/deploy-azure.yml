@@ -103,7 +103,7 @@ jobs:
       - name: Set AKS Context
         run: |
           mkdir -p ~/.kube
-          echo "${{ secrets.KUBE_CONFIG_DATA }}" | tr -d '[:space:]' | base64 --decode > ~/.kube/config
+          echo "${{ secrets.KUBE_CONFIG_DATA }}" | tr -dc 'a-zA-Z0-9+/=' | base64 --decode > ~/.kube/config
           chmod 600 ~/.kube/config
 
       - name: Deploy Infrastructure
