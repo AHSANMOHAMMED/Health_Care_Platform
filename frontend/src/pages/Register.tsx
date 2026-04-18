@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { Eye, EyeOff, AlertCircle, Loader2, Check, X } from 'lucide-react';
-import { api } from '../api/axios';
-import { useNavigate } from 'react-router-dom';
+import { Eye, EyeOff, AlertCircle, Loader2, Check, ArrowRight } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '../utils/auth';
 
 interface FormErrors {
@@ -24,345 +23,177 @@ export default function Register() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [role, setRole] = useState('PATIENT');
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
   const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
-  const [passwordStrength, setPasswordStrength] = useState<PasswordStrength>({
-    score: 0,
-    feedback: [],
-    color: 'bg-gray-300'
-  });
+  const [passwordStrength, setPasswordStrength] = useState<PasswordStrength>({ score: 0, feedback: [], color: 'bg-slate-200' });
   
   const navigate = useNavigate();
 
   const calculatePasswordStrength = (password: string): PasswordStrength => {
     const feedback: string[] = [];
     let score = 0;
-
-    if (password.length >= 8) score += 1;
-    else feedback.push('At least 8 characters');
-
-    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score += 1;
-    else feedback.push('Mix of upper and lower case letters');
-
-    if (/\d/.test(password)) score += 1;
-    else feedback.push('At least one number');
-
-    if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) score += 1;
-    else feedback.push('At least one special character');
-
-    const colors = ['bg-red-500', 'bg-orange-500', 'bg-yellow-500', 'bg-green-500'];
-    
-    return {
-      score,
-      feedback,
-      color: colors[Math.min(score, 3)]
-    };
+    if (password.length >= 8) score += 1; else feedback.push('At least 8 chars');
+    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score += 1; else feedback.push('Mixed case');
+    if (/\d/.test(password)) score += 1; else feedback.push('Number');
+    if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) score += 1; else feedback.push('Special char');
+    const colors = ['bg-red-500', 'bg-orange-500', 'bg-yellow-500', 'bg-emerald-500'];
+    return { score, feedback, color: password ? colors[Math.max(score - 1, 0)] : 'bg-slate-200' };
   };
 
-  const validateEmail = (email: string): string | undefined => {
-    if (!email) return 'Email is required';
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) return 'Please enter a valid email address';
+  const validateField = (field: string, val1: string, val2?: string) => {
+    if (field === 'email') return !val1 ? 'Email required' : (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val1) ? 'Invalid email' : undefined);
+    if (field === 'password') return val1.length < 8 ? 'Min 8 chars required' : undefined;
+    if (field === 'confirmPassword') return val1 !== val2 ? 'Passwords do not match' : undefined;
     return undefined;
-  };
-
-  const validatePassword = (password: string): string | undefined => {
-    if (!password) return 'Password is required';
-    if (password.length < 8) return 'Password must be at least 8 characters long';
-    return undefined;
-  };
-
-  const validateConfirmPassword = (password: string, confirmPassword: string): string | undefined => {
-    if (!confirmPassword) return 'Please confirm your password';
-    if (password !== confirmPassword) return 'Passwords do not match';
-    return undefined;
-  };
-
-  const validateRole = (role: string): string | undefined => {
-    if (!role || !['PATIENT', 'DOCTOR'].includes(role)) return 'Please select a valid role';
-    return undefined;
-  };
-
-  const validateForm = (): boolean => {
-    const newErrors: FormErrors = {
-      email: validateEmail(email),
-      password: validatePassword(password),
-      confirmPassword: validateConfirmPassword(password, confirmPassword),
-      role: validateRole(role),
-    };
-    
-    setErrors(newErrors);
-    return !Object.values(newErrors).some(error => error);
   };
 
   const handleBlur = (field: string) => {
-    setTouched({ ...touched, [field]: true });
-    
-    const newErrors = { ...errors };
-    
-    switch (field) {
-      case 'email':
-        newErrors.email = validateEmail(email);
-        break;
-      case 'password':
-        newErrors.password = validatePassword(password);
-        setPasswordStrength(calculatePasswordStrength(password));
-        break;
-      case 'confirmPassword':
-        newErrors.confirmPassword = validateConfirmPassword(password, confirmPassword);
-        break;
-      case 'role':
-        newErrors.role = validateRole(role);
-        break;
-    }
-    
-    setErrors(newErrors);
+    setTouched(prev => ({ ...prev, [field]: true }));
+    let error;
+    if (field === 'email') error = validateField('email', email);
+    if (field === 'password') error = validateField('password', password);
+    if (field === 'confirmPassword') error = validateField('confirmPassword', confirmPassword, password);
+    setErrors(prev => ({ ...prev, [field]: error }));
   };
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+    const eErr = validateField('email', email);
+    const pErr = validateField('password', password);
+    const cpErr = validateField('confirmPassword', confirmPassword, password);
     
-    if (!validateForm()) return;
+    setTouched({ email: true, password: true, confirmPassword: true });
+    setErrors({ email: eErr, password: pErr, confirmPassword: cpErr });
+    
+    if (eErr || pErr || cpErr) return;
     
     setLoading(true);
-    setErrors({ ...errors, general: undefined });
-    
     try {
-      await authService.register({ 
-        email, 
-        password, 
-        role: role as 'PATIENT' | 'DOCTOR',
-        firstName: '',
-        lastName: ''
-      });
+      await authService.register({ email, password, role: role as 'PATIENT' | 'DOCTOR', firstName: '', lastName: '' });
       navigate('/login?message=Registration successful! Please login.');
     } catch(err: any) {
-      console.error('Registration error:', err);
-      let errorMessage = 'Registration failed. Please try again.';
-      
-      if (err.response?.status === 409) {
-        errorMessage = 'An account with this email already exists.';
-      } else if (err.response?.status === 400) {
-        errorMessage = 'Invalid registration data. Please check your inputs.';
-      } else if (err.code === 'NETWORK_ERROR') {
-        errorMessage = 'Network error. Please check your connection.';
-      }
-      
-      setErrors({ ...errors, general: errorMessage });
+      setErrors({ ...errors, general: err.response?.status === 409 ? 'Email exists' : 'Registration failed' });
     } finally {
       setLoading(false);
     }
   };
 
-  const getFieldError = (field: string) => {
-    return touched[field] ? errors[field as keyof FormErrors] : undefined;
-  };
-
-  const hasFieldError = (field: string) => {
-    return touched[field] && !!errors[field as keyof FormErrors];
-  };
-
   return (
-    <div className="max-w-md mx-auto mt-20 bg-white p-8 rounded-2xl shadow-xl border border-slate-50">
-      <h2 className="text-3xl font-extrabold text-center text-slate-800 mb-2">Create an Account</h2>
-      <p className="text-center text-slate-500 mb-8">Join our healthcare platform today</p>
-      
-      {/* General Error */}
-      {errors.general && (
-        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3">
-          <AlertCircle className="text-red-600" size={20} />
-          <span className="text-red-700 text-sm">{errors.general}</span>
-        </div>
-      )}
-
-      <form onSubmit={handleRegister} className="space-y-5">
-        {/* Role Field */}
-        <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">I am a</label>
-          <div className="grid grid-cols-2 gap-3">
-            <button
-              type="button"
-              onClick={() => setRole('PATIENT')}
-              className={`px-4 py-3 border-2 rounded-lg font-medium transition-all ${
-                role === 'PATIENT' 
-                  ? 'border-indigo-500 bg-indigo-50 text-indigo-700' 
-                  : 'border-slate-200 text-slate-600 hover:border-slate-300'
-              }`}
-            >
-              Patient
-            </button>
-            <button
-              type="button"
-              onClick={() => setRole('DOCTOR')}
-              className={`px-4 py-3 border-2 rounded-lg font-medium transition-all ${
-                role === 'DOCTOR' 
-                  ? 'border-indigo-500 bg-indigo-50 text-indigo-700' 
-                  : 'border-slate-200 text-slate-600 hover:border-slate-300'
-              }`}
-            >
-              Doctor
-            </button>
-          </div>
-          {getFieldError('role') && (
-            <p className="mt-1 text-sm text-red-600">{getFieldError('role')}</p>
-          )}
-        </div>
-
-        {/* Email Field */}
-        <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Email Address</label>
-          <div className="relative">
-            <input 
-              type="email" 
-              value={email} 
-              onChange={e => setEmail(e.target.value)} 
-              onBlur={() => handleBlur('email')}
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none ${
-                hasFieldError('email') 
-                  ? 'border-red-300 focus:ring-red-500 focus:border-red-500' 
-                  : 'border-slate-200'
-              }`}
-              placeholder="Enter your email"
-            />
-            {touched.email && !hasFieldError('email') && email && (
-              <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                <Check className="text-green-500" size={20} />
-              </div>
-            )}
-            {hasFieldError('email') && (
-              <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                <AlertCircle className="text-red-500" size={20} />
-              </div>
-            )}
-          </div>
-          {getFieldError('email') && (
-            <p className="mt-1 text-sm text-red-600">{getFieldError('email')}</p>
-          )}
-        </div>
-
-        {/* Password Field */}
-        <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Password</label>
-          <div className="relative">
-            <input 
-              type={showPassword ? 'text' : 'password'} 
-              value={password} 
-              onChange={e => {
-                setPassword(e.target.value);
-                setPasswordStrength(calculatePasswordStrength(e.target.value));
-              }} 
-              onBlur={() => handleBlur('password')}
-              className={`w-full px-4 py-3 pr-12 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none ${
-                hasFieldError('password') 
-                  ? 'border-red-300 focus:ring-red-500 focus:border-red-500' 
-                  : 'border-slate-200'
-              }`}
-              placeholder="Create a strong password"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600"
-            >
-              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
-          </div>
+    <div className="min-h-screen ambient-bg flex items-center justify-center p-4">
+      <div className="w-full max-w-6xl premium-glass overflow-hidden flex flex-col md:flex-row-reverse shadow-2xl animate-slide-up">
+        
+        {/* Right Side Branding */}
+        <div className="md:w-1/2 p-12 lg:p-16 flex flex-col justify-between relative overflow-hidden bg-slate-900 text-white">
+          <div className="absolute inset-0 bg-gradient-to-bl from-emerald-900 to-slate-900 opacity-90 z-0"/>
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 z-0"/>
           
-          {/* Password Strength Indicator */}
-          {password && (
-            <div className="mt-2">
-              <div className="flex items-center gap-2 mb-1">
-                <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
-                  <div 
-                    className={`h-full transition-all duration-300 ${passwordStrength.color}`}
-                    style={{ width: `${(passwordStrength.score / 4) * 100}%` }}
-                  ></div>
-                </div>
-                <span className="text-xs text-slate-600">
-                  {passwordStrength.score === 0 && 'Weak'}
-                  {passwordStrength.score === 1 && 'Fair'}
-                  {passwordStrength.score === 2 && 'Good'}
-                  {passwordStrength.score === 3 && 'Strong'}
-                  {passwordStrength.score === 4 && 'Very Strong'}
-                </span>
+          <div className="relative z-10 text-right">
+            <Link to="/" className="inline-flex flex-row-reverse items-center gap-2 text-2xl font-bold mb-12 hover:opacity-80 transition">
+              <div className="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center text-white">M</div>
+              MedCare+
+            </Link>
+            <h1 className="text-4xl lg:text-5xl font-bold mb-6 leading-tight">
+              Start your <br/> <span className="text-emerald-400">healing journey.</span>
+            </h1>
+            <p className="text-slate-300 text-lg max-w-md ml-auto">
+              Create an account to unlock telemedicine, precise scheduling, and AI-powered symptom checking.
+            </p>
+          </div>
+        </div>
+
+        {/* Left Side Form */}
+        <div className="md:w-1/2 p-12 lg:p-16 bg-white/60 relative">
+          <div className="max-w-md mx-auto">
+            <h2 className="text-3xl font-bold text-slate-900 mb-2">Create Account</h2>
+            <p className="text-slate-500 mb-8 font-medium">Join us as a patient or medical professional.</p>
+            
+            {errors.general && (
+              <div className="mb-6 p-4 premium-glass border-red-200 bg-red-50 flex items-start gap-3 animate-fade-in">
+                <AlertCircle className="text-red-600 mt-0.5 shrink-0" size={18} />
+                <span className="text-red-700 text-sm font-medium">{errors.general}</span>
               </div>
-              {passwordStrength.feedback.length > 0 && (
-                <div className="text-xs text-slate-500">
-                  Add: {passwordStrength.feedback.join(', ')}
+            )}
+
+            <form onSubmit={handleRegister} className="space-y-4">
+              <div className="grid grid-cols-2 gap-3 mb-6">
+                <button
+                  type="button"
+                  onClick={() => setRole('PATIENT')}
+                  className={`py-3 rounded-xl font-bold text-sm transition-all border-2 ${role === 'PATIENT' ? 'border-emerald-500 bg-emerald-50 text-emerald-800 shadow-sm' : 'border-slate-200 text-slate-500 hover:bg-slate-50'}`}
+                >
+                  I'm a Patient
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setRole('DOCTOR')}
+                  className={`py-3 rounded-xl font-bold text-sm transition-all border-2 ${role === 'DOCTOR' ? 'border-indigo-500 bg-indigo-50 text-indigo-800 shadow-sm' : 'border-slate-200 text-slate-500 hover:bg-slate-50'}`}
+                >
+                  I'm a Doctor
+                </button>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-sm font-semibold text-slate-700 pl-1">Email Address</label>
+                <input 
+                  type="email" value={email} onChange={e => setEmail(e.target.value)} onBlur={() => handleBlur('email')}
+                  className={`input-premium ${touched.email && errors.email ? 'border-red-300 ring-4 ring-red-500/10' : ''}`}
+                  placeholder="name@example.com"
+                />
+                {touched.email && errors.email && <p className="text-sm text-red-600 pl-1">{errors.email}</p>}
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-sm font-semibold text-slate-700 pl-1">Password</label>
+                <div className="relative">
+                  <input 
+                    type={showPassword ? 'text' : 'password'} value={password} 
+                    onChange={e => { setPassword(e.target.value); setPasswordStrength(calculatePasswordStrength(e.target.value)); }} 
+                    onBlur={() => handleBlur('password')}
+                    className={`input-premium pr-12 ${touched.password && errors.password ? 'border-red-300 ring-4 ring-red-500/10' : ''}`}
+                    placeholder="Create strong password"
+                  />
+                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </button>
                 </div>
-              )}
+                {/* Strength meter */}
+                <div className="flex items-center gap-1 mt-2 mb-1">
+                  {[1,2,3,4].map(i => (
+                    <div key={i} className={`h-1.5 flex-1 rounded-full ${i <= passwordStrength.score ? passwordStrength.color : 'bg-slate-200'}`} />
+                  ))}
+                </div>
+                {touched.password && errors.password && <p className="text-sm text-red-600 pl-1">{errors.password}</p>}
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-sm font-semibold text-slate-700 pl-1">Confirm Password</label>
+                <div className="relative">
+                  <input 
+                    type={showPassword ? 'text' : 'password'} value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} onBlur={() => handleBlur('confirmPassword')}
+                    className={`input-premium pr-12 ${touched.confirmPassword && errors.confirmPassword ? 'border-red-300 ring-4 ring-red-500/10' : ''}`}
+                    placeholder="Confirm password"
+                  />
+                  {touched.confirmPassword && !errors.confirmPassword && confirmPassword && (
+                    <Check className="absolute right-4 top-1/2 -translate-y-1/2 text-emerald-500" size={20} />
+                  )}
+                </div>
+                {touched.confirmPassword && errors.confirmPassword && <p className="text-sm text-red-600 pl-1">{errors.confirmPassword}</p>}
+              </div>
+
+              <button type="submit" disabled={loading} className="w-full btn-primary mt-6 !bg-slate-900 before:!bg-gradient-to-r before:!from-emerald-500 before:!to-teal-500">
+                {loading ? <span className="flex items-center justify-center gap-2"><Loader2 className="animate-spin" size={20} /> Creating...</span> : <span className="flex items-center justify-center gap-2">Create Account <ArrowRight size={18}/></span>}
+              </button>
+            </form>
+
+            <div className="mt-8 text-center text-sm font-medium text-slate-500">
+              Already have an account?{' '}
+              <Link to="/login" className="text-emerald-600 hover:text-emerald-800 transition underline decoration-2 underline-offset-4">
+                Sign in
+              </Link>
             </div>
-          )}
-          
-          {getFieldError('password') && (
-            <p className="mt-1 text-sm text-red-600">{getFieldError('password')}</p>
-          )}
-        </div>
-
-        {/* Confirm Password Field */}
-        <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Confirm Password</label>
-          <div className="relative">
-            <input 
-              type={showConfirmPassword ? 'text' : 'password'} 
-              value={confirmPassword} 
-              onChange={e => setConfirmPassword(e.target.value)} 
-              onBlur={() => handleBlur('confirmPassword')}
-              className={`w-full px-4 py-3 pr-12 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none ${
-                hasFieldError('confirmPassword') 
-                  ? 'border-red-300 focus:ring-red-500 focus:border-red-500' 
-                  : 'border-slate-200'
-              }`}
-              placeholder="Confirm your password"
-            />
-            <button
-              type="button"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600"
-            >
-              {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
-            {touched.confirmPassword && !hasFieldError('confirmPassword') && confirmPassword && password === confirmPassword && (
-              <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                <Check className="text-green-500" size={20} />
-              </div>
-            )}
-            {hasFieldError('confirmPassword') && (
-              <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                <X className="text-red-500" size={20} />
-              </div>
-            )}
           </div>
-          {getFieldError('confirmPassword') && (
-            <p className="mt-1 text-sm text-red-600">{getFieldError('confirmPassword')}</p>
-          )}
         </div>
-
-        <button 
-          type="submit" 
-          disabled={loading}
-          className="w-full py-3 bg-teal-600 hover:bg-teal-700 disabled:bg-teal-400 text-white font-bold rounded-lg shadow transition-colors flex items-center justify-center gap-2"
-        >
-          {loading ? (
-            <>
-              <Loader2 className="animate-spin" size={20} />
-              Creating Account...
-            </>
-          ) : (
-            'Sign Up'
-          )}
-        </button>
-      </form>
-
-      <div className="mt-6 text-center">
-        <p className="text-sm text-slate-600">
-          Already have an account?{' '}
-          <a href="/login" className="text-indigo-600 hover:text-indigo-700 font-medium">
-            Sign in
-          </a>
-        </p>
       </div>
     </div>
   );

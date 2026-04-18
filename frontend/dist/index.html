@@ -3,11 +3,25 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MediConnect Lanka</title>
-    <script type="module" crossorigin src="/assets/index-CO6ZHpKV.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-CkzHh0hA.css">
+    <title>MediConnect Lanka - Premium Healthcare Elite</title>
+    <script type="module" crossorigin src="/assets/index-78aFkbbs.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-D3fX5mrQ.css">
   </head>
   <body class="bg-slate-50 text-slate-900 antialiased">
     <div id="root"></div>
+    <script>
+      // Force unregister all service workers to break legacy cache
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+          for(let registration of registrations) {
+            registration.unregister();
+            console.log('Legacy Service Worker unregistered successfully.');
+          }
+          if (registrations.length > 0) {
+            window.location.reload();
+          }
+        });
+      }
+    </script>
   </body>
 </html>

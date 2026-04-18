@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: healthcare-config
-  namespace: healthcare
-data:
-  EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://discovery-service:8761/eureka/"
-  # Use Kubernetes Secrets for JWT_SECRET and DB passwords in real deployments.

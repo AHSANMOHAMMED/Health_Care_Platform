@@ -10,4 +10,36 @@ spring:
     host: ${SPRING_RABBITMQ_HOST:localhost}
     username: ${SPRING_RABBITMQ_USERNAME:root}
     password: ${SPRING_RABBITMQ_PASSWORD:rootpassword}
-    port: 5672
+    port: 5673
+
+# SendGrid Email Configuration
+sendgrid:
+  api-key: ${SENDGRID_API_KEY:}
+  from-email: ${SENDGRID_FROM_EMAIL:noreply@mediconnect.lk}
+  from-name: ${SENDGRID_FROM_NAME:MediConnect Lanka}
+  enabled: ${SENDGRID_ENABLED:false}
+
+# Twilio SMS Configuration
+twilio:
+  account-sid: ${TWILIO_ACCOUNT_SID:}
+  auth-token: ${TWILIO_AUTH_TOKEN:}
+  phone-number: ${TWILIO_PHONE_NUMBER:}
+  enabled: ${TWILIO_ENABLED:false}
+
+# Notification Settings
+notification:
+  email:
+    enabled: ${EMAIL_NOTIFICATIONS_ENABLED:true}
+  sms:
+    enabled: ${SMS_NOTIFICATIONS_ENABLED:true}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
+logging:
+  level:
+    com.mediconnect.notificationservice: DEBUG

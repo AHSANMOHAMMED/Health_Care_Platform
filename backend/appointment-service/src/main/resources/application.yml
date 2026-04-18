@@ -21,4 +21,4 @@ spring:
     host: ${SPRING_RABBITMQ_HOST:localhost}
     username: ${SPRING_RABBITMQ_USERNAME:root}
     password: ${SPRING_RABBITMQ_PASSWORD:rootpassword}
-    port: 5672
+    port: 5673

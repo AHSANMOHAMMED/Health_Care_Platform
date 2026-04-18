@@ -8,7 +8,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Map;
 
 @RestController
-@RequestMapping("")
+@RequestMapping("/ai")
 public class SymptomCheckerController {
 
     @Value("${gemini.api.key}")

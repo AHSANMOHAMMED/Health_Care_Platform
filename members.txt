@@ -1,0 +1,73 @@
+================================================================================
+MEDICONNECT PROJECT - TEAM MEMBERS
+================================================================================
+
+PROJECT TITLE: AI-Enabled Smart Healthcare Appointment & Telemedicine Platform
+
+TEAM MEMBERS:
+-------------
+
+┌─────────┬──────────────────────────────┬─────────────┬─────────────────────────────────────────────┐
+│  S.No   │           Name               │   IT Number │              Primary Contribution           │
+├─────────┼──────────────────────────────┼─────────────┼─────────────────────────────────────────────┤
+│    1    │ [MEMBER 1 NAME]              │ IT[NUMBER]  │ • Project Architecture & API Gateway        │
+│         │                              │             │ • Service Registry (Eureka)                 │
+│         │                              │             │ • Config Server                             │
+│         │                              │             │ • Docker Compose & K8s orchestration        │
+│         │                              │             │ • Infrastructure setup & DevOps             │
+├─────────┼──────────────────────────────┼─────────────┼─────────────────────────────────────────────┤
+│    2    │ [MEMBER 2 NAME]              │ IT[NUMBER]  │ • Authentication & Authorization Service    │
+│         │                              │             │ • JWT implementation & Security             │
+│         │                              │             │ • Patient Service (CRUD, profiles)          │
+│         │                              │             │ • Doctor Service (profiles, schedules)      │
+│         │                              │             │ • Database design & PostgreSQL                │
+├─────────┼──────────────────────────────┼─────────────┼─────────────────────────────────────────────┤
+│    3    │ [MEMBER 3 NAME]              │ IT[NUMBER]  │ • Appointment Service (booking, scheduling) │
+│         │                              │             │ • Payment Service (Stripe integration)      │
+│         │                              │             │ • Prescription Service (digital rx)         │
+│         │                              │             │ • RabbitMQ messaging implementation         │
+│         │                              │             │ • Admin Service (user management)           │
+├─────────┼──────────────────────────────┼─────────────┼─────────────────────────────────────────────┤
+│    4    │ [MEMBER 4 NAME]              │ IT[NUMBER]  │ • Telemedicine Service (Jitsi video calls)  │
+│         │                              │             │ • AI Service (Google Gemini integration)      │
+│         │                              │             │ • Notification Service (Email/SMS)            │
+│         │                              │             │ • Frontend (React.js web app)               │
+│         │                              │             │ • API documentation & testing               │
+└─────────┴──────────────────────────────┴─────────────┴─────────────────────────────────────────────┘
+
+
+PROJECT SUPERVISOR:
+-------------------
+Name: [SUPERVISOR NAME]
+Department: [DEPARTMENT NAME]
+Institution: [COLLEGE/UNIVERSITY NAME]
+
+
+ACADEMIC DETAILS:
+-----------------
+Course: [COURSE NAME - e.g., B.Tech Information Technology]
+Semester: [SEMESTER - e.g., 6th Semester]
+Academic Year: 2025-2026
+Project Type: [Major Project / Mini Project / Final Year Project]
+
+
+DECLARATION:
+------------
+We hereby declare that this project titled "AI-Enabled Smart Healthcare 
+Appointment & Telemedicine Platform" is our own original work. All team 
+members have contributed equally to the development, documentation, and 
+presentation of this project.
+
+
+SIGNATURES:
+-----------
+Member 1: _________________    Date: ___________
+Member 2: _________________    Date: ___________
+Member 3: _________________    Date: ___________
+Member 4: _________________    Date: ___________
+
+
+================================================================================
+NOTE: Please replace [MEMBER NAME], [IT NUMBER], and other placeholders
+with actual information before submission.
+================================================================================

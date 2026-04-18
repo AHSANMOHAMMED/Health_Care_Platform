@@ -1,0 +1,34 @@
+# Maven build output
+**/target/
+**/*.jar
+**/*.war
+**/*.ear
+
+# Maven wrapper (keep mvnw scripts, ignore wrapper jar)
+!**/mvnw
+!**/mvnw.cmd
+!**/.mvn/wrapper/maven-wrapper.properties
+**/.mvn/wrapper/maven-wrapper.jar
+
+# Node / frontend
+**/node_modules/
+frontend/dist/
+**/.vite/
+
+# IDE files
+.idea/
+**/.vscode/
+*.iml
+
+# Environment secrets
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
