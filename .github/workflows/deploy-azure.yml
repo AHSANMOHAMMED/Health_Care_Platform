@@ -57,7 +57,7 @@ jobs:
         run: |
           docker build -t ${{ env.ACR_NAME }}.azurecr.io/mediconnect-${{ matrix.service }}:latest .
           docker push ${{ env.ACR_NAME }}.azurecr.io/mediconnect-${{ matrix.service }}:latest
-        working-directory: backend/${{ matrix.service }}
+        working-directory: frontend
 
   build-and-push-frontend:
     runs-on: ubuntu-latest
