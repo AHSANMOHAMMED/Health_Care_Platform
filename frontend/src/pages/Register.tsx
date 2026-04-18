@@ -50,7 +50,7 @@ export default function Register() {
 
   const handleBlur = (field: string) => {
     setTouched(prev => ({ ...prev, [field]: true }));
-    let error;
+    let error: string | undefined;
     if (field === 'email') error = validateField('email', email);
     if (field === 'password') error = validateField('password', password);
     if (field === 'confirmPassword') error = validateField('confirmPassword', confirmPassword, password);
@@ -88,16 +88,16 @@ export default function Register() {
           <div className="absolute inset-0 bg-gradient-to-bl from-emerald-900 to-slate-900 opacity-90 z-0"/>
           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 z-0"/>
           
-          <div className="relative z-10 text-right">
-            <Link to="/" className="inline-flex flex-row-reverse items-center gap-2 text-2xl font-bold mb-12 hover:opacity-80 transition">
+          <div className="relative z-10 text-center md:text-right">
+            <Link to="/" className="inline-flex flex-row-reverse items-center gap-2 text-2xl font-bold mb-10 hover:opacity-80 transition justify-center md:justify-end w-full">
               <div className="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center text-white">M</div>
               MedCare+
             </Link>
-            <h1 className="text-4xl lg:text-5xl font-bold mb-6 leading-tight">
+            <h1 className="text-3xl lg:text-4xl font-bold mb-4 leading-tight">
               Start your <br/> <span className="text-emerald-400">healing journey.</span>
             </h1>
-            <p className="text-slate-300 text-lg max-w-md ml-auto">
-              Create an account to unlock telemedicine, precise scheduling, and AI-powered symptom checking.
+            <p className="text-slate-300 text-base max-w-xs mx-auto md:mr-0 md:ml-auto">
+              Create an account to unlock AI-powered triage and doctors.
             </p>
           </div>
         </div>
@@ -105,8 +105,12 @@ export default function Register() {
         {/* Left Side Form */}
         <div className="md:w-1/2 p-12 lg:p-16 bg-white/60 relative">
           <div className="max-w-md mx-auto">
-            <h2 className="text-3xl font-bold text-slate-900 mb-2">Create Account</h2>
-            <p className="text-slate-500 mb-8 font-medium">Join us as a patient or medical professional.</p>
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-6 font-bold text-sm text-center flex items-center justify-center gap-2 alert-emergency">
+               <AlertCircle size={18} /> In a medical emergency? Call 1990 immediately.
+            </div>
+
+            <h2 className="text-2xl font-bold text-slate-900 mb-2">Create Account</h2>
+            <p className="text-slate-500 mb-8 font-medium text-sm">Join us as a patient or medical professional.</p>
             
             {errors.general && (
               <div className="mb-6 p-4 premium-glass border-red-200 bg-red-50 flex items-start gap-3 animate-fade-in">

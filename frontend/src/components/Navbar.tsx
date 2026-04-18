@@ -38,12 +38,12 @@ export default function Navbar() {
         
         {/* Middle: Primary Navigation (Guest) */}
         {!role && (
-          <div className="hidden lg:flex gap-10 items-center">
+           <div className="hidden lg:flex gap-10 items-center">
              {[ 
-               { label: 'Platform', path: '#features' },
-               { label: 'Doctors', path: '#doctors' },
-               { label: 'Pricing', path: '#pricing' },
-               { label: 'AI Health', path: '/ai-checker' }
+               { label: 'Platform', path: '/' },
+               { label: 'Doctors', path: '/booking' },
+               { label: 'AI Doctor', path: '/ai-checker' },
+               { label: 'Emergency', path: '/emergency' }
              ].map(link => (
                <Link 
                  key={link.label} 

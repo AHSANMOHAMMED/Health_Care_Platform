@@ -29,7 +29,7 @@ export default function Landing() {
     { name: 'Lab Integration', icon: Microscope, route: '/lab-results' },
     { name: 'Push Notifications', icon: Bell, route: '/notifications' },
     { name: 'Prescription Sync', icon: FileText, route: '/prescriptions' },
-    { name: 'Emergency Dispatch', icon: PhoneCall, route: '/emergency' },
+    { name: '1990 Suwa Seriya API', icon: PhoneCall, route: '/emergency' },
   ];
 
   return (
@@ -57,21 +57,21 @@ export default function Landing() {
           <ArrowRight size={14} className="text-indigo-400 group-hover:translate-x-1 group-hover:text-indigo-600 transition-all" />
         </Link>
         
-        <h1 className="text-6xl md:text-8xl lg:text-[7.5rem] font-black text-slate-900 mb-8 tracking-tighter text-center animate-slide-up delay-100 max-w-6xl leading-[0.9]">
+        <h1 className="text-4xl md:text-6xl lg:text-[5.5rem] font-black text-slate-900 mb-6 tracking-tighter text-center animate-slide-up delay-100 max-w-5xl leading-[1.1]">
           The Future of <br/>
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-blue-500 to-emerald-400 drop-shadow-sm pb-4">Digital Healthcare.</span>
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-blue-500 to-emerald-400 drop-shadow-sm pb-2">Sri Lankan Healthcare.</span>
         </h1>
         
-        <p className="text-xl md:text-3xl text-slate-500 mb-14 max-w-3xl font-medium text-center animate-slide-up delay-200 leading-relaxed">
-          Powered by 11 distributed Spring Boot microservices. Experience instant telemedicine, AI diagnostics, and seamless clinical workflows.
+        <p className="text-lg md:text-xl text-slate-500 mb-12 max-w-2xl font-medium text-center animate-slide-up delay-200 leading-relaxed">
+          Powered by 11 distributed Spring Boot microservices. Experience instant AI triage, native language support, and seamless 1990 Emergency integration.
         </p>
         
-        <div className="flex flex-col sm:flex-row gap-6 animate-slide-up delay-300">
-          <Link to="/register" className="h-16 px-10 rounded-[2rem] bg-slate-900 text-white font-black text-xl flex items-center justify-center gap-3 hover:bg-indigo-600 hover:shadow-[0_20px_40px_-10px_rgba(79,70,229,0.5)] transition-all duration-300 group hover:-translate-y-1">
-            Access Network <ArrowRight size={22} className="group-hover:translate-x-2 transition-transform" />
+        <div className="flex flex-col sm:flex-row gap-4 animate-slide-up delay-300">
+          <Link to="/register" className="h-14 px-8 rounded-full bg-slate-900 text-white font-black text-lg flex items-center justify-center gap-3 hover:bg-indigo-600 hover:shadow-[0_20px_40px_-10px_rgba(79,70,229,0.5)] transition-all duration-300 shadow-lg group hover:-translate-y-1">
+            Access Network <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform" />
           </Link>
-          <Link to="/ai-checker" className="h-16 px-10 rounded-[2rem] bg-white border-2 border-slate-200/60 text-slate-800 font-black text-xl flex items-center justify-center gap-3 hover:border-amber-400 hover:shadow-[0_20px_40px_-10px_rgba(251,191,36,0.3)] hover:bg-amber-50/50 transition-all duration-300 hover:-translate-y-1">
-             <Sparkles className="text-amber-500" /> Test AI Diagnostic API
+          <Link to="/ai-checker" className="h-14 px-8 rounded-full bg-white border-2 border-slate-200/60 text-slate-800 font-black text-lg flex items-center justify-center gap-3 hover:border-amber-400 hover:shadow-[0_20px_40px_-10px_rgba(251,191,36,0.3)] hover:bg-amber-50/50 transition-all duration-300 shadow-sm hover:-translate-y-1">
+             <Sparkles className="text-amber-500" /> Talk to AI Doctor
           </Link>
         </div>
 

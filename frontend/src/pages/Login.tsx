@@ -84,17 +84,17 @@ export default function Login() {
           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 z-0"/>
           
           <div className="relative z-10">
-            <Link to="/" className="inline-flex items-center gap-2 text-2xl font-bold mb-12 hover:opacity-80 transition">
+            <Link to="/" className="inline-flex items-center gap-2 text-2xl font-bold mb-10 hover:opacity-80 transition">
               <div className="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center">
                 <span className="text-white">M</span>
               </div>
               MedCare+
             </Link>
-            <h1 className="text-4xl lg:text-5xl font-bold mb-6 leading-tight">
+            <h1 className="text-3xl lg:text-4xl font-bold mb-4 leading-tight">
               Welcome back to <br/> your <span className="text-indigo-400">health hub.</span>
             </h1>
-            <p className="text-slate-300 text-lg max-w-md">
-              Securely access your medical records, book appointments, and connect with your doctors instantly.
+            <p className="text-slate-300 text-base max-w-xs">
+              Securely access your medical records and connect with your doctors instantly.
             </p>
           </div>
 
@@ -113,8 +113,12 @@ export default function Login() {
         {/* Right Side Form */}
         <div className="md:w-1/2 p-12 lg:p-16 bg-white/60 relative">
           <div className="max-w-md mx-auto">
-            <h2 className="text-3xl font-bold text-slate-900 mb-2">Sign in</h2>
-            <p className="text-slate-500 mb-8 font-medium">Please enter your credentials to continue</p>
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-6 font-bold text-sm text-center flex items-center justify-center gap-2 alert-emergency">
+               <AlertCircle size={18} /> In a medical emergency? Call 1990 immediately.
+            </div>
+
+            <h2 className="text-2xl font-bold text-slate-900 mb-2">Sign in</h2>
+            <p className="text-slate-500 mb-8 font-medium text-sm">Please enter your credentials to continue</p>
             
             {errors.general && (
               <div className="mb-6 p-4 premium-glass border-red-200 bg-red-50/80 flex items-start gap-3 animate-fade-in">
