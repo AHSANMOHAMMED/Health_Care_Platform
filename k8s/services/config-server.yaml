@@ -17,6 +17,13 @@ spec:
           image: healthcaredsmediconnectreg.azurecr.io/mediconnect-config-server:latest
           imagePullPolicy: Always
           ports:
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "320Mi"
+              cpu: "300m"
             - containerPort: 8888
           envFrom:
             - configMapRef:
@@ -32,6 +39,13 @@ spec:
   selector:
     app: config-server
   ports:
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "320Mi"
+              cpu: "300m"
     - protocol: TCP
       port: 8888
       targetPort: 8888

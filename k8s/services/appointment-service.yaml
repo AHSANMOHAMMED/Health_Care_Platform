@@ -17,8 +17,17 @@ spec:
           image: healthcaredsmediconnectreg.azurecr.io/mediconnect-appointment-service:latest
           imagePullPolicy: Always
           ports:
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "320Mi"
+              cpu: "300m"
             - containerPort: 8084
           env:
+            - name: JAVA_OPTS
+              value: "-Xmx192m -Xms128m"
             - name: DB_NAME
               value: "appointment_db"
             - name: SPRING_DATASOURCE_URL
@@ -37,6 +46,13 @@ spec:
   selector:
     app: appointment-service
   ports:
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "320Mi"
+              cpu: "300m"
     - protocol: TCP
       port: 8084
       targetPort: 8084

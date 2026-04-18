@@ -5,9 +5,9 @@ spring:
   application:
     name: appointment-service
   config:
-    import: "optional:configserver:http://localhost:8888/"
+    import: "optional:configserver:http://${CONFIG_SERVER_HOST:localhost}:8888/"
   datasource:
-    url: jdbc:postgresql://localhost:5432/appointment_db
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/appointment_db
     username: ${SPRING_DATASOURCE_USERNAME:root}
     password: ${SPRING_DATASOURCE_PASSWORD:rootpassword}
   jpa:

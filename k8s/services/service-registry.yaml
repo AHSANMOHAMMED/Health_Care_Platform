@@ -17,6 +17,13 @@ spec:
           image: healthcaredsmediconnectreg.azurecr.io/mediconnect-service-registry:latest
           imagePullPolicy: Always
           ports:
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "320Mi"
+              cpu: "300m"
             - containerPort: 8761
           envFrom:
             - configMapRef:
@@ -32,6 +39,13 @@ spec:
   selector:
     app: service-registry
   ports:
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "320Mi"
+              cpu: "300m"
     - protocol: TCP
       port: 8761
       targetPort: 8761
