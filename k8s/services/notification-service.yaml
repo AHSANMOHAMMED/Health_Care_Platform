@@ -14,10 +14,15 @@ spec:
     spec:
       containers:
         - name: notification-service
-          image: mediconnect-notification-service:latest
-          imagePullPolicy: Never
+          image: healthcaredsmediconnectreg.azurecr.io/mediconnect-notification-service:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8086
+          env:
+            - name: DB_NAME
+              value: "notification_db"
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:postgresql://$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=require"
           envFrom:
             - configMapRef:
                 name: platform-config

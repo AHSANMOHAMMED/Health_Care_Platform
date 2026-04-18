@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
         - name: service-registry
-          image: mediconnect-service-registry:latest
-          imagePullPolicy: Never
+          image: healthcaredsmediconnectreg.azurecr.io/mediconnect-service-registry:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8761
           envFrom:

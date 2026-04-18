@@ -1,26 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: payment-service
+  name: prescription-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: payment-service
+      app: prescription-service
   template:
     metadata:
       labels:
-        app: payment-service
+        app: prescription-service
     spec:
       containers:
-        - name: payment-service
-          image: healthcaredsmediconnectreg.azurecr.io/mediconnect-payment-service:latest
+        - name: prescription-service
+          image: healthcaredsmediconnectreg.azurecr.io/mediconnect-prescription-service:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 8085
+            - containerPort: 8090
           env:
             - name: DB_NAME
-              value: "payment_db"
+              value: "prescription_db"
             - name: SPRING_DATASOURCE_URL
               value: "jdbc:postgresql://$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=require"
           envFrom:
@@ -32,11 +32,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: payment-service
+  name: prescription-service
 spec:
   selector:
-    app: payment-service
+    app: prescription-service
   ports:
     - protocol: TCP
-      port: 8085
-      targetPort: 8085
+      port: 8090
+      targetPort: 8090

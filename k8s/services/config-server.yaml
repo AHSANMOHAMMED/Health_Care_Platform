@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
         - name: config-server
-          image: mediconnect-config-server:latest
-          imagePullPolicy: Never
+          image: healthcaredsmediconnectreg.azurecr.io/mediconnect-config-server:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8888
           envFrom:

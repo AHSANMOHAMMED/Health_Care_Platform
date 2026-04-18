@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
         - name: api-gateway
-          image: mediconnect-api-gateway:latest
-          imagePullPolicy: Never
+          image: healthcaredsmediconnectreg.azurecr.io/mediconnect-api-gateway:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
           envFrom:

@@ -14,10 +14,15 @@ spec:
     spec:
       containers:
         - name: doctor-service
-          image: mediconnect-doctor-service:latest
-          imagePullPolicy: Never
+          image: healthcaredsmediconnectreg.azurecr.io/mediconnect-doctor-service:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8083
+          env:
+            - name: DB_NAME
+              value: "doctor_db"
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:postgresql://$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=require"
           envFrom:
             - configMapRef:
                 name: platform-config
