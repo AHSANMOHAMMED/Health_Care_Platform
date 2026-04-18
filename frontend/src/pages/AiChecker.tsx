@@ -21,6 +21,10 @@ export default function AiChecker() {
             // Mocking dynamic multi-lang & multi-modal support until backend parses audio/images natively
             const payload = { 
                symptoms: inputMode === 'text' ? symptoms : `[${inputMode.toUpperCase()} INPUT MOCK] User states they are unwell.`, 
+               age: 35,
+               gender: "Not Specified",
+               duration: "Not Specified",
+               severity: "Not Specified",
                language 
             };
             const response = await api.post('/ai/symptom-checker', payload);
