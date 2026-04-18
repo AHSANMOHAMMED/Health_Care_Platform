@@ -57,7 +57,7 @@ jobs:
         run: |
           docker build -t ${{ env.ACR_NAME }}.azurecr.io/mediconnect-${{ matrix.service }}:latest .
           docker push ${{ env.ACR_NAME }}.azurecr.io/mediconnect-${{ matrix.service }}:latest
-        working-directory: frontend
+        working-directory: backend/${{ matrix.service }}
 
   build-and-push-frontend:
     runs-on: ubuntu-latest
@@ -103,7 +103,7 @@ jobs:
       - name: Set AKS Context
         run: |
           mkdir -p ~/.kube
-          echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > ~/.kube/config
+          echo "${{ secrets.KUBE_CONFIG_DATA }}" | tr -d '[:space:]' | base64 --decode > ~/.kube/config
           chmod 600 ~/.kube/config
 
       - name: Deploy Infrastructure
