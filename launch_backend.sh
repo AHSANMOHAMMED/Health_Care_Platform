@@ -26,14 +26,14 @@ echo "--- Step 1: Infrastructure ---"
 
 echo "--- Step 2: Config Server ---"
 kill_port 8888
-nohup java -jar backend/config-server/target/config-server-0.0.1-SNAPSHOT.jar > logs/config-server.log 2>&1 &
+nohup java -Xmx256m -jar backend/config-server/target/config-server-0.0.1-SNAPSHOT.jar > logs/config-server.log 2>&1 &
 echo "Waiting for Config Server (8888)..."
 while ! check_port 8888; do sleep 2; done
 echo "Config Server is UP"
 
 echo "--- Step 3: Service Registry ---"
 kill_port 8761
-nohup java -jar backend/service-registry/target/service-registry-0.0.1-SNAPSHOT.jar > logs/service-registry.log 2>&1 &
+nohup java -Xmx256m -jar backend/service-registry/target/service-registry-0.0.1-SNAPSHOT.jar > logs/service-registry.log 2>&1 &
 echo "Waiting for Service Registry (8761)..."
 while ! check_port 8761; do sleep 2; done
 echo "Service Registry is UP"
@@ -42,14 +42,16 @@ echo "--- Step 4: API Gateway ---"
 kill_port 8080
 export EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://127.0.0.1:8761/eureka/
 export SPRING_CONFIG_IMPORT=optional:configserver:http://127.0.0.1:8888/
-nohup java -jar backend/api-gateway/target/api-gateway-0.0.1-SNAPSHOT.jar > logs/api-gateway.log 2>&1 &
+nohup java -Xmx256m -jar backend/api-gateway/target/api-gateway-0.0.1-SNAPSHOT.jar > logs/api-gateway.log 2>&1 &
 echo "Waiting for API Gateway (8080)..."
 while ! check_port 8080; do sleep 2; done
 echo "API Gateway is UP"
 
 echo "--- Step 5: Domain Microservices ---"
-# Environment overrides for local execution
-export SPRING_DATASOURCE_URL_BASE="jdbc:postgresql://127.0.0.1:5432/"
+# Environment overrides to securely inject Azure Cloud credentials for Hibernate
+export SPRING_DATASOURCE_URL_BASE="jdbc:postgresql://my-dsproject-deploy-2026.postgres.database.azure.com:5432/"
+export SPRING_DATASOURCE_USERNAME="adminuser"
+export SPRING_DATASOURCE_PASSWORD="Dsproject123"
 export SPRING_RABBITMQ_HOST=127.0.0.1
 
 services=(
@@ -71,15 +73,19 @@ for s in "${services[@]}"; do
     
     kill_port $port
     
-    # Set specific DB URL if needed
+    # Set specific DB URL with clean env variables
     if [ "$db" != "none" ]; then
-        export SPRING_DATASOURCE_URL="${SPRING_DATASOURCE_URL_BASE}${db}"
+        export SPRING_DATASOURCE_URL="jdbc:postgresql://my-dsproject-deploy-2026.postgres.database.azure.com:5432/${db}?sslmode=disable"
+        export SPRING_DATASOURCE_USERNAME="adminuser"
+        export SPRING_DATASOURCE_PASSWORD="Dsproject123"
     else
         unset SPRING_DATASOURCE_URL
+        unset SPRING_DATASOURCE_USERNAME
+        unset SPRING_DATASOURCE_PASSWORD
     fi
     
-    echo "Starting $name on port $port..."
-    nohup java -jar backend/$name/target/$name-0.0.1-SNAPSHOT.jar > logs/$name.log 2>&1 &
+    echo "Starting $name on port $port (Memory limited)..."
+    nohup java -Xmx256m -jar backend/$name/target/$name-0.0.1-SNAPSHOT.jar > logs/$name.log 2>&1 &
 done
 
 echo "All services started. Final verification in progress..."
