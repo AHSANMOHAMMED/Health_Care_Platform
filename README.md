@@ -147,6 +147,6 @@ The platform uses stateless **JWT Authentication**. All requests are validated a
 
 ---
 **Developed by Group 12 (3 members)**
-1. ahsan (Backend & Infra)
-2. Member 2 (Frontend & UI)
-3. Member 3 (AI & Documentation)
+1. AHSAN (Backend & Infra)
+2. KAJANA(Frontend & UI)
+3. SUREKA (AI & Documentation)
