@@ -92,10 +92,10 @@ export default function DoctorDashboard() {
   return (
     <div className="max-w-7xl mx-auto py-8">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 animate-slide-up">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 md:mb-10 animate-slide-up px-4 md:px-0">
         <div>
-          <h1 className="text-4xl font-bold text-slate-900 mb-2">Doctor Dashboard</h1>
-          <p className="text-slate-500 font-medium text-lg">Welcome back, Dr. {user?.firstName || 'Professional'}</p>
+          <h1 className="text-2xl md:text-4xl font-bold text-slate-900 mb-2">Doctor Dashboard</h1>
+          <p className="text-slate-500 font-medium text-sm md:text-lg">Welcome back, Dr. {user?.firstName || 'Professional'}</p>
         </div>
         <div className="flex gap-3">
           <button className="btn-primary flex items-center gap-2">
@@ -112,8 +112,8 @@ export default function DoctorDashboard() {
           { label: 'Completed', value: stats.completedAppointments, icon: CheckCircle, color: 'text-emerald-600', bg: 'bg-emerald-100' },
           { label: 'Today', value: stats.todayAppointments, icon: Calendar, color: 'text-purple-600', bg: 'bg-purple-100' },
         ].map((stat, i) => (
-          <div key={i} className="premium-glass p-6 hover-trigger">
-            <div className="flex justify-between items-start mb-4">
+          <div key={i} className="premium-glass p-5 md:p-6 hover-trigger">
+            <div className="flex justify-between items-start mb-3 md:mb-4">
               <div className={`p-3 rounded-2xl ${stat.bg} ${stat.color} transform transition-transform group-hover:-translate-y-1`}>
                 <stat.icon size={26} />
               </div>
@@ -128,12 +128,12 @@ export default function DoctorDashboard() {
 
       {/* Main Content Area */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-slide-up delay-200">
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 px-4 md:px-0">
           {/* Appointments List */}
-          <div className="premium-glass p-8">
-            <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-              <h2 className="text-2xl font-bold text-slate-900 border-l-4 border-indigo-500 pl-4">Appointments Scheduler</h2>
-              <div className="flex w-full md:w-auto gap-3">
+          <div className="premium-glass p-4 md:p-8">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 md:mb-8 gap-4">
+              <h2 className="text-xl md:text-2xl font-bold text-slate-900 border-l-4 border-indigo-500 pl-3 md:pl-4">Appointments Scheduler</h2>
+              <div className="flex flex-col sm:flex-row w-full md:w-auto gap-3">
                 <div className="relative flex-1 md:w-64">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                   <input
@@ -193,15 +193,15 @@ export default function DoctorDashboard() {
                           {apt.status}
                         </span>
                         
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 w-full md:w-auto mt-2 md:mt-0">
                           {apt.status === 'PENDING' && (
                             <>
-                              <button onClick={() => updateAppointmentStatus(apt.id, 'CONFIRMED')} className="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold rounded-lg transition-colors">Accept</button>
-                              <button onClick={() => updateAppointmentStatus(apt.id, 'CANCELLED')} className="px-3 py-1.5 bg-rose-100 hover:bg-rose-200 text-rose-700 text-xs font-bold rounded-lg transition-colors">Decline</button>
+                              <button onClick={() => updateAppointmentStatus(apt.id, 'CONFIRMED')} className="flex-1 md:flex-none px-3 py-2.5 md:py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs md:text-sm font-bold rounded-xl transition-colors text-center shadow-sm hover:shadow-md">Accept</button>
+                              <button onClick={() => updateAppointmentStatus(apt.id, 'CANCELLED')} className="flex-1 md:flex-none px-3 py-2.5 md:py-1.5 bg-rose-100 hover:bg-rose-200 text-rose-700 text-xs md:text-sm font-bold rounded-xl transition-colors text-center border border-rose-200">Decline</button>
                             </>
                           )}
                           {apt.status === 'CONFIRMED' && apt.consultationType === 'VIDEO' && (
-                            <button className="px-3 py-1.5 bg-teal-500 hover:bg-teal-600 text-white text-xs font-bold rounded-lg transition-colors flex items-center gap-1"><Video size={14}/> Join</button>
+                            <button className="flex-1 md:flex-none px-3 py-2.5 md:py-1.5 bg-teal-500 hover:bg-teal-600 text-white text-xs md:text-sm font-bold rounded-xl transition-colors flex items-center justify-center gap-1 shadow-sm hover:shadow-md"><Video size={16}/> Join</button>
                           )}
                         </div>
                       </div>

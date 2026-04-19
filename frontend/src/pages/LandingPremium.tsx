@@ -45,7 +45,17 @@ export default function Landing() {
         >
           <div className="absolute top-[10%] left-[20%] w-[500px] h-[500px] bg-indigo-400/20 rounded-full blur-[100px] animate-blob"></div>
           <div className="absolute top-[20%] right-[10%] w-[600px] h-[600px] bg-emerald-400/20 rounded-full blur-[100px] animate-blob animation-delay-2000"></div>
-          <div className="absolute bottom-[-10%] left-[30%] w-[700px] h-[700px] bg-blue-400/20 rounded-full blur-[120px] animate-blob animation-delay-4000"></div>
+          
+          {/* Realistic Medical ECG Overlay */}
+          <svg className="absolute top-[40%] text-emerald-500/20 w-full h-[300px]" preserveAspectRatio="none" viewBox="0 0 1000 100">
+            <path 
+              d="M0,50 L200,50 L230,20 L270,90 L310,10 L350,50 L600,50 L630,20 L670,90 L710,10 L750,50 L1000,50" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2" 
+              className="animate-ecg"
+            />
+          </svg>
         </div>
 
         <Link to="/ai-checker" className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/40 border border-white/60 shadow-[0_8px_16px_rgba(0,0,0,0.03)] backdrop-blur-xl mb-10 animate-slide-up hover:bg-white/60 hover:scale-105 transition-all cursor-pointer group">
@@ -57,7 +67,7 @@ export default function Landing() {
           <ArrowRight size={14} className="text-indigo-400 group-hover:translate-x-1 group-hover:text-indigo-600 transition-all" />
         </Link>
         
-        <h1 className="text-4xl md:text-6xl lg:text-[5.5rem] font-black text-slate-900 mb-6 tracking-tighter text-center animate-slide-up delay-100 max-w-5xl leading-[1.1]">
+        <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-[5.5rem] font-black text-slate-900 mb-6 tracking-tighter text-center animate-slide-up delay-100 max-w-5xl leading-[1.1] px-4 md:px-0">
           The Future of <br/>
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-blue-500 to-emerald-400 drop-shadow-sm pb-2">Sri Lankan Healthcare.</span>
         </h1>

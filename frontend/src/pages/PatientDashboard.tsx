@@ -36,10 +36,10 @@ export default function PatientDashboard() {
   return (
     <div className="max-w-7xl mx-auto py-8">
       {/* Header Section */}
-      <div className="flex justify-between items-end mb-10 animate-slide-up">
-        <div>
-          <h1 className="text-4xl font-bold text-slate-900 mb-2">Patient Overview</h1>
-          <p className="text-slate-500 font-medium">Here's what's happening with your health today.</p>
+      <div className="flex flex-col md:flex-row justify-between md:items-end mb-8 md:mb-10 animate-slide-up px-4 md:px-0">
+        <div className="mb-4 md:mb-0">
+          <h1 className="text-2xl md:text-4xl font-bold text-slate-900 mb-2">Patient Overview</h1>
+          <p className="text-slate-500 font-medium text-sm md:text-base">Here's what's happening with your health today.</p>
         </div>
         <button className="hidden md:flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-slate-600 shadow-sm hover:bg-slate-50 transition-colors">
           <Bell size={18} /> <span className="relative flex h-2 w-2 mr-1"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span><span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span></span> Notifications
@@ -75,21 +75,23 @@ export default function PatientDashboard() {
           </div>
 
           {/* Health Vitals / Quick Stats grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              { icon: Activity, label: 'Heart Rate', value: '72 bpm', color: 'text-rose-500', bg: 'bg-rose-50' },
-              { icon: Clock, label: 'Sleep', value: '7h 20m', color: 'text-indigo-500', bg: 'bg-indigo-50' },
-              { icon: FileText, label: 'Reports', value: '2 New', color: 'text-blue-500', bg: 'bg-blue-50' },
-              { icon: Activity, label: 'Blood Pres.', value: '120/80', color: 'text-emerald-500', bg: 'bg-emerald-50' },
-            ].map((stat, i) => (
-              <div key={i} className="premium-glass p-6 text-center hover-trigger cursor-pointer">
-                <div className={`w-12 h-12 mx-auto rounded-full ${stat.bg} flex items-center justify-center mb-4 transform transition-transform group-hover:scale-110`}>
-                  <stat.icon className={`${stat.color} w-6 h-6`} />
+          <div className="w-[100vw] relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] md:w-auto md:static md:mx-0">
+            <div className="flex overflow-x-auto hide-scrollbar snap-x snap-mandatory px-4 md:px-0 pb-6 md:pb-0 md:grid md:grid-cols-4 gap-4">
+              {[
+                { icon: Activity, label: 'Heart Rate', value: '72 bpm', color: 'text-rose-500', bg: 'bg-rose-50', pulse: true },
+                { icon: Clock, label: 'Sleep', value: '7h 20m', color: 'text-indigo-500', bg: 'bg-indigo-50', pulse: false },
+                { icon: FileText, label: 'Reports', value: '2 New', color: 'text-blue-500', bg: 'bg-blue-50', pulse: false },
+                { icon: Activity, label: 'Blood Pres.', value: '120/80', color: 'text-emerald-500', bg: 'bg-emerald-50', pulse: false },
+              ].map((stat, i) => (
+                <div key={i} className="premium-glass p-5 md:p-6 text-center hover-trigger cursor-pointer shrink-0 w-[140px] md:w-auto snap-center">
+                  <div className={`w-12 h-12 mx-auto rounded-full ${stat.bg} flex items-center justify-center mb-3 transform transition-transform group-hover:scale-110 ${stat.pulse ? 'animate-heartbeat-medical' : ''}`}>
+                    <stat.icon className={`${stat.color} w-6 h-6`} />
+                  </div>
+                  <h3 className="text-xl md:text-2xl font-bold text-slate-800 mb-1">{stat.value}</h3>
+                  <p className="text-xs md:text-sm font-medium text-slate-500">{stat.label}</p>
                 </div>
-                <h3 className="text-2xl font-bold text-slate-800 mb-1">{stat.value}</h3>
-                <p className="text-sm font-medium text-slate-500">{stat.label}</p>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
 
           {/* Upcoming Appointments */}

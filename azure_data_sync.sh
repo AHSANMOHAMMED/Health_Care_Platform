@@ -23,7 +23,7 @@ do
     # 2. Upload to Azure
     # Note: This requires 'psql' installed on your Mac or you can run this command inside the Docker container
     echo "Uploading $DB to Azure (This will ask for your Azure Password: Dsproject123)"
-    docker exec -i $LOCAL_POSTGRES_CONTAINER psql -h $AZURE_HOST -U $AZURE_USER -d $DB < "${DB}_dump.sql"
+    docker exec -i $LOCAL_POSTGRES_CONTAINER psql "host=$AZURE_HOST port=5432 user=$AZURE_USER dbname=$DB sslmode=require" < "${DB}_dump.sql"
     
     # 3. Cleanup
     rm "${DB}_dump.sql"
