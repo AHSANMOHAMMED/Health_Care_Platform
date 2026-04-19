@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Eye, EyeOff, AlertCircle, Loader2, Check, ArrowRight } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '../utils/auth';
+import { useAuthStore } from '../store/useAuthStore';
 
 interface FormErrors {
   email?: string;
@@ -71,7 +72,17 @@ export default function Register() {
     setLoading(true);
     try {
       await authService.register({ email, password, role: role as 'PATIENT' | 'DOCTOR', firstName: '', lastName: '' });
-      navigate('/login?message=Registration successful! Please login.');
+      // Auto-login after successful registration
+      const { login } = useAuthStore.getState();
+      await login(email, password);
+      // Navigate based on role
+      if (role === 'PATIENT') {
+        navigate('/patient');
+      } else if (role === 'DOCTOR') {
+        navigate('/doctor');
+      } else {
+        navigate('/');
+      }
     } catch(err: any) {
       setErrors({ ...errors, general: err.response?.status === 409 ? 'Email exists' : 'Registration failed' });
     } finally {

@@ -1,20 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { 
-  Heart, Calendar, Shield, Video, ArrowRight, Stethoscope, 
-  Activity, Zap, Globe, Award, CheckCircle2, Play, 
-  Smartphone, Sparkles, Search, Pill, CreditCard, Bell, 
+import { Link, Navigate } from 'react-router-dom';
+import { useAuthStore } from '../store/useAuthStore';
+import {
+  Heart, Calendar, Shield, Video, ArrowRight, Stethoscope,
+  Activity, Zap, Globe, Award, CheckCircle2, Play,
+  Smartphone, Sparkles, Search, Pill, CreditCard, Bell,
   Microscope, Users, FileText, PhoneCall
 } from 'lucide-react';
 
 export default function Landing() {
   const [scrollY, setScrollY] = useState(0);
+  const role = useAuthStore(state => state.role);
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Redirect logged-in users to their dashboards
+  if (role === 'PATIENT') return <Navigate to="/patient" replace />;
+  if (role === 'DOCTOR') return <Navigate to="/doctor" replace />;
+  if (role === 'ADMIN') return <Navigate to="/admin" replace />;
 
   const features = [
     { icon: Video, title: 'Telemedicine Service', route: '/telemedicine', desc: 'Secure 4K video consultations directly managed by our real-time WebRTC backend bridge.', color: 'text-indigo-500', bg: 'bg-indigo-50', gradient: 'from-indigo-500 to-blue-500' },

@@ -50,15 +50,25 @@ export default function Login() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
-    
+
     setLoading(true);
     setErrors({ ...errors, general: undefined });
-    
+
     try {
       const { login } = useAuthStore.getState();
       await login(email, password);
-      // Fallback dashboard routing (use real role later)
-      navigate('/patient-dashboard');
+      // Get role from auth store after successful login
+      const role = useAuthStore.getState().role;
+      // Navigate based on role
+      if (role === 'PATIENT') {
+        navigate('/patient');
+      } else if (role === 'DOCTOR') {
+        navigate('/doctor');
+      } else if (role === 'ADMIN') {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
     } catch(err: any) {
       console.error('Login error:', err);
       let errorMessage = 'Login failed. Please try again.';

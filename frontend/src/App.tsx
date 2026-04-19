@@ -34,7 +34,7 @@ function AppRoutes() {
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={!role ? <Login /> : <Navigate to={`/${role.toLowerCase()}`} />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/register" element={!role ? <Register /> : <Navigate to={`/${role.toLowerCase()}`} />} />
           
           {/* Protected Routes */}
           <Route path="/patient" element={role === 'PATIENT' ? <PatientDashboard /> : <Navigate to="/login" />} />
