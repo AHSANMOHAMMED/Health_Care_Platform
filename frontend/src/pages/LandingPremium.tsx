@@ -5,234 +5,263 @@ import {
   Heart, Calendar, Shield, Video, ArrowRight, Stethoscope,
   Activity, Zap, Globe, Award, CheckCircle2, Play,
   Smartphone, Sparkles, Search, Pill, CreditCard, Bell,
-  Microscope, Users, FileText, PhoneCall
+  Microscope, Users, FileText, PhoneCall, Star, ChevronRight, ChevronLeft, MapPin
 } from 'lucide-react';
 
 export default function Landing() {
   const [scrollY, setScrollY] = useState(0);
+  const [currentSlide, setCurrentSlide] = useState(0);
   const role = useAuthStore(state => state.role);
+
+  const heroSlides = [
+    {
+      image: "https://images.unsplash.com/photo-1638202993928-7267aad84c31?auto=format&fit=crop&w=2000&q=80",
+      title: "Sri Lanka's Premier Digital Healthcare",
+      subtitle: "Connecting island-wide top specialists directly to your home. Book instant consultations with Colombo's leading consultants.",
+      accent: "text-blue-400"
+    },
+    {
+      image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=2000&q=80",
+      title: "Find Your Doctor in Seconds",
+      subtitle: "From Nawaloka to Asiri Health, access the schedules of top medical professionals across the country without the wait.",
+      accent: "text-emerald-400"
+    },
+    {
+      image: "https://images.unsplash.com/photo-1582750433449-648ed127d09b?auto=format&fit=crop&w=2000&q=80",
+      title: "Integrated 1990 Suwa Seriya",
+      subtitle: "Built-in emergency APIs and native language AI triage ensuring you and your loved ones get help the moment it's needed.",
+      accent: "text-amber-400"
+    }
+  ];
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+
+    // Carousel timer
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+    }, 6000);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      clearInterval(timer);
+    };
+  }, [heroSlides.length]);
+
+  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+  const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
 
   // Redirect logged-in users to their dashboards
   if (role === 'PATIENT') return <Navigate to="/patient" replace />;
   if (role === 'DOCTOR') return <Navigate to="/doctor" replace />;
   if (role === 'ADMIN') return <Navigate to="/admin" replace />;
 
-  const features = [
-    { icon: Video, title: 'Telemedicine Service', route: '/telemedicine', desc: 'Secure 4K video consultations directly managed by our real-time WebRTC backend bridge.', color: 'text-indigo-500', bg: 'bg-indigo-50', gradient: 'from-indigo-500 to-blue-500' },
-    { icon: Calendar, title: 'Appointment Engine', route: '/booking', desc: 'High-concurrency booking flow hooking into the dedicated Doctor & Schedule microservices.', color: 'text-emerald-500', bg: 'bg-emerald-50', gradient: 'from-emerald-400 to-teal-500' },
-    { icon: Zap, title: 'AI Diagnostics', route: '/ai-checker', desc: 'Gemini-powered neural symptom analysis delivering sub-second health insights.', color: 'text-amber-500', bg: 'bg-amber-50', gradient: 'from-amber-400 to-orange-500' },
-    { icon: Shield, title: 'Identity & Auth', route: '/register', desc: 'Enterprise-grade JWT encryption protecting your records across the distributed ecosystem.', color: 'text-rose-500', bg: 'bg-rose-50', gradient: 'from-rose-400 to-red-500' }
-  ];
-
-  const microservices = [
-    { name: 'Pharmacy Network', icon: Pill, route: '/pharmacy' },
-    { name: 'Payment Gateway', icon: CreditCard, route: '/settings' },
-    { name: 'Lab Integration', icon: Microscope, route: '/lab-results' },
-    { name: 'Push Notifications', icon: Bell, route: '/notifications' },
-    { name: 'Prescription Sync', icon: FileText, route: '/prescriptions' },
-    { name: '1990 Suwa Seriya API', icon: PhoneCall, route: '/emergency' },
-  ];
 
   return (
-    <div className="min-h-screen ambient-bg flex flex-col overflow-hidden selection:bg-indigo-200">
-      
-      {/* Dynamic 3D Hero Section */}
-      <section className="relative pt-24 md:pt-36 pb-32 px-4 sm:px-6 lg:px-8 max-w-[1400px] mx-auto w-full z-10 flex flex-col items-center">
-        
-        {/* Orbital Background Elements */}
-        <div 
-          className="absolute inset-0 pointer-events-none opacity-40 transition-transform duration-1000 ease-out" 
-          style={{ transform: `translateY(${scrollY * 0.2}px)` }}
-        >
-          <div className="absolute top-[10%] left-[20%] w-[500px] h-[500px] bg-indigo-400/20 rounded-full blur-[100px] animate-blob"></div>
-          <div className="absolute top-[20%] right-[10%] w-[600px] h-[600px] bg-emerald-400/20 rounded-full blur-[100px] animate-blob animation-delay-2000"></div>
-          
-          {/* Realistic Medical ECG Overlay */}
-          <svg className="absolute top-[40%] text-emerald-500/20 w-full h-[300px]" preserveAspectRatio="none" viewBox="0 0 1000 100">
-            <path 
-              d="M0,50 L200,50 L230,20 L270,90 L310,10 L350,50 L600,50 L630,20 L670,90 L710,10 L750,50 L1000,50" 
-              fill="none" 
-              stroke="currentColor" 
-              strokeWidth="2" 
-              className="animate-ecg"
-            />
-          </svg>
-        </div>
+    <div className="min-h-screen bg-slate-50 flex flex-col overflow-hidden font-sans selection:bg-blue-200">
 
-        <Link to="/ai-checker" className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/40 border border-white/60 shadow-[0_8px_16px_rgba(0,0,0,0.03)] backdrop-blur-xl mb-10 animate-slide-up hover:bg-white/60 hover:scale-105 transition-all cursor-pointer group">
-          <span className="flex h-2.5 w-2.5 relative">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-indigo-600"></span>
-          </span>
-          <span className="text-xs font-black text-indigo-900 uppercase tracking-widest">Live: AI Microservice v2.0 is Online</span>
-          <ArrowRight size={14} className="text-indigo-400 group-hover:translate-x-1 group-hover:text-indigo-600 transition-all" />
-        </Link>
-        
-        <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-[5.5rem] font-black text-slate-900 mb-6 tracking-tighter text-center animate-slide-up delay-100 max-w-5xl leading-[1.1] px-4 md:px-0">
-          The Future of <br/>
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-blue-500 to-emerald-400 drop-shadow-sm pb-2">Sri Lankan Healthcare.</span>
-        </h1>
-        
-        <p className="text-lg md:text-xl text-slate-500 mb-12 max-w-2xl font-medium text-center animate-slide-up delay-200 leading-relaxed">
-          Powered by 11 distributed Spring Boot microservices. Experience instant AI triage, native language support, and seamless 1990 Emergency integration.
-        </p>
-        
-        <div className="flex flex-col sm:flex-row gap-4 animate-slide-up delay-300">
-          <Link to="/register" className="h-14 px-8 rounded-full bg-slate-900 text-white font-black text-lg flex items-center justify-center gap-3 hover:bg-indigo-600 hover:shadow-[0_20px_40px_-10px_rgba(79,70,229,0.5)] transition-all duration-300 shadow-lg group hover:-translate-y-1">
-            Access Network <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform" />
-          </Link>
-          <Link to="/ai-checker" className="h-14 px-8 rounded-full bg-white border-2 border-slate-200/60 text-slate-800 font-black text-lg flex items-center justify-center gap-3 hover:border-amber-400 hover:shadow-[0_20px_40px_-10px_rgba(251,191,36,0.3)] hover:bg-amber-50/50 transition-all duration-300 shadow-sm hover:-translate-y-1">
-             <Sparkles className="text-amber-500" /> Talk to AI Doctor
-          </Link>
+      {/* --- HERO CAROUSEL SECTION --- */}
+      <section className="relative w-full h-[85vh] min-h-[600px] flex items-center justify-center overflow-hidden">
+
+        {/* Slides */}
+        {heroSlides.map((slide, index) => (
+          <div
+            key={index}
+            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out flex flex-col items-center justify-center text-center ${index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}
+          >
+            <div className="absolute inset-0 bg-black/60 z-10" /> {/* Dark Overlay for text readability */}
+            <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/30 to-transparent z-10 opacity-90" />
+            <img
+              src={slide.image}
+              alt="Medical background"
+              className={`absolute inset-0 w-full h-full object-cover transition-transform duration-[8000ms] ${index === currentSlide ? 'scale-105' : 'scale-100'}`}
+            />
+
+            {/* Hero Content per slide to enable proper transitions */}
+            <div className={`relative z-20 container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center max-w-5xl transition-all duration-1000 delay-300 ${index === currentSlide ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+               <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg mb-6 hover:bg-white/20 transition-all">
+                 <span className="flex h-2 w-2 relative">
+                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                 </span>
+                 <span className="text-xs md:text-sm font-bold text-white tracking-widest uppercase">Live in Colombo & Kandy</span>
+               </div>
+
+               <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 tracking-tight leading-[1.15]">
+                 {slide.title.split(' ').map((word, i, arr) => (
+                    i === arr.length - 1 || i === arr.length - 2 ? <span key={i} className={slide.accent}>{word} </span> : <span key={i}>{word} </span>
+                 ))}
+               </h1>
+
+               <p className="text-lg md:text-xl text-gray-200 mb-10 max-w-3xl leading-relaxed font-medium">
+                 {slide.subtitle}
+               </p>
+
+               <div className="flex flex-col sm:flex-row gap-4">
+                  <Link to="/register" className="h-14 px-8 rounded-full bg-blue-600 text-white font-bold text-lg flex items-center justify-center gap-3 hover:bg-blue-500 hover:shadow-[0_0_30px_rgba(37,99,235,0.4)] transition-all duration-300 transform hover:-translate-y-1">
+                    Join MediConnect <ArrowRight className="w-5 h-5" />
+                  </Link>
+                  <Link to="/booking" className="h-14 px-8 rounded-full bg-white/10 backdrop-blur-lg border-2 border-white/30 text-white font-bold text-lg flex items-center justify-center gap-3 hover:bg-white hover:text-gray-900 transition-all duration-300 transform hover:-translate-y-1">
+                     <Calendar className="w-5 h-5" /> Channel a Doctor
+                  </Link>
+               </div>
+            </div>
+          </div>
+        ))}
+
+        {/* Carousel Controls */}
+        <div className="absolute bottom-8 left-0 right-0 z-30 flex justify-center items-center gap-6">
+           <button onClick={prevSlide} className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/10 hover:bg-white/30 backdrop-blur-md flex items-center justify-center text-white transition-all border border-white/20"><ChevronLeft className="w-5 h-5 md:w-6 md:h-6"/></button>
+           <div className="flex gap-2.5">
+             {heroSlides.map((_, idx) => (
+               <button
+                 key={idx}
+                 onClick={() => setCurrentSlide(idx)}
+                 className={`transition-all duration-500 rounded-full ${idx === currentSlide ? 'w-8 h-2 bg-blue-500' : 'w-2 h-2 bg-white/50 hover:bg-white'}`}
+               />
+             ))}
+           </div>
+           <button onClick={nextSlide} className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/10 hover:bg-white/30 backdrop-blur-md flex items-center justify-center text-white transition-all border border-white/20"><ChevronRight className="w-5 h-5 md:w-6 md:h-6"/></button>
         </div>
 
       </section>
 
-      {/* Floating System Architecture Dashboard */}
-      <section className="relative z-20 max-w-[1200px] w-full mx-auto px-4 -mt-10 mb-32 perspective-1000">
-        <div 
-          className="premium-glass p-2 rounded-[3rem] bg-white/30 border-white/50 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] backdrop-blur-3xl transition-transform duration-1000 ease-out"
-          style={{ transform: `rotateX(${Math.max(0, 15 - scrollY * 0.05)}deg) scale(${Math.min(1, 0.95 + scrollY * 0.0002)})` }}
-        >
-          <div className="bg-slate-950 w-full h-[600px] rounded-[2.5rem] overflow-hidden relative shadow-inner flex flex-col">
-            {/* Header */}
-            <div className="h-16 bg-white/5 backdrop-blur-md border-b border-white/10 flex items-center justify-between px-6 shrink-0">
-               <div className="flex gap-2">
-                  <div className="w-3.5 h-3.5 rounded-full bg-red-400/80"></div>
-                  <div className="w-3.5 h-3.5 rounded-full bg-amber-400/80"></div>
-                  <div className="w-3.5 h-3.5 rounded-full bg-emerald-400/80"></div>
-               </div>
-               <div className="flex items-center gap-4 text-xs font-black uppercase tracking-widest text-emerald-400">
-                  <span className="relative flex h-2 w-2"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span></span>
-                  AKS Cluster Connected
-               </div>
-            </div>
-
-            {/* Content: Network Topology Map */}
-            <div className="flex-1 p-8 grid grid-cols-12 gap-6 overflow-hidden relative bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.03)_0%,transparent_100%)]">
-              
-              {/* Traffic Node Main */}
-              <div className="col-span-12 lg:col-span-8 flex flex-col gap-6">
-                 <div className="flex-1 bg-white/[0.03] border border-white/10 rounded-3xl p-8 relative overflow-hidden group hover:bg-white/[0.05] transition-colors">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 blur-3xl rounded-full"></div>
-                    <div className="relative z-10 flex justify-between items-start">
-                       <div>
-                          <div className="text-white/40 text-[10px] font-black uppercase tracking-widest mb-1">API Gateway Entrypoint</div>
-                          <h3 className="text-3xl font-black text-white tracking-tight">System Traffic Routing</h3>
-                          <div className="mt-8 space-y-4">
-                             {[
-                               {name: 'api-gateway', status: 'Routing'},
-                               {name: 'auth-service', status: 'Verifying JWT'},
-                               {name: 'service-registry', status: 'Heartbeat OK'}
-                             ].map((s,i) => (
-                               <div key={i} className="flex items-center justify-between bg-black/40 p-3 rounded-2xl border border-white/5">
-                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-xl bg-indigo-500/20 flex items-center justify-center text-indigo-400"><Activity size={14}/></div>
-                                    <span className="text-white/80 font-bold">{s.name}</span>
-                                 </div>
-                                 <span className="text-xs text-emerald-400 font-bold">{s.status}</span>
-                               </div>
-                             ))}
-                          </div>
-                       </div>
-                       <Activity className="text-white/5 w-32 h-32 absolute right-[-20px] bottom-[-20px] group-hover:scale-110 transition-transform duration-700" />
-                    </div>
-                 </div>
-              </div>
-
-              {/* Live Metric Cards */}
-              <div className="col-span-12 lg:col-span-4 flex flex-col gap-6">
-                 <div className="h-48 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-3xl p-6 relative overflow-hidden shadow-xl">
-                    <div className="text-white/60 text-[10px] font-black uppercase tracking-widest mb-1">Live Database Sync</div>
-                    <div className="text-5xl font-black text-white my-4">2.4ms</div>
-                    <div className="text-white/80 text-sm font-bold">Azure PostgreSQL Cluster</div>
-                    <Globe className="absolute -bottom-4 -right-4 w-32 h-32 text-black/10" />
-                 </div>
-                 <div className="flex-1 bg-white/[0.03] border border-white/10 rounded-3xl p-6 flex flex-col justify-end">
-                    <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-auto"><Users size={20}/></div>
-                    <div className="text-white/40 text-[10px] font-black uppercase tracking-widest mb-1">Active Medical Nodes</div>
-                    <div className="text-2xl font-black text-white">All 14 Services Up</div>
-                 </div>
-              </div>
-
-            </div>
+      {/* --- TRUST BADGES (Sri Lankan Context) --- */}
+      <section className="py-12 border-b border-gray-200 bg-white w-full relative z-20 shadow-sm">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-sm font-bold text-gray-400 uppercase tracking-widest mb-8">Integrated with Sri Lanka's Finest</p>
+          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-70 grayscale hover:grayscale-0 transition-all duration-500">
+             <div className="text-2xl font-black text-blue-900 flex items-center gap-2"><Heart className="w-8 h-8 text-blue-600"/> Asiri Health</div>
+             <div className="text-2xl font-black text-rose-900 flex items-center gap-2"><Activity className="w-8 h-8 text-rose-600"/> Nawaloka</div>
+             <div className="text-2xl font-black text-emerald-900 flex items-center gap-2"><Shield className="w-8 h-8 text-emerald-600"/> Lanka Hospitals</div>
+             <div className="text-2xl font-black text-indigo-900 flex items-center gap-2"><Zap className="w-8 h-8 text-indigo-600"/> Hemas Hospitals</div>
           </div>
         </div>
       </section>
 
-      {/* Core Microservices Bento Grid */}
-      <section className="py-24 relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-20">
-           <p className="text-indigo-600 font-black uppercase tracking-widest text-sm mb-4">The Ecosystem Engine</p>
-           <h2 className="text-5xl md:text-6xl font-black text-slate-900 tracking-tighter">Explore Our Microservices.</h2>
+      {/* --- BENTO GRID: SRI LANKAN FEATURES --- */}
+      <section className="py-24 md:py-32 max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <h2 className="text-3xl md:text-5xl font-bold text-gray-900 tracking-tight mb-4">Designed for the Sri Lankan Patient.</h2>
+          <p className="text-lg md:text-xl text-gray-600 leading-relaxed font-medium">Whether you're in Colombo or Jaffna, our platform brings world-class digital medicine directly to your fingertips.</p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {features.map((feature, i) => (
-            <Link key={i} to={feature.route} className={`premium-glass p-8 hover:-translate-y-2 transition-all duration-500 group relative overflow-hidden ${i === 0 || i === 3 ? 'lg:col-span-2' : ''}`}>
-              <div className={`absolute top-0 right-0 w-64 h-64 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-700 rounded-full blur-3xl -mr-20 -mt-20`}></div>
-              
-              <div className={`w-16 h-16 rounded-[1.5rem] ${feature.bg} flex items-center justify-center mb-8 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500 shadow-sm border border-white`}>
-                <feature.icon className={`w-8 h-8 ${feature.color}`} />
-              </div>
-              <h3 className="text-3xl font-black text-slate-900 mb-4 tracking-tight">{feature.title}</h3>
-              <p className="text-slate-500 font-medium leading-relaxed mb-6">{feature.desc}</p>
-              
-              <div className="flex items-center gap-2 text-slate-900 font-black opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-                 Access Module <ArrowRight size={18} className={`${feature.color}`} />
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
+        <div className="grid grid-cols-1 md:grid-cols-12 md:grid-rows-2 gap-6 h-auto md:h-[500px]">
 
-      {/* Additional Sub-Services Scroller */}
-      <section className="py-20 border-y border-slate-200/40 bg-white/40 backdrop-blur-md overflow-hidden flex whitespace-nowrap">
-         <div className="animate-spin-slow" style={{ animation: 'marquee 40s linear infinite' }}>
-            <style>{`@keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }`}</style>
-            <div className="flex gap-8 px-4 items-center">
-               {[...microservices, ...microservices, ...microservices].map((srv, idx) => (
-                  <Link key={idx} to={srv.route} className="flex items-center gap-4 bg-white/80 px-8 py-5 rounded-full shadow-sm hover:shadow-lg border border-slate-100 hover:border-indigo-200 transition-all cursor-pointer group">
-                     <span className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-indigo-600 group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all"><srv.icon size={18}/></span>
-                     <span className="font-black text-xl text-slate-800 tracking-tight">{srv.name} API</span>
-                  </Link>
-               ))}
+          {/* Card 1: Large Telemedicine Feature */}
+          <div className="md:col-span-8 rounded-3xl bg-white border border-gray-200 p-8 flex flex-col md:flex-row gap-8 items-center overflow-hidden relative group shadow-sm hover:shadow-xl transition-all duration-300">
+            <div className="absolute top-0 right-0 w-80 h-80 bg-blue-50 rounded-full blur-3xl -z-10 group-hover:bg-blue-100 transition-colors"></div>
+            <div className="flex-1">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-bold uppercase tracking-widest mb-4">
+                Island-wide Access
+              </div>
+              <h3 className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight mb-3">Channel Specialists Online</h3>
+              <p className="text-sm md:text-base text-gray-600 font-medium leading-relaxed mb-6">Connect with top consultants from leading Colombo hospitals via secure 4K video. Share your past medical reports instantly, get e-prescriptions sent directly to nearby pharmacies.</p>
+              <Link to="/telemedicine" className="flex items-center gap-2 text-blue-600 font-bold hover:gap-4 transition-all">Start Virtual Visit <ArrowRight className="w-5 h-5"/></Link>
             </div>
-         </div>
+            <div className="w-full md:w-64 h-56 rounded-2xl overflow-hidden shadow-2xl relative shrink-0 border border-gray-100 transform group-hover:rotate-2 transition-transform duration-500">
+               <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=600&q=80" alt="Doctor Consultation" className="w-full h-full object-cover" />
+               <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent flex items-end p-4">
+                  <div className="text-white">
+                    <p className="font-bold text-sm">Dr. Ruwan Fernando</p>
+                    <p className="text-xs text-blue-200">Asiri Surgical Hospital</p>
+                  </div>
+               </div>
+            </div>
+          </div>
+
+          {/* Card 2: Emergency Service */}
+          <div className="md:col-span-4 rounded-3xl bg-[#b91c1c] p-8 overflow-hidden relative group text-white shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-end">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-red-600/50 rounded-full blur-3xl transition-transform group-hover:scale-110"></div>
+            <div className="relative z-10">
+              <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center mb-6 border border-white/20 shadow-lg">
+                <PhoneCall className="w-7 h-7 text-white" />
+              </div>
+              <h3 className="text-3xl font-bold tracking-tight mb-3">1990 Suwa Seriya</h3>
+              <p className="text-red-100 font-medium leading-relaxed mb-8">Integrated emergency dispatch natively linked to your medical profile for hyper-fast ambulance routing.</p>
+              <button className="w-full py-4 bg-white text-red-700 font-black rounded-xl shadow-lg hover:bg-gray-50 flex justify-center items-center gap-2">
+                Emergency Alert <Zap className="w-5 h-5"/>
+              </button>
+            </div>
+          </div>
+
+          {/* Card 3: AI Assistant */}
+          <div className="md:col-span-5 rounded-3xl bg-gray-900 p-8 overflow-hidden relative group text-white shadow-sm hover:shadow-xl transition-all duration-300">
+            <div className="absolute -bottom-10 -right-10 w-48 h-48 bg-indigo-500/30 rounded-full blur-2xl"></div>
+            <div className="relative z-10 w-full h-full flex flex-col justify-between">
+              <div>
+                 <div className="w-12 h-12 rounded-2xl bg-indigo-500/30 backdrop-blur-md flex items-center justify-center mb-6 border border-white/10">
+                   <Sparkles className="w-6 h-6 text-indigo-300" />
+                 </div>
+                 <h3 className="text-2xl font-bold tracking-tight mb-3">Native AI Triage (සිංහල / தமிழ்)</h3>
+                 <p className="text-gray-400 font-medium leading-relaxed mb-6">Describe your symptoms in your native language. Our advanced AI instantly analyzes your condition and recommends the right specialist to channel.</p>
+              </div>
+              <Link to="/ai-checker" className="text-indigo-400 font-bold uppercase tracking-wider flex items-center gap-2 hover:text-white transition-colors">Launch AI Triage <ArrowRight className="w-4 h-4" /></Link>
+            </div>
+          </div>
+
+          {/* Card 4: Digital Records */}
+          <div className="md:col-span-7 rounded-3xl border border-emerald-100 bg-[#f0fdf4] p-8 overflow-hidden relative group shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col md:flex-row gap-6">
+             <div className="flex-1 flex flex-col justify-center">
+                 <div className="w-12 h-12 rounded-2xl bg-emerald-100 flex items-center justify-center mb-6 shadow-sm">
+                   <FileText className="w-6 h-6 text-emerald-600" />
+                 </div>
+                 <h3 className="text-2xl font-bold text-emerald-900 tracking-tight mb-3">Cloud Medical Records</h3>
+                 <p className="text-emerald-700 font-medium leading-relaxed">No more carrying physical files. Store your lab reports, prescriptions, and imaging seamlessly in our secure cloud, easily accessible by your doctors.</p>
+             </div>
+             <div className="w-full md:w-56 bg-white rounded-2xl p-4 shadow-lg border border-emerald-100 transform group-hover:-translate-y-2 transition-transform duration-500">
+                <div className="flex items-center gap-3 border-b border-gray-100 pb-3 mb-3">
+                   <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center"><Activity className="w-4 h-4 text-blue-600"/></div>
+                   <div className="text-sm font-bold text-gray-800">CBC Blood Report</div>
+                </div>
+                <div className="space-y-2">
+                   <div className="h-2 bg-gray-100 rounded w-full"></div>
+                   <div className="h-2 bg-gray-100 rounded w-4/5"></div>
+                   <div className="h-2 bg-emerald-100 rounded w-full mt-4"></div>
+                   <div className="h-2 bg-emerald-100 rounded w-3/5"></div>
+                </div>
+                <div className="mt-4 text-xs font-bold text-emerald-600 flex items-center gap-1"><CheckCircle2 className="w-3 h-3"/> Verified by Lab</div>
+             </div>
+          </div>
+
+        </div>
       </section>
 
-      {/* Elite Doctors Section */}
-      <section className="py-32 relative z-10">
+      {/* --- TOP DOCTORS SECTION (Sri Lankan Context) --- */}
+      <section className="py-24 bg-white relative z-10 border-y border-gray-100">
          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-                <div>
-                   <h2 className="text-4xl md:text-6xl font-black text-slate-950 mb-4 tracking-tight">Our Elite Specialists</h2>
-                   <p className="text-xl text-slate-500 font-medium">Access the finest minds via the Doctor Microservice API.</p>
+                <div className="max-w-2xl">
+                   <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-50 text-orange-600 text-xs font-bold uppercase tracking-widest mb-4">
+                     Elite Network
+                   </div>
+                   <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-6 tracking-tight leading-[1.1]">Consult Sri Lanka's <br/>Most Respected Doctors.</h2>
+                   <p className="text-lg text-gray-600 font-medium">Skip the queues and traffic in Colombo. Video consult or book physical visits instantly with leading medical professionals.</p>
                 </div>
-                <Link to="/booking" className="px-10 py-5 bg-slate-900 text-white rounded-3xl font-black hover:bg-indigo-600 transition-all text-xl shadow-xl hover:-translate-y-1">Live Directory</Link>
+                <Link to="/booking" className="h-14 px-8 bg-gray-900 text-white rounded-full font-bold hover:bg-blue-600 hover:shadow-lg transition-all flex items-center justify-center shrink-0 gap-2">View Directory <Search className="w-4 h-4"/></Link>
             </div>
             
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-               {[ 
-                 { name: 'Dr. Sarah Jenkins', specialty: 'Neurology • Mayo Clinic', img: 'https://api.dicebear.com/7.x/notionists/svg?seed=Sarah' },
-                 { name: 'Dr. Michael Chen', specialty: 'Cardiology • Harvard Med', img: 'https://api.dicebear.com/7.x/notionists/svg?seed=Michael' },
-                 { name: 'Dr. Emily Watson', specialty: 'Pediatrics • Johns Hopkins', img: 'https://api.dicebear.com/7.x/notionists/svg?seed=Emily' }
+            <div className="grid md:grid-cols-3 gap-8">
+               {[
+                 { name: 'Dr. Aruna Perera', specialty: 'Senior Cardiologist', location: 'Nawaloka Hospital', tag: 'Available Today', img: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=600&q=80' },
+                 { name: 'Dr. Shalini Fernando', specialty: 'Consultant Pediatrician', location: 'Asiri Surgical', tag: 'Telemedicine', img: 'https://images.unsplash.com/photo-1594824436951-7f12bc41553a?w=600&q=80' },
+                 { name: 'Dr. Nuwan Silva', specialty: 'Neurologist', location: 'Lanka Hospitals', tag: 'High Rating', img: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=600&q=80' }
                ].map((doc, i) => (
-                 <div key={i} className="premium-glass p-8 group hover:border-indigo-300 transition-all cursor-pointer bg-white">
-                    <div className="w-24 h-24 rounded-[2rem] bg-indigo-50 mb-6 overflow-hidden relative border-4 border-slate-50 shadow-inner">
-                       <img src={doc.img} alt={doc.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                 <div key={i} className="group cursor-pointer bg-white rounded-3xl border border-gray-100 shadow-sm p-4 hover:shadow-2xl transition-all duration-300">
+                    <div className="aspect-[4/4] w-full rounded-2xl bg-gray-100 mb-6 overflow-hidden relative">
+                       <img src={doc.img} alt={doc.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                       <div className="absolute top-4 left-4 px-3 py-1.5 bg-white/90 backdrop-blur-sm rounded-full text-xs font-bold text-gray-800 flex items-center gap-1 shadow-sm">
+                         <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> {doc.tag}
+                       </div>
                     </div>
-                    <h3 className="text-3xl font-black text-slate-900 tracking-tight mb-2">{doc.name}</h3>
-                    <p className="text-slate-500 text-lg font-bold mb-6 flex items-center gap-2"><Stethoscope size={18} className="text-indigo-400" /> {doc.specialty}</p>
-                    <div className="flex gap-2">
-                       <div className="px-4 py-1.5 bg-emerald-50 text-emerald-600 rounded-xl text-xs font-black uppercase tracking-widest border border-emerald-100">Top Rated</div>
-                       <div className="px-4 py-1.5 bg-indigo-50 text-indigo-600 rounded-xl text-xs font-black uppercase tracking-widest border border-indigo-100">Telemedicine</div>
+                    <div className="px-2">
+                      <h3 className="text-2xl font-bold text-gray-900 mb-1">{doc.name}</h3>
+                      <p className="text-blue-600 font-bold mb-3">{doc.specialty}</p>
+                      <div className="flex items-center gap-2 text-sm text-gray-500 mb-6 font-medium">
+                         <MapPin className="w-4 h-4 text-gray-400" /> {doc.location}
+                      </div>
+                      <button className="w-full py-3.5 bg-gray-50 text-gray-900 font-bold rounded-xl hover:bg-gray-900 hover:text-white transition-colors border border-gray-200">Book Appointment</button>
                     </div>
                  </div>
                ))}
@@ -240,34 +269,43 @@ export default function Landing() {
          </div>
       </section>
 
-      {/* CTA Section - Ultra Premium */}
-      <section className="py-24 relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 w-full mb-20">
-         <div className="relative overflow-hidden rounded-[3rem] bg-slate-950 text-white p-12 md:p-32 text-center shadow-[0_50px_100px_-30px_rgba(79,70,229,0.3)] border border-white/10 group">
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/40 via-transparent to-emerald-600/40 group-hover:scale-105 transition-transform duration-1000"></div>
-            <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.15)_0%,transparent_60%)] pointer-events-none"></div>
-            
-            <div className="relative z-10 flex flex-col items-center">
-               <div className="w-24 h-24 bg-white/10 backdrop-blur-xl rounded-[2.5rem] flex items-center justify-center mb-10 border border-white/20 hover:scale-110 transition-transform cursor-pointer">
-                  <Heart className="h-12 w-12 text-emerald-400 animate-pulse" />
+      {/* --- RICH CTA SECTION --- */}
+      <section className="py-24 md:py-32 relative max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 w-full mb-10">
+         <div className="relative overflow-hidden rounded-[3rem] bg-gradient-to-br from-blue-900 via-indigo-900 to-gray-900 text-white p-10 md:p-24 shadow-2xl group">
+            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=2600')] bg-cover bg-center opacity-20 mix-blend-overlay group-hover:scale-105 transition-transform duration-1000"></div>
+
+            <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-12">
+               <div className="max-w-2xl text-center md:text-left">
+                 <h2 className="text-4xl md:text-6xl font-bold mb-6 tracking-tighter leading-[1.1]">
+                   Transform the way you <br/><span className="text-amber-400">manage your health.</span>
+                 </h2>
+                 <p className="text-lg md:text-xl text-blue-100 font-medium mb-10 leading-relaxed">
+                   Join thousands of Sri Lankans taking control of their wellness. Fast, secure, and built locally for our people.
+                 </p>
+                 <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                    <Link to="/register" className="h-16 px-10 bg-amber-400 text-gray-900 rounded-full font-black shadow-lg hover:scale-105 active:scale-95 transition-all text-lg flex items-center justify-center gap-2 hover:bg-amber-300">
+                      Create Free Account
+                    </Link>
+                    <Link to="/booking" className="h-16 px-10 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-full font-bold hover:bg-white/20 transition-all text-lg flex items-center justify-center gap-2">
+                      Channel a Doctor <ChevronRight className="w-5 h-5"/>
+                    </Link>
+                 </div>
                </div>
-               <h2 className="text-5xl md:text-8xl font-black mb-8 tracking-tighter max-w-4xl leading-[0.9]">
-                 Begin Your Journey to <span className="text-indigo-400 block mt-2">Perfect Health.</span>
-               </h2>
-               <p className="text-xl md:text-3xl text-slate-400 mb-16 max-w-2xl font-medium leading-relaxed">
-                 Join the decentralized medical platform powered by secure, real-time microservices.
-               </p>
-               <div className="flex flex-col sm:flex-row gap-6">
-                  <Link to="/register" className="h-20 px-12 bg-white text-slate-950 text-2xl rounded-full font-black shadow-[0_0_40px_rgba(255,255,255,0.2)] hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-4 hover:bg-slate-50">
-                    Create Identity <ArrowRight size={28} />
-                  </Link>
+
+               <div className="hidden lg:flex flex-col items-center gap-6">
+                  <div className="w-56 h-56 rounded-full border-4 border-white/10 bg-white/5 backdrop-blur-2xl flex items-center justify-center relative shadow-[0_0_80px_rgba(59,130,246,0.3)]">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&q=80" className="w-48 h-48 rounded-full object-cover shadow-inner" alt="Happy Patient" />
+                    <div className="absolute -bottom-4 -right-4 w-16 h-16 bg-emerald-400 rounded-full flex items-center justify-center shadow-lg border-4 border-blue-900">
+                       <CheckCircle2 className="w-8 h-8 text-white"/>
+                    </div>
+                  </div>
                </div>
             </div>
          </div>
       </section>
 
-      <footer className="py-12 border-t border-slate-200/60 bg-white/60 backdrop-blur text-center relative z-10">
-         <p className="text-slate-400 font-black mb-1 uppercase tracking-widest text-[11px]">System Status: All Services Operational</p>
-         <p className="text-slate-500 font-bold text-lg">© 2026 MediConnect Distributed Platform. All Rights Reserved.</p>
+      <footer className="py-12 border-t border-gray-200 bg-white text-center">
+         <p className="text-gray-500 text-sm font-medium">© 2026 MediConnect Sri Lanka. Built with care for our nation.</p>
       </footer>
     </div>
   );
