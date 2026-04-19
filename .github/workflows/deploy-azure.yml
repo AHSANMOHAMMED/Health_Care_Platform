@@ -125,3 +125,11 @@ jobs:
         run: |
           kubectl apply -f k8s/services/
           kubectl apply -f k8s/ingress.yaml
+          
+      - name: Force Rollout Restart (Refresh Images)
+        run: |
+          kubectl rollout restart deployment/frontend
+          kubectl rollout restart deployment/api-gateway
+          kubectl rollout restart deployment/auth-service
+          kubectl rollout restart deployment/config-server
+          kubectl rollout restart deployment/service-registry
