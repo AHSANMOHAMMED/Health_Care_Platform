@@ -158,7 +158,7 @@ export default function Landing() {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {features.map((feature, i) => (
             <Link key={i} to={feature.route} className={`premium-glass p-10 hover:-translate-y-2 transition-all duration-500 group relative border-0 shadow-xl shadow-slate-200/40 hover:shadow-2xl overflow-hidden bg-white/80 ${i === 0 || i === 3 ? 'lg:col-span-2' : ''}`}>
-              <div className={`absolute top-0 right-0 w-80 h-80 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-700 rounded-full blur-3xl -mr-28 -mt-28`}/div>
+              <div className={`absolute top-0 right-0 w-80 h-80 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-700 rounded-full blur-3xl -mr-28 -mt-28`}></div>
               
               <div className={`w-20 h-20 rounded-[1.8rem] ${feature.bg} flex items-center justify-center mb-10 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-sm border border-white`}>
                 <feature.icon className={`w-10 h-10 ${feature.color}`} />
