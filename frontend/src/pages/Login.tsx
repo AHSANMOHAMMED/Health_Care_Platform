@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { Eye, EyeOff, AlertCircle, Loader2, ArrowRight } from 'lucide-react';
+import { Eye, EyeOff, AlertCircle, Loader2, ArrowRight, Sparkles, ShieldCheck } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import { useNavigate, Link } from 'react-router-dom';
+import logo from '../assets/logo.png';
+import hero1 from '../assets/hero-1.png';
 
 interface FormErrors {
   email?: string;
@@ -15,190 +17,140 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
-  const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
   
   const navigate = useNavigate();
 
-  const validateEmail = (email: string): string | undefined => {
-    if (!email) return 'Email is required';
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) return 'Please enter a valid email address';
-    return undefined;
-  };
-
-  const validatePassword = (password: string): string | undefined => {
-    if (!password) return 'Password is required';
-    if (password.length < 6) return 'Password must be at least 6 characters long';
-    return undefined;
-  };
-
-  const validateForm = (): boolean => {
-    const newErrors: FormErrors = {
-      email: validateEmail(email),
-      password: validatePassword(password),
-    };
-    setErrors(newErrors);
-    return !newErrors.email && !newErrors.password;
-  };
-
-  const handleBlur = (field: string) => {
-    setTouched({ ...touched, [field]: true });
-    if (field === 'email') setErrors({ ...errors, email: validateEmail(email) });
-    else if (field === 'password') setErrors({ ...errors, password: validatePassword(password) });
-  };
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validateForm()) return;
-
     setLoading(true);
-    setErrors({ ...errors, general: undefined });
+    setErrors({});
 
     try {
       const { login } = useAuthStore.getState();
       await login(email, password);
-      // Get role from auth store after successful login
       const role = useAuthStore.getState().role;
-      // Navigate based on role
-      if (role === 'PATIENT') {
-        navigate('/patient');
-      } else if (role === 'DOCTOR') {
-        navigate('/doctor');
-      } else if (role === 'ADMIN') {
-        navigate('/admin');
-      } else {
-        navigate('/');
-      }
+      if (role === 'PATIENT') navigate('/patient');
+      else if (role === 'DOCTOR') navigate('/doctor');
+      else if (role === 'ADMIN') navigate('/admin');
+      else navigate('/');
     } catch(err: any) {
-      console.error('Login error:', err);
-      let errorMessage = 'Login failed. Please try again.';
-      if (err.response?.status === 401) errorMessage = 'Invalid email or password.';
-      else if (err.response?.status === 429) errorMessage = 'Too many attempts. Try again later.';
-      else if (err.code === 'NETWORK_ERROR') errorMessage = 'Network error. Check connection.';
-      setErrors({ ...errors, general: errorMessage });
+      setErrors({ general: 'Invalid credentials. Please try again.' });
     } finally {
       setLoading(false);
     }
   };
 
-  const getFieldError = (field: string) => touched[field] ? errors[field as keyof FormErrors] : undefined;
-  const hasFieldError = (field: string) => touched[field] && !!errors[field as keyof FormErrors];
-
   return (
-    <div className="min-h-screen ambient-bg flex items-center justify-center p-4">
-      <div className="w-full max-w-6xl premium-glass overflow-hidden flex flex-col md:flex-row shadow-2xl animate-slide-up">
-        
-        {/* Left Side Branding */}
-        <div className="md:w-1/2 p-12 lg:p-16 flex flex-col justify-between relative overflow-hidden bg-slate-900 text-white">
-          <div className="absolute inset-0 bg-gradient-to-br from-indigo-900 to-slate-900 opacity-90 z-0"/>
-          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 z-0"/>
-          
-          <div className="relative z-10">
-            <Link to="/" className="inline-flex items-center gap-2 text-2xl font-bold mb-10 hover:opacity-80 transition">
-              <div className="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center">
-                <span className="text-white">M</span>
-              </div>
-              MedCare+
-            </Link>
-            <h1 className="text-3xl lg:text-4xl font-bold mb-4 leading-tight">
-              Welcome back to <br/> your <span className="text-indigo-400">health hub.</span>
-            </h1>
-            <p className="text-slate-300 text-base max-w-xs">
-              Securely access your medical records and connect with your doctors instantly.
-            </p>
-          </div>
+    <div className="min-h-screen bg-white flex items-center justify-center p-0 lg:p-8 overflow-hidden">
+      
+      {/* Background Decorative Blobs */}
+      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-[#8D153A]/5 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2 animate-blob" />
+      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-[#FFBE29]/10 rounded-full blur-[120px] translate-x-1/2 translate-y-1/2 animate-blob animation-delay-2000" />
 
-          <div className="relative z-10 mt-12 bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/10">
-            <div className="flex -space-x-4 mb-4">
-              {[1,2,3].map(i => (
-                <div key={i} className="w-10 h-10 rounded-full border-2 border-indigo-900 bg-indigo-200 flex items-center justify-center text-indigo-800 font-bold text-xs shadow-lg">
-                  U{i}
-                </div>
-              ))}
-            </div>
-            <p className="text-sm font-medium text-slate-200">Join 10,000+ users managing health digitally.</p>
-          </div>
+      <div className="w-full max-w-[1200px] bg-white lg:rounded-[4rem] lg:shadow-[0_50px_100px_-20px_rgba(141,21,58,0.15)] flex flex-col lg:flex-row overflow-hidden relative z-10 lg:border lg:border-slate-100 h-full lg:h-auto min-h-screen lg:min-h-0">
+        
+        {/* Left Aspect - Premium Branding */}
+        <div className="lg:w-1/2 relative overflow-hidden hidden lg:block">
+           <img src={hero1} alt="Lankan Healthcare" className="absolute inset-0 w-full h-full object-cover" />
+           <div className="absolute inset-0 bg-gradient-to-t from-[#8D153A] via-[#8D153A]/40 to-[#8D153A]/20" />
+           
+           <div className="absolute inset-0 p-20 flex flex-col justify-between text-white">
+              <Link to="/" className="flex items-center gap-4">
+                 <img src={logo} alt="Logo" className="h-16 w-auto brightness-0 invert" />
+              </Link>
+              
+              <div>
+                 <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white font-black text-[10px] uppercase tracking-widest mb-8">
+                    <ShieldCheck size={14} className="text-[#FFBE29]" /> Secure Access Node
+                 </div>
+                 <h1 className="text-6xl font-black tracking-tighter leading-[0.9] mb-8">
+                    Welcome back to the <span className="text-[#FFBE29]">Elite Network.</span>
+                 </h1>
+                 <p className="text-xl text-white/80 font-medium max-w-sm leading-relaxed">
+                   Access your distributed medical records with government-grade security.
+                 </p>
+              </div>
+
+              <div className="flex gap-4">
+                 <div className="w-12 h-1 bg-[#FFBE29] rounded-full" />
+                 <div className="w-4 h-1 bg-white/20 rounded-full" />
+                 <div className="w-4 h-1 bg-white/20 rounded-full" />
+              </div>
+           </div>
         </div>
 
-        {/* Right Side Form */}
-        <div className="md:w-1/2 p-12 lg:p-16 bg-white/60 relative">
-          <div className="max-w-md mx-auto">
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-6 font-bold text-sm text-center flex items-center justify-center gap-2 alert-emergency">
-               <AlertCircle size={18} /> In a medical emergency? Call 1990 immediately.
-            </div>
-
-            <h2 className="text-2xl font-bold text-slate-900 mb-2">Sign in</h2>
-            <p className="text-slate-500 mb-8 font-medium text-sm">Please enter your credentials to continue</p>
-            
-            {errors.general && (
-              <div className="mb-6 p-4 premium-glass border-red-200 bg-red-50/80 flex items-start gap-3 animate-fade-in">
-                <AlertCircle className="text-red-600 mt-0.5 shrink-0" size={18} />
-                <span className="text-red-700 text-sm font-medium">{errors.general}</span>
-              </div>
-            )}
-
-            <form onSubmit={handleLogin} className="space-y-5">
-              <div className="space-y-1">
-                <label className="text-sm font-semibold text-slate-700 pl-1">Email Address</label>
-                <div className="relative">
-                  <input 
-                    type="email" 
-                    value={email} 
-                    onChange={e => setEmail(e.target.value)} 
-                    onBlur={() => handleBlur('email')}
-                    className={`input-premium ${hasFieldError('email') ? 'border-red-300 ring-4 ring-red-500/10' : ''}`}
-                    placeholder="name@example.com"
-                  />
-                  {hasFieldError('email') && <AlertCircle className="absolute right-4 top-1/2 -translate-y-1/2 text-red-500" size={20} />}
-                </div>
-                {getFieldError('email') && <p className="text-sm text-red-600 pl-1 animate-fade-in">{getFieldError('email')}</p>}
-              </div>
-
-              <div className="space-y-1">
-                <div className="flex justify-between items-end pl-1 pr-1">
-                  <label className="text-sm font-semibold text-slate-700">Password</label>
-                  <a href="#" className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 transition">Forgot password?</a>
-                </div>
-                <div className="relative">
-                  <input 
-                    type={showPassword ? 'text' : 'password'} 
-                    value={password} 
-                    onChange={e => setPassword(e.target.value)} 
-                    onBlur={() => handleBlur('password')}
-                    className={`input-premium pr-12 ${hasFieldError('password') ? 'border-red-300 ring-4 ring-red-500/10' : ''}`}
-                    placeholder="••••••••"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600 transition"
-                  >
-                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                  </button>
-                </div>
-                {getFieldError('password') && <p className="text-sm text-red-600 pl-1 animate-fade-in">{getFieldError('password')}</p>}
-              </div>
-
-              <button type="submit" disabled={loading} className="w-full btn-primary mt-6">
-                {loading ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <Loader2 className="animate-spin" size={20} /> Signing In...
-                  </span>
-                ) : (
-                  <span className="flex items-center justify-center gap-2">
-                    Sign In <ArrowRight size={18}/>
-                  </span>
-                )}
-              </button>
-            </form>
-
-            <div className="mt-8 text-center text-sm font-medium text-slate-500">
-              Don't have an account?{' '}
-              <Link to="/register" className="text-indigo-600 hover:text-indigo-800 transition underline decoration-2 underline-offset-4">
-                Create one now
+        {/* Right Aspect - Modern Form */}
+        <div className="flex-1 p-8 lg:p-20 flex flex-col justify-center">
+           <div className="max-w-md mx-auto w-full">
+              
+              {/* Mobile Logo */}
+              <Link to="/" className="lg:hidden flex items-center gap-3 mb-12">
+                 <img src={logo} alt="Logo" className="h-12 w-auto" />
+                 <p className="text-xl font-black text-slate-950">MediConnect</p>
               </Link>
-            </div>
-          </div>
+
+              <h2 className="text-4xl font-black text-slate-950 tracking-tighter mb-4">Sign In</h2>
+              <p className="text-slate-500 font-bold mb-10">Access your personalized health dashboard.</p>
+
+              {errors.general && (
+                 <div className="p-4 bg-red-50 border border-red-100 rounded-2xl flex items-center gap-3 text-red-600 font-bold text-sm mb-8 animate-shake">
+                    <AlertCircle size={20} /> {errors.general}
+                 </div>
+              )}
+
+              <form onSubmit={handleLogin} className="space-y-6">
+                 <div className="space-y-2">
+                    <label className="text-xs font-black uppercase tracking-widest text-slate-400 pl-1">Health ID / Email</label>
+                    <input 
+                      type="email" 
+                      required 
+                      className="input-luminous"
+                      placeholder="name@example.com"
+                      value={email}
+                      onChange={e => setEmail(e.target.value)}
+                    />
+                 </div>
+
+                 <div className="space-y-2">
+                    <div className="flex justify-between pl-1">
+                       <label className="text-xs font-black uppercase tracking-widest text-slate-400">Password</label>
+                       <Link to="#" className="text-xs font-bold text-[#8D153A] hover:underline">Forgot?</Link>
+                    </div>
+                    <div className="relative">
+                       <input 
+                         type={showPassword ? 'text' : 'password'} 
+                         required 
+                         className="input-luminous pr-14"
+                         placeholder="••••••••"
+                         value={password}
+                         onChange={e => setPassword(e.target.value)}
+                       />
+                       <button 
+                         type="button" 
+                         onClick={() => setShowPassword(!showPassword)}
+                         className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 hover:text-[#8D153A] transition-colors"
+                       >
+                         {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                       </button>
+                    </div>
+                 </div>
+
+                 <button type="submit" disabled={loading} className="w-full btn-luminous group">
+                    {loading ? (
+                      <Loader2 size={24} className="animate-spin" />
+                    ) : (
+                      <>Sign In Now <ArrowRight className="group-hover:translate-x-2 transition-transform" size={20} /></>
+                    )}
+                 </button>
+              </form>
+
+              <div className="mt-12 pt-8 border-t border-slate-100 text-center">
+                 <p className="text-slate-500 font-bold">New to MediConnect?</p>
+                 <Link to="/register" className="inline-block mt-4 text-[#8D153A] font-black hover:underline underline-offset-4 decoration-2">
+                    Create your National Health ID
+                 </Link>
+              </div>
+           </div>
         </div>
       </div>
     </div>

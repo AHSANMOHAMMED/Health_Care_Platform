@@ -1,173 +1,200 @@
-import { useState, useEffect } from 'react';
-import { api } from '../api/axios';
-import { useNavigate } from 'react-router-dom';
-import { Calendar as CalendarIcon, Clock, Activity, FileText, Video, Bell, ChevronRight, VideoIcon } from 'lucide-react';
+import React, { useState } from 'react';
+import { 
+  Activity, Calendar, FileText, Pill, CreditCard, 
+  MessageSquare, User, Bell, LogOut, Search,
+  ArrowUpRight, Heart, Clock, ChevronRight,
+  ShieldCheck, Smartphone, Settings, Menu, X
+} from 'lucide-react';
+import { useAuthStore } from '../store/useAuthStore';
+import { Link, useNavigate } from 'react-router-dom';
+import logo from '../assets/logo.png';
 
 export default function PatientDashboard() {
-  const [profile, setProfile] = useState<any>(null);
-  const [appointmentLink, setLink] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const { user, logout } = useAuthStore();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    api.get('/patients/me')
-      .then(res => {
-         setProfile(res.data);
-         setLoading(false);
-      })
-      .catch((err) => {
-         console.error('Failed to fetch patient profile:', err);
-         setLoading(false);
-         // No mock fallback
-      });
-  }, []);
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
-  const handleBook = () => {
-    setLink("");
-    api.post('/appointments/book', { doctorId: 1, appointmentTime: new Date().toISOString() })
-      .then(res => {
-         setLink(res.data.meetingLink || "demo-link");
-      }).catch(err => {
-         // mock response
-         setLink("demo-link-123");
-      });
-  }
+  const navItems = [
+    { name: 'Health Overview', icon: Activity, path: '/patient', active: true },
+    { name: 'Appointments', icon: Calendar, path: '/appointments' },
+    { name: 'Medical Records', icon: FileText, path: '/records' },
+    { name: 'Prescriptions', icon: Pill, path: '/prescriptions' },
+    { name: 'Billing/Payments', icon: CreditCard, path: '/billing' },
+    { name: 'AI Symptom Checker', icon: Heart, path: '/ai-checker' },
+  ];
 
   return (
-    <div className="max-w-7xl mx-auto py-8">
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row justify-between md:items-end mb-8 md:mb-10 animate-slide-up px-4 md:px-0">
-        <div className="mb-4 md:mb-0">
-          <h1 className="text-2xl md:text-4xl font-bold text-slate-900 mb-2">Patient Overview</h1>
-          <p className="text-slate-500 font-medium text-sm md:text-base">Here's what's happening with your health today.</p>
-        </div>
-        <button className="hidden md:flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-slate-600 shadow-sm hover:bg-slate-50 transition-colors">
-          <Bell size={18} /> <span className="relative flex h-2 w-2 mr-1"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span><span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span></span> Notifications
-        </button>
-      </div>
+    <div className="min-h-screen bg-slate-50 flex overflow-hidden">
       
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        {/* Left Column (Main Info) */}
-        <div className="lg:col-span-2 space-y-8 animate-slide-up delay-100">
-          
-          {/* Hero Action Card */}
-          <div className="relative overflow-hidden rounded-3xl bg-slate-900 text-white shadow-xl shadow-indigo-900/20">
-            <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-blue-500 opacity-90"></div>
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2"></div>
-            
-            <div className="relative z-10 p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6">
-              <div>
-                <h2 className="text-3xl font-bold mb-3">Need a Consultation?</h2>
-                <p className="text-indigo-100 max-w-md text-lg">Connect with a verified specialist instantly from the comfort of your home.</p>
+      {/* Premium Sidebar */}
+      <aside className={`fixed inset-y-0 left-0 z-50 w-80 bg-white border-r border-slate-100 transform transition-transform duration-500 ease-in-out ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:relative lg:translate-x-0`}>
+        <div className="h-full flex flex-col p-8">
+           <div className="flex items-center gap-3 mb-16">
+              <img src={logo} alt="MediConnect" className="h-10 w-auto" />
+              <div className="leading-none">
+                 <p className="text-lg font-black text-slate-950 tracking-tighter">MediConnect <span className="text-[#8D153A]">Lanka</span></p>
+                 <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Patient Portal</p>
               </div>
-              <div className="flex flex-col gap-3 min-w-[200px]">
-                <button onClick={handleBook} className="w-full px-6 py-4 bg-white text-indigo-600 font-bold rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2">
-                  <CalendarIcon size={20} /> Book Express
-                </button>
-                {appointmentLink && (
-                  <button onClick={() => navigate('/video?link='+appointmentLink)} className="w-full px-6 py-4 bg-teal-500 text-white font-bold rounded-2xl shadow-lg hover:bg-teal-400 transition-all duration-300 flex items-center justify-center gap-2 border border-teal-400">
-                    <VideoIcon size={20} /> Join Session
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
+           </div>
 
-          {/* Health Vitals / Quick Stats grid */}
-          <div className="w-[100vw] relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] md:w-auto md:static md:mx-0">
-            <div className="flex overflow-x-auto hide-scrollbar snap-x snap-mandatory px-4 md:px-0 pb-6 md:pb-0 md:grid md:grid-cols-4 gap-4">
-              {[
-                { icon: Activity, label: 'Heart Rate', value: '72 bpm', color: 'text-rose-500', bg: 'bg-rose-50', pulse: true },
-                { icon: Clock, label: 'Sleep', value: '7h 20m', color: 'text-indigo-500', bg: 'bg-indigo-50', pulse: false },
-                { icon: FileText, label: 'Reports', value: '2 New', color: 'text-blue-500', bg: 'bg-blue-50', pulse: false },
-                { icon: Activity, label: 'Blood Pres.', value: '120/80', color: 'text-emerald-500', bg: 'bg-emerald-50', pulse: false },
-              ].map((stat, i) => (
-                <div key={i} className="premium-glass p-5 md:p-6 text-center hover-trigger cursor-pointer shrink-0 w-[140px] md:w-auto snap-center">
-                  <div className={`w-12 h-12 mx-auto rounded-full ${stat.bg} flex items-center justify-center mb-3 transform transition-transform group-hover:scale-110 ${stat.pulse ? 'animate-heartbeat-medical' : ''}`}>
-                    <stat.icon className={`${stat.color} w-6 h-6`} />
-                  </div>
-                  <h3 className="text-xl md:text-2xl font-bold text-slate-800 mb-1">{stat.value}</h3>
-                  <p className="text-xs md:text-sm font-medium text-slate-500">{stat.label}</p>
-                </div>
+           <nav className="flex-1 space-y-2">
+              {navItems.map((item, idx) => (
+                <Link key={idx} to={item.path} className={`nav-link ${item.active ? 'active' : ''}`}>
+                   <item.icon size={22} />
+                   <span>{item.name}</span>
+                </Link>
               ))}
-            </div>
-          </div>
+           </nav>
 
-          {/* Upcoming Appointments */}
-          <div className="premium-glass p-8">
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-bold text-slate-900 border-l-4 border-indigo-500 pl-3">Upcoming Schedules</h3>
-              <button className="text-indigo-600 font-medium text-sm flex items-center hover:text-indigo-800 transition">View All <ChevronRight size={16} /></button>
-            </div>
+           <div className="pt-8 border-t border-slate-100">
+              <button onClick={handleLogout} className="flex items-center gap-4 px-6 py-4 rounded-2xl text-red-500 font-bold hover:bg-red-50 transition-all w-full text-left">
+                 <LogOut size={22} /> Logout Session
+              </button>
+           </div>
+        </div>
+      </aside>
+
+      {/* Main Workspace */}
+      <main className="flex-1 flex flex-col min-w-0 overflow-y-auto relative">
+         
+         {/* Top Header */}
+         <header className="h-24 bg-white/50 backdrop-blur-md border-b border-slate-100 px-8 flex items-center justify-between sticky top-0 z-30">
+            <button onClick={() => setSidebarOpen(!sidebarOpen)} className="lg:hidden p-2 text-slate-500">
+               {sidebarOpen ? <X size={28} /> : <Menu size={28} />}
+            </button>
             
-            <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100 flex items-center justify-between hover:border-indigo-200 transition-colors cursor-pointer group">
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-xl bg-white shadow-sm flex flex-col items-center justify-center border border-slate-100 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                  <span className="text-xs font-bold uppercase text-slate-400 group-hover:text-indigo-200">Apr</span>
-                  <span className="text-xl font-bold text-slate-800 group-hover:text-white">12</span>
-                </div>
-                <div>
-                  <h4 className="font-bold text-slate-900 text-lg">Dr. Sarah Jenkins</h4>
-                  <p className="text-sm text-slate-500 flex items-center gap-1"><Video size={14}/> General Checkup</p>
-                </div>
-              </div>
-              <div className="text-right">
-                <div className="text-sm font-bold text-slate-900">10:00 AM</div>
-                <div className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md mt-1 inline-block">Confirmed</div>
-              </div>
+            <div className="flex-1 max-w-xl mx-8 relative hidden md:block">
+               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+               <input type="text" placeholder="Search records, doctors, or prescriptions..." className="w-full bg-slate-100 border-none rounded-2xl py-3 pl-12 pr-4 text-sm font-medium focus:ring-2 focus:ring-[#8D153A]/20 transition-all" />
             </div>
-          </div>
-        </div>
 
-        {/* Right Column (Profile Sidebar) */}
-        <div className="space-y-8 animate-slide-up delay-200">
-          <div className="premium-glass p-8 relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-r from-indigo-100 to-emerald-50"></div>
-            <div className="relative z-10 flex flex-col items-center mt-6">
-              <div className="w-24 h-24 rounded-full border-4 border-white shadow-lg bg-indigo-600 flex items-center justify-center text-3xl font-bold text-white mb-4">
-                {loading ? <span className="animate-pulse">...</span> : (profile?.firstName?.[0] || 'A')}
-              </div>
-              
-              {loading ? (
-                 <div className="w-full flex flex-col items-center space-y-3">
-                   <div className="h-6 bg-slate-200 rounded-lg w-1/2 animate-pulse"></div>
-                   <div className="h-4 bg-slate-200 rounded-lg w-1/3 animate-pulse"></div>
-                 </div>
-              ) : (
-                <>
-                  <h3 className="text-2xl font-bold text-slate-900">{profile?.firstName || 'Not Set'} {profile?.lastName}</h3>
-                  <p className="text-slate-500 mb-6 text-sm bg-slate-100 px-3 py-1 rounded-full mt-2">Verified Patient</p>
-                  
-                  <div className="w-full space-y-4">
-                    <div className="flex justify-between py-3 border-b border-slate-100">
-                      <span className="text-slate-500 text-sm font-medium">Blood Group</span>
-                      <span className="text-slate-800 font-bold">{profile?.bloodGroup || 'Not Set'}</span>
-                    </div>
-                    <div className="flex justify-between py-3 border-b border-slate-100">
-                      <span className="text-slate-500 text-sm font-medium">Weight</span>
-                      <span className="text-slate-800 font-bold">72 kg</span>
-                    </div>
-                    <div className="flex flex-col py-3">
-                      <span className="text-slate-500 text-sm font-medium mb-1">Medical History</span>
-                      <p className="text-slate-800 text-sm bg-slate-50 p-3 rounded-lg border border-slate-100">{profile?.medicalHistory || 'No remarks.'}</p>
-                    </div>
+            <div className="flex items-center gap-6">
+               <button className="relative w-12 h-12 rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-slate-500 hover:text-[#8D153A] transition-colors">
+                  <Bell size={22} />
+                  <span className="absolute top-3 right-3 w-2 h-2 bg-[#FFBE29] rounded-full border-2 border-white" />
+               </button>
+               <div className="flex items-center gap-4 pl-6 border-l border-slate-200">
+                  <div className="text-right hidden sm:block">
+                     <p className="text-sm font-black text-slate-950">{(user as any)?.name || 'Patient User'}</p>
+                     <p className="text-[10px] font-bold text-[#8D153A] uppercase tracking-widest">Premium Member</p>
                   </div>
-                </>
-              )}
+                  <div className="w-12 h-12 rounded-2xl bg-[#8D153A] flex items-center justify-center text-white font-black text-xl shadow-lg shadow-[#8D153A]/20">
+                     P
+                  </div>
+               </div>
             </div>
-          </div>
-          
-          <div className="premium-glass p-8 bg-gradient-to-br from-indigo-50/50 to-white">
-            <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2"><Activity size={18} className="text-indigo-600"/> Health Goal</h3>
-            <div className="w-full bg-slate-200 rounded-full h-3 mb-2 overflow-hidden shadow-inner">
-              <div className="bg-gradient-to-r from-emerald-400 to-teal-500 h-3 rounded-full" style={{ width: '75%' }}></div>
-            </div>
-            <p className="text-sm text-slate-600">You're 75% towards your weekly step goal. Keep it up!</p>
-          </div>
-        </div>
+         </header>
 
-      </div>
+         {/* Content Area */}
+         <div className="p-8 lg:p-12 max-w-[1600px] mx-auto w-full">
+            
+            {/* Greeting */}
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
+               <div>
+                  <h1 className="text-4xl md:text-5xl font-black text-slate-950 tracking-tighter mb-3 leading-tight">Ayubowan, <span className="text-[#8D153A]">Patient</span></h1>
+                  <p className="text-lg text-slate-500 font-bold">Your health network is operational and secure.</p>
+               </div>
+               <Link to="/ai-checker" className="btn-luminous h-16 !px-8 text-sm">
+                  <Heart size={20} className="text-[#FFBE29]" /> Speak with AI
+               </Link>
+            </div>
+
+            {/* Quick Stats Bento */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+               {[
+                 { label: 'Upcoming Appt', value: 'Today at 4:00 PM', icon: Clock, color: 'text-[#8D153A]', bg: 'bg-[#8D153A]/5', trend: 'Dr. Perera' },
+                 { label: 'Recent Reports', value: '2 New Files', icon: FileText, color: 'text-emerald-600', bg: 'bg-emerald-50', trend: '+14% this month' },
+                 { label: 'Prescriptions', value: '3 Active', icon: Pill, color: 'text-[#E5AB22]', bg: 'bg-[#FFBE29]/10', trend: '1 Refill due' },
+                 { label: 'Platform Status', value: 'Online', icon: ShieldCheck, color: 'text-[#8D153A]', bg: 'bg-[#8D153A]/5', trend: '256-bit Encrypted' }
+               ].map((stat, i) => (
+                 <div key={i} className="clinical-card p-8">
+                    <div className={`w-14 h-14 rounded-2xl ${stat.bg} flex items-center justify-center ${stat.color} mb-6`}>
+                       <stat.icon size={28} />
+                    </div>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">{stat.label}</p>
+                    <p className="text-2xl font-black text-slate-950 mb-4">{stat.value}</p>
+                    <div className="flex items-center justify-between text-xs font-bold text-slate-500">
+                       <span>{stat.trend}</span>
+                       <ChevronRight size={16} />
+                    </div>
+                 </div>
+               ))}
+            </div>
+
+            {/* Vital Signs / Charts Area */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+               
+               {/* Health Monitor Card */}
+               <div className="lg:col-span-2 clinical-card p-10 relative overflow-hidden bg-slate-900 text-white group">
+                  <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[#8D153A]/20 rounded-full blur-[100px] -mr-48 -mt-48 group-hover:bg-[#8D153A]/30 transition-all duration-1000" />
+                  
+                  <div className="relative z-10">
+                     <div className="flex justify-between items-center mb-10">
+                        <div>
+                           <h3 className="text-3xl font-black tracking-tighter">Live Vital Scan</h3>
+                           <p className="text-slate-400 font-bold">Synced from Wearable Network</p>
+                        </div>
+                        <Activity size={32} className="text-[#FFBE29] animate-pulse" />
+                     </div>
+
+                     <div className="flex flex-wrap gap-12">
+                        <div className="space-y-2">
+                           <p className="text-[10px] font-black uppercase tracking-widest text-[#FFBE29]">Heart Rate</p>
+                           <p className="text-5xl font-black">72 <span className="text-lg text-slate-400">BPM</span></p>
+                        </div>
+                        <div className="w-px h-16 bg-white/10" />
+                        <div className="space-y-2">
+                           <p className="text-[10px] font-black uppercase tracking-widest text-[#FFBE29]">Blood Oxygen</p>
+                           <p className="text-5xl font-black">98 <span className="text-lg text-slate-400">%</span></p>
+                        </div>
+                        <div className="w-px h-16 bg-white/10" />
+                        <div className="space-y-2">
+                           <p className="text-[10px] font-black uppercase tracking-widest text-[#FFBE29]">Blood Pressure</p>
+                           <p className="text-5xl font-black">120/80</p>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+
+               {/* Quick Action Hub */}
+               <div className="clinical-card p-10 flex flex-col justify-between">
+                  <div>
+                     <h3 className="text-2xl font-black tracking-tighter mb-8">Access Points</h3>
+                     <div className="space-y-4">
+                        <button className="w-full h-16 px-6 rounded-2xl bg-slate-100 flex items-center justify-between group hover:bg-[#8D153A] hover:text-white transition-all">
+                           <div className="flex items-center gap-4">
+                              <Smartphone size={20} /> <span className="font-bold">Connect Device</span>
+                           </div>
+                           <ArrowUpRight size={18} className="opacity-40 group-hover:opacity-100" />
+                        </button>
+                        <button className="w-full h-16 px-6 rounded-2xl bg-slate-100 flex items-center justify-between group hover:bg-[#8D153A] hover:text-white transition-all">
+                           <div className="flex items-center gap-4">
+                              <MessageSquare size={20} /> <span className="font-bold">Consult Specialist</span>
+                           </div>
+                           <ArrowUpRight size={18} className="opacity-40 group-hover:opacity-100" />
+                        </button>
+                     </div>
+                  </div>
+                  <div className="mt-8 p-6 bg-emerald-50 rounded-3xl border border-emerald-100 flex items-center gap-4">
+                     <div className="w-12 h-12 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-600">
+                        <ShieldCheck size={28} />
+                     </div>
+                     <div>
+                        <p className="text-sm font-black text-emerald-800 leading-tight">Azure Secure Node</p>
+                        <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">Verified 256-bit</p>
+                     </div>
+                  </div>
+               </div>
+
+            </div>
+
+         </div>
+      </main>
     </div>
   );
 }
