@@ -23,6 +23,12 @@ import LabResultsManagement from './pages/LabResultsManagement';
 import NotificationCenter from './pages/NotificationCenter';
 import AccessibilitySettings from './pages/AccessibilitySettings';
 import Navbar from './components/Navbar';
+import PatientOverviewPage from './pages/doctor/PatientOverviewPage';
+import AppointmentsPage from './pages/doctor/AppointmentsPage';
+import DailySchedulePage from './pages/doctor/DailySchedulePage';
+import MedicalReportsPage from './pages/doctor/MedicalReportsPage';
+import ConsultationsPage from './pages/doctor/ConsultationsPage';
+import AnalyticsPage from './pages/doctor/AnalyticsPage';
 
 function AppRoutes() {
   const role = useAuthStore(state => state.role);
@@ -32,14 +38,19 @@ function AppRoutes() {
       <Navbar />
       <main className="container mx-auto px-4 py-8">
         <Routes>
-          <Route path="/" element={<Landing />} />
+          <Route path="/" element={<DoctorDashboard />} />
           <Route path="/login" element={!role ? <Login /> : <Navigate to={`/${role.toLowerCase()}`} />} />
           <Route path="/register" element={!role ? <Register /> : <Navigate to={`/${role.toLowerCase()}`} />} />
           
           {/* Protected Routes */}
           <Route path="/patient" element={role === 'PATIENT' ? <PatientDashboard /> : <Navigate to="/login" />} />
           <Route path="/patient-onboarding" element={role === 'PATIENT' ? <PatientOnboarding /> : <Navigate to="/login" />} />
-          <Route path="/doctor" element={role === 'DOCTOR' ? <DoctorDashboard /> : <Navigate to="/login" />} />
+          <Route path="/doctor" element={<PatientOverviewPage />} />
+          <Route path="/doctor/appointments" element={<AppointmentsPage />} />
+          <Route path="/doctor/schedule" element={<DailySchedulePage />} />
+          <Route path="/doctor/reports" element={<MedicalReportsPage />} />
+          <Route path="/doctor/chats" element={<ConsultationsPage />} />
+          <Route path="/doctor/analytics" element={<AnalyticsPage />} />
           <Route path="/admin" element={role === 'ADMIN' ? <AdminDashboard /> : <Navigate to="/login" />} />
           <Route path="/booking" element={role === 'PATIENT' ? <BookingFlow /> : <Navigate to="/login" />} />
           

@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/api.ts","./src/main.tsx","./src/vite-env.d.ts","./src/components/agoravideoroom.tsx","./src/components/doctorprofile.tsx","./src/components/doctorsearch.tsx","./src/components/doctorstats.tsx","./src/components/publicdoctorprofile.tsx"],"version":"5.9.3"}

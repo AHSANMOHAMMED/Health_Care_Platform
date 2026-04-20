@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { 
-  Users, Activity, ShieldCircle, Settings, 
+  Users, Activity, Shield, Settings, 
   Database, Bell, LogOut, Search,
   ArrowUpRight, Server, Zap, Globe,
   Cpu, FileText, CheckCircle2, AlertCircle,
@@ -105,7 +105,7 @@ export default function AdminDashboard() {
                <div className="flex gap-4">
                   <button className="h-16 px-8 rounded-full bg-white border-2 border-slate-200 text-slate-950 font-black text-sm hover:border-[#8D153A] transition-all">Audit Logs</button>
                   <button className="h-16 px-8 rounded-full bg-[#8D153A] text-white font-black text-sm hover:opacity-90 transition-all shadow-xl shadow-[#8D153A]/20 flex items-center gap-2">
-                     <ShieldCircle size={20} /> Security Scan
+                     <Shield size={20} /> Security Scan
                   </button>
                </div>
             </div>
