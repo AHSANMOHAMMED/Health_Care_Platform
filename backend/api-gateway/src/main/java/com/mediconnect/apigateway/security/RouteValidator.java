@@ -11,8 +11,8 @@ public class RouteValidator {
 
     // Endpoints that do not require Authentication
     public static final List<String> openApiEndpoints = List.of(
-            "/api/auth/register",
-            "/api/auth/login",
+            "/auth/register",
+            "/auth/login",
             "/eureka"
     );
 
