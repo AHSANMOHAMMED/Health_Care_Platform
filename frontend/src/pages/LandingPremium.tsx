@@ -1,12 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
 import {
-  Heart, Calendar, Shield, Video, ArrowRight, Stethoscope,
-  Activity, Zap, Globe, Award, CheckCircle2, Play,
-  Smartphone, Sparkles, Search, Pill, CreditCard, Bell,
-  Microscope, Users, FileText, PhoneCall, MapPin, Anchor,
-  ChevronLeft, ChevronRight, Star, Clock, ShieldCheck
+  ArrowRight,
+  Zap,
+  Sparkles,
+  Play,
+  Anchor,
+  ChevronLeft,
+  ChevronRight,
+  ShieldCheck,
+  Video,
+  Microscope,
+  PhoneCall
 } from 'lucide-react';
 
 import logo from '../assets/logo.png';
@@ -71,6 +77,12 @@ export default function LandingPremium() {
            </Link>
 
            <div className="flex items-center gap-6">
+              <div className="hidden lg:flex items-center gap-8 mr-6">
+                 <Link to="/" className="text-sm font-black uppercase text-slate-800 hover:text-[#8D153A] transition-colors relative group">Home<span className="absolute -bottom-1 left-0 w-full h-[2px] bg-[#8D153A] scale-x-100 transition-transform"></span></Link>
+                 <Link to="/booking" className="text-sm font-black uppercase text-slate-500 hover:text-[#8D153A] transition-colors relative group">Specialists<span className="absolute -bottom-1 left-0 w-full h-[2px] bg-[#8D153A] scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span></Link>
+                 <Link to="/ai-checker" className="text-sm font-black uppercase text-slate-500 hover:text-[#8D153A] transition-colors relative group">AI Diagnosis<span className="absolute -bottom-1 left-0 w-full h-[2px] bg-[#8D153A] scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span></Link>
+                 <Link to="/emergency" className="text-sm font-black uppercase text-slate-500 hover:text-[#8D153A] transition-colors relative group">Emergency<span className="absolute -bottom-1 left-0 w-full h-[2px] bg-[#8D153A] scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span></Link>
+              </div>
               <Link to="/login" className="text-slate-600 font-bold hover:text-[#8D153A] transition-colors px-4 py-2">Sign In</Link>
               <Link to="/register" className="btn-luminous h-12 !py-0 !px-8 text-sm">Join The Network</Link>
            </div>
@@ -92,18 +104,18 @@ export default function LandingPremium() {
                   <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-[#FFBE29] text-slate-900 font-black text-[10px] uppercase tracking-[0.2em] mb-8 animate-slide-up shadow-xl shadow-[#FFBE29]/20">
                     <Sparkles size={14} /> {slide.badge}
                   </div>
-                  <h1 className="text-5xl md:text-8xl font-black text-white mb-8 tracking-tighter leading-[0.9] animate-slide-up delay-100">
+                  <h1 className="text-5xl md:text-[5rem] lg:text-[6rem] font-black text-white mb-6 tracking-tight leading-[0.95] animate-slide-up delay-100 drop-shadow-2xl">
                     {slide.title.split(' ').map((word, i) => (
                       <span key={i} className={i === slide.title.split(' ').length - 1 ? 'text-[#FFBE29]' : ''}>{word} </span>
                     ))}
                   </h1>
-                  <p className="text-xl md:text-3xl text-slate-200/80 mb-12 max-w-2xl font-medium leading-relaxed animate-slide-up delay-200">
+                  <p className="text-xl md:text-2xl text-slate-200/90 mb-12 max-w-2xl font-medium leading-relaxed animate-slide-up delay-200">
                     {slide.subtitle}
                   </p>
                   <div className="flex flex-wrap gap-6 animate-slide-up delay-300">
-                     <Link to="/register" className="btn-luminous h-20 !px-12 text-xl">Get Started Now <ArrowRight size={24} /></Link>
-                     <button className="h-20 px-10 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 text-white font-bold text-xl hover:bg-white/20 transition-all flex items-center gap-4">
-                        <Play fill="white" size={24} /> Virtual Tour
+                     <Link to="/register" className="btn-luminous h-16 !px-10 text-lg">Get Started Now <ArrowRight size={20} /></Link>
+                     <button className="h-16 px-8 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 text-white font-bold text-lg hover:bg-white/20 transition-all flex items-center gap-3">
+                        <Play fill="white" size={20} /> Virtual Tour
                      </button>
                   </div>
                </div>
@@ -204,7 +216,7 @@ export default function LandingPremium() {
             
             <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-12">
                <div className="text-center lg:text-left max-w-2xl">
-                  <h2 className="text-5xl md:text-[6rem] font-black text-white leading-[0.85] mb-8 tracking-tighter">Your Health ID<br/> Awaits.</h2>
+                  <h2 className="text-5xl md:text-[4.5rem] font-black text-white leading-[0.85] mb-8 tracking-tighter">Your Health ID<br/> Awaits.</h2>
                   <p className="text-2xl text-white/70 font-medium leading-relaxed">Join the most advanced healthcare network in South Asia. Secure, fast, and culturally brilliant.</p>
                </div>
                <Link to="/register" className="h-28 px-16 bg-white text-[#8D153A] text-4xl rounded-full font-black shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-6">
