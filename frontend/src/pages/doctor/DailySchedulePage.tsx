@@ -21,8 +21,28 @@ interface ScheduleItem {
 export default function DailySchedulePage() {
   const location = useLocation();
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [viewMode, setViewMode] = useState<'day' | 'week' | 'month'>('day');
+  const [viewMode, setViewMode] = useState<'timeline' | 'calendar' | 'list' | 'agenda'>('timeline');
   const [searchQuery, setSearchQuery] = useState('');
+  
+  // Enhanced navigation states
+  const [showQuickAddModal, setShowQuickAddModal] = useState(false);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<string | null>(null);
+  const [draggedItem, setDraggedItem] = useState<ScheduleItem | null>(null);
+  const [showScheduleDetails, setShowScheduleDetails] = useState(false);
+  const [selectedScheduleItem, setSelectedScheduleItem] = useState<ScheduleItem | null>(null);
+  const [filterType, setFilterType] = useState('all');
+  const [filterStatus, setFilterStatus] = useState('all');
+  
+  // Quick appointment form
+  const [quickScheduleForm, setQuickScheduleForm] = useState({
+    patientName: '',
+    time: '',
+    duration: '30 mins',
+    type: 'Video Consult',
+    location: 'Online',
+    priority: 'medium',
+    notes: ''
+  });
 
   const scheduleItems: ScheduleItem[] = [
     {
@@ -160,9 +180,116 @@ export default function DailySchedulePage() {
     });
   };
 
-  const filteredSchedule = scheduleItems.filter(item =>
-    item.patientName.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredSchedule = scheduleItems.filter(item => {
+    const matchesSearch = item.patientName.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesType = filterType === 'all' || item.type.toLowerCase().includes(filterType.toLowerCase());
+    const matchesStatus = filterStatus === 'all' || item.status === filterStatus;
+    return matchesSearch && matchesType && matchesStatus;
+  });
+
+  // Innovative navigation handlers
+  const handleTimeSlotClick = (time: string) => {
+    setSelectedTimeSlot(time);
+    setQuickScheduleForm({
+      ...quickScheduleForm,
+      time: time
+    });
+    setShowQuickAddModal(true);
+  };
+
+  const handleScheduleItemClick = (item: ScheduleItem) => {
+    setSelectedScheduleItem(item);
+    setShowScheduleDetails(true);
+  };
+
+  const handleDragStart = (item: ScheduleItem) => {
+    setDraggedItem(item);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (e: React.DragEvent, newTime: string) => {
+    e.preventDefault();
+    if (draggedItem) {
+      console.log(`Moving schedule item ${draggedItem.id} to ${newTime}`);
+      // Here you would update the appointment time
+      setDraggedItem(null);
+    }
+  };
+
+  const handleQuickSaveSchedule = () => {
+    if (!quickScheduleForm.patientName || !quickScheduleForm.time) {
+      alert('Please fill in all required fields');
+      return;
+    }
+    
+    console.log('Quick schedule:', quickScheduleForm);
+    alert('Schedule item created successfully!');
+    setShowQuickAddModal(false);
+    setQuickScheduleForm({
+      patientName: '',
+      time: '',
+      duration: '30 mins',
+      type: 'Video Consult',
+      location: 'Online',
+      priority: 'medium',
+      notes: ''
+    });
+  };
+
+  const getTimeSlots = () => {
+    const slots = [];
+    for (let hour = 8; hour <= 18; hour++) {
+      for (let minute = 0; minute < 60; minute += 30) {
+        const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        const displayTime = hour === 12 ? `12:${minute.toString().padStart(2, '0')} ${ampm}` : 
+                           hour > 12 ? `${hour-12}:${minute.toString().padStart(2, '0')} ${ampm}` : 
+                           `${hour}:${minute.toString().padStart(2, '0')} ${ampm}`;
+        slots.push({ time, displayTime });
+      }
+    }
+    return slots;
+  };
+
+  const getScheduleForTimeSlot = (time: string) => {
+    return filteredSchedule.filter(item => item.time === time);
+  };
+
+  const getWeekDates = () => {
+    const dates = [];
+    const startOfWeek = new Date(currentDate);
+    const day = startOfWeek.getDay();
+    const diff = startOfWeek.getDate() - day;
+    startOfWeek.setDate(diff);
+    
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(startOfWeek);
+      date.setDate(startOfWeek.getDate() + i);
+      dates.push(date);
+    }
+    return dates;
+  };
+
+  const getMonthDates = () => {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const startingDayOfWeek = firstDay.getDay();
+    
+    const days = [];
+    for (let i = 0; i < startingDayOfWeek; i++) {
+      days.push(null);
+    }
+    for (let i = 1; i <= daysInMonth; i++) {
+      days.push(new Date(year, month, i));
+    }
+    return days;
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 flex overflow-hidden">
@@ -204,74 +331,128 @@ export default function DailySchedulePage() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto">
-        <div className="p-8">
-          {/* Header */}
+      <main className="flex-1 overflow-hidden flex flex-col">
+        <div className="flex-1 overflow-y-auto p-8">
+          {/* Innovative Navigation Header */}
           <div className="mb-8">
-            <h1 className="text-4xl font-black text-slate-950 mb-2">Daily Schedule</h1>
-            <p className="text-lg text-slate-600 font-bold">Manage your daily appointments and consultations</p>
-          </div>
-
-          {/* Date Navigation */}
-          <div className="bg-white p-6 rounded-2xl border border-slate-100 mb-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-4">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h1 className="text-4xl font-black text-slate-950 mb-2">Daily Schedule</h1>
+                <p className="text-lg text-slate-600 font-bold">Manage your daily appointments and consultations</p>
+              </div>
+              <div className="flex items-center gap-3">
                 <button
-                  onClick={() => navigateDate('prev')}
-                  className="p-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all"
+                  onClick={() => setShowQuickAddModal(true)}
+                  className="px-6 py-3 bg-gradient-to-r from-[#8D153A] to-[#E5AB22] text-white rounded-2xl font-black hover:shadow-lg transition-all flex items-center gap-2"
                 >
-                  <ChevronLeft size={20} />
-                </button>
-                <div className="text-center">
-                  <h2 className="text-xl font-black text-slate-950">{formatDate(currentDate)}</h2>
-                  <p className="text-sm text-slate-500">Today's Schedule</p>
-                </div>
-                <button
-                  onClick={() => navigateDate('next')}
-                  className="p-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all"
-                >
-                  <ChevronRight size={20} />
+                  <PlusCircle size={20} />
+                  Quick Schedule
                 </button>
               </div>
-              
-              <div className="flex items-center gap-2">
-                {['day', 'week', 'month'].map((mode) => (
+            </div>
+
+            {/* View Mode Navigation */}
+            <div className="bg-white p-2 rounded-2xl border border-slate-100 inline-flex mb-6">
+              {[
+                { mode: 'timeline', icon: Clock, label: 'Timeline' },
+                { mode: 'calendar', icon: Calendar, label: 'Calendar' },
+                { mode: 'list', icon: Users, label: 'List' },
+                { mode: 'agenda', icon: Activity, label: 'Agenda' }
+              ].map(({ mode, icon: Icon, label }) => (
+                <button
+                  key={mode}
+                  onClick={() => setViewMode(mode as any)}
+                  className={`px-6 py-3 rounded-xl font-black transition-all flex items-center gap-2 ${
+                    viewMode === mode
+                      ? 'bg-[#8D153A] text-white shadow-lg'
+                      : 'text-slate-600 hover:bg-slate-100'
+                  }`}
+                >
+                  <Icon size={18} />
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            {/* Enhanced Date Navigation */}
+            <div className="bg-white p-4 rounded-2xl border border-slate-100 mb-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
                   <button
-                    key={mode}
-                    onClick={() => setViewMode(mode as any)}
-                    className={`px-4 py-2 rounded-xl font-black text-sm capitalize transition-all ${
-                      viewMode === mode
-                        ? 'bg-[#8D153A] text-white'
-                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                    }`}
+                    onClick={() => navigateDate('prev')}
+                    className="p-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all"
                   >
-                    {mode}
+                    <ChevronLeft size={20} />
                   </button>
-                ))}
+                  <div className="text-center">
+                    <h2 className="text-xl font-black text-slate-950">{formatDate(currentDate)}</h2>
+                    <p className="text-sm text-slate-500">{filteredSchedule.length} appointments</p>
+                  </div>
+                  <button
+                    onClick={() => navigateDate('next')}
+                    className="p-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all"
+                  >
+                    <ChevronRight size={20} />
+                  </button>
+                </div>
+                
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setCurrentDate(new Date())}
+                    className="px-4 py-2 bg-slate-100 text-slate-600 rounded-xl font-black hover:bg-slate-200 transition-all"
+                  >
+                    Today
+                  </button>
+                  <button
+                    onClick={() => {
+                      const tomorrow = new Date();
+                      tomorrow.setDate(tomorrow.getDate() + 1);
+                      setCurrentDate(tomorrow);
+                    }}
+                    className="px-4 py-2 bg-slate-100 text-slate-600 rounded-xl font-black hover:bg-slate-200 transition-all"
+                  >
+                    Tomorrow
+                  </button>
+                  <button
+                    onClick={() => {
+                      const nextWeek = new Date();
+                      nextWeek.setDate(nextWeek.getDate() + 7);
+                      setCurrentDate(nextWeek);
+                    }}
+                    className="px-4 py-2 bg-slate-100 text-slate-600 rounded-xl font-black hover:bg-slate-200 transition-all"
+                  >
+                    Next Week
+                  </button>
+                </div>
               </div>
-            </div>
-
-            <div className="flex gap-4">
-              <div className="flex-1 relative">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} />
-                <input
-                  type="text"
-                  placeholder="Search patients..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
-                />
-              </div>
-              <button className="px-6 py-3 bg-[#8D153A] text-white rounded-xl font-black hover:bg-[#8D153A]/80 transition-all flex items-center gap-2">
-                <PlusCircle size={20} />
-                Add Appointment
-              </button>
             </div>
           </div>
+
+            {/* Search and Filter */}
+            <div className="bg-white p-6 rounded-2xl border border-slate-100 mb-6">
+              <div className="flex gap-4">
+                <div className="flex-1 relative">
+                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} />
+                  <input
+                    type="text"
+                    placeholder="Search patients..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
+                  />
+                </div>
+                <button className="px-6 py-3 bg-[#8D153A] text-white rounded-xl font-black hover:bg-[#8D153A]/80 transition-all flex items-center gap-2">
+                  <PlusCircle size={20} />
+                  Add Appointment
+                </button>
+              </div>
+            </div>
 
           {/* Schedule Timeline */}
-          <div className="space-y-4">
-            {filteredSchedule.map((item) => {
+          <div className="bg-white rounded-2xl border border-slate-100 p-6">
+            <h3 className="text-xl font-black text-slate-950 mb-6">Today's Schedule</h3>
+            <div className="max-h-[400px] overflow-y-auto space-y-4 pr-2">
+              {filteredSchedule.map((item) => {
               const TypeIcon = getTypeIcon(item.type);
               return (
                 <div key={item.id} className="bg-white p-6 rounded-2xl border border-slate-100 hover:border-[#FFBE29]/40 hover:shadow-lg transition-all">
@@ -350,6 +531,7 @@ export default function DailySchedulePage() {
                 </div>
               );
             })}
+            </div>
           </div>
 
           {/* Summary Stats */}

@@ -18,6 +18,8 @@ interface Consultation {
   reason: string;
   rating?: number;
   notes?: string;
+  price: number; // LKR pricing
+  paymentStatus: 'pending' | 'paid' | 'refunded';
 }
 
 interface Message {
@@ -34,7 +36,31 @@ export default function ConsultationsPage() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedConsultation, setSelectedConsultation] = useState<Consultation | null>(null);
   const [message, setMessage] = useState('');
-  const [activeTab, setActiveTab] = useState<'consultations' | 'messages'>('consultations');
+  const [activeTab, setActiveTab] = useState<'consultations' | 'messages' | 'history' | 'schedule'>('consultations');
+  
+  // Enhanced consultation navigation states
+  const [viewMode, setViewMode] = useState<'cards' | 'timeline' | 'calendar' | 'list'>('cards');
+  const [showVideoCall, setShowVideoCall] = useState(false);
+  const [showChatWindow, setShowChatWindow] = useState(false);
+  const [selectedPatient, setSelectedPatient] = useState<string | null>(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const [showPatientInfo, setShowPatientInfo] = useState(false);
+  const [consultationNotes, setConsultationNotes] = useState('');
+  const [prescriptionMode, setPrescriptionMode] = useState(false);
+  const [emergenciesOnly, setEmergenciesOnly] = useState(false);
+  const [showScheduleModal, setShowScheduleModal] = useState(false);
+  
+  // Schedule consultation form state
+  const [scheduleForm, setScheduleForm] = useState({
+    patientName: '',
+    type: 'video' as 'video' | 'phone' | 'in-person',
+    date: '',
+    time: '',
+    duration: '30 mins',
+    reason: '',
+    price: 0,
+    notes: ''
+  });
 
   const consultations: Consultation[] = [
     {
@@ -47,7 +73,9 @@ export default function ConsultationsPage() {
       duration: '30 mins',
       reason: 'Follow-up consultation',
       rating: 5,
-      notes: 'Patient responding well to treatment'
+      notes: 'Patient responding well to treatment',
+      price: 2500,
+      paymentStatus: 'paid'
     },
     {
       id: 2,
@@ -118,8 +146,99 @@ export default function ConsultationsPage() {
   const filteredConsultations = consultations.filter(consultation => {
     const matchesSearch = consultation.patientName.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === 'all' || consultation.status === statusFilter;
-    return matchesSearch && matchesStatus;
+    const matchesEmergency = !emergenciesOnly || consultation.type === 'video';
+    return matchesSearch && matchesStatus && matchesEmergency;
   });
+
+  // Innovative consultation handlers
+  const handleStartVideoCall = (consultation: Consultation) => {
+    setSelectedConsultation(consultation);
+    setShowVideoCall(true);
+  };
+
+  const handleOpenChat = (patientName: string) => {
+    setSelectedPatient(patientName);
+    setShowChatWindow(true);
+  };
+
+  const handleSendMessage = () => {
+    if (message.trim()) {
+      console.log('Sending message:', message);
+      setMessage('');
+    }
+  };
+
+  const handleStartRecording = () => {
+    setIsRecording(!isRecording);
+  };
+
+  const handleSaveConsultationNotes = () => {
+    console.log('Saving consultation notes:', consultationNotes);
+    alert('Consultation notes saved successfully!');
+  };
+
+  const handleScheduleConsultation = () => {
+    setShowScheduleModal(true);
+    setScheduleForm({
+      ...scheduleForm,
+      date: new Date().toISOString().split('T')[0]
+    });
+  };
+
+  const handleSaveSchedule = () => {
+    if (!scheduleForm.patientName || !scheduleForm.date || !scheduleForm.time) {
+      alert('Please fill in all required fields');
+      return;
+    }
+    
+    if (scheduleForm.price <= 0) {
+      alert('Please set a valid consultation price in LKR');
+      return;
+    }
+    
+    console.log('Scheduling consultation:', scheduleForm);
+    alert(`Consultation scheduled successfully! Price: LKR ${scheduleForm.price}`);
+    setShowScheduleModal(false);
+    setScheduleForm({
+      patientName: '',
+      type: 'video',
+      date: '',
+      time: '',
+      duration: '30 mins',
+      reason: '',
+      price: 0,
+      notes: ''
+    });
+  };
+
+  const handlePriceChange = (type: string) => {
+    const prices = {
+      'video': 2500,
+      'phone': 2000,
+      'in-person': 3500
+    };
+    setScheduleForm({
+      ...scheduleForm,
+      type: type as any,
+      price: prices[type as keyof typeof prices] || 0
+    });
+  };
+
+  const handleViewHistory = () => {
+    setActiveTab('history');
+  };
+
+  const handleEmergencyFilter = () => {
+    setEmergenciesOnly(!emergenciesOnly);
+  };
+
+  const getActiveConsultations = () => {
+    return consultations.filter(c => c.status === 'in-progress');
+  };
+
+  const getUrgentConsultations = () => {
+    return consultations.filter(c => c.type === 'video' && c.status === 'scheduled');
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -128,6 +247,15 @@ export default function ConsultationsPage() {
       case 'scheduled': return 'bg-yellow-100 text-yellow-700';
       case 'cancelled': return 'bg-red-100 text-red-700';
       default: return 'bg-slate-100 text-slate-700';
+    }
+  };
+
+  const getPaymentStatusColor = (status: string) => {
+    switch (status) {
+      case 'paid': return 'bg-emerald-100 text-emerald-700 border-emerald-200';
+      case 'pending': return 'bg-amber-100 text-amber-700 border-amber-200';
+      case 'refunded': return 'bg-slate-100 text-slate-700 border-slate-200';
+      default: return 'bg-slate-100 text-slate-700 border-slate-200';
     }
   };
 
@@ -288,7 +416,10 @@ export default function ConsultationsPage() {
                       <option value="completed">Completed</option>
                       <option value="cancelled">Cancelled</option>
                     </select>
-                    <button className="px-6 py-3 bg-[#8D153A] text-white rounded-xl font-black hover:bg-[#8D153A]/80 transition-all flex items-center gap-2">
+                    <button 
+                      onClick={handleScheduleConsultation}
+                      className="px-6 py-3 bg-[#8D153A] text-white rounded-xl font-black hover:bg-[#8D153A]/80 transition-all flex items-center gap-2"
+                    >
                       <PlusCircle size={20} />
                       Schedule Consultation
                     </button>
@@ -453,6 +584,144 @@ export default function ConsultationsPage() {
                     />
                     <button className="px-6 py-3 bg-[#8D153A] text-white rounded-xl font-black hover:bg-[#8D153A]/80 transition-all flex items-center gap-2">
                       <Send size={20} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Schedule Consultation Modal */}
+          {showScheduleModal && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+              <div className="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] flex flex-col">
+                <div className="p-6 border-b border-slate-100">
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-2xl font-black text-slate-950">Schedule Consultation</h3>
+                    <button 
+                      onClick={() => setShowScheduleModal(false)}
+                      className="p-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all"
+                    >
+                      <AlertCircle size={20} />
+                    </button>
+                  </div>
+                </div>
+                
+                <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                  <div>
+                    <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Patient Name *</label>
+                    <input
+                      type="text"
+                      value={scheduleForm.patientName}
+                      onChange={(e) => setScheduleForm({...scheduleForm, patientName: e.target.value})}
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
+                      placeholder="Enter patient name"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Consultation Type *</label>
+                    <select
+                      value={scheduleForm.type}
+                      onChange={(e) => handlePriceChange(e.target.value)}
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
+                    >
+                      <option value="video">Video Consultation - LKR 2,500</option>
+                      <option value="phone">Phone Consultation - LKR 2,000</option>
+                      <option value="in-person">In-Person Consultation - LKR 3,500</option>
+                    </select>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Date *</label>
+                      <input
+                        type="date"
+                        value={scheduleForm.date}
+                        onChange={(e) => setScheduleForm({...scheduleForm, date: e.target.value})}
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Time *</label>
+                      <input
+                        type="time"
+                        value={scheduleForm.time}
+                        onChange={(e) => setScheduleForm({...scheduleForm, time: e.target.value})}
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Duration</label>
+                      <select
+                        value={scheduleForm.duration}
+                        onChange={(e) => setScheduleForm({...scheduleForm, duration: e.target.value})}
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
+                      >
+                        <option value="15 mins">15 mins</option>
+                        <option value="30 mins">30 mins</option>
+                        <option value="45 mins">45 mins</option>
+                        <option value="60 mins">60 mins</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Price (LKR) *</label>
+                      <input
+                        type="number"
+                        value={scheduleForm.price}
+                        onChange={(e) => setScheduleForm({...scheduleForm, price: parseInt(e.target.value) || 0})}
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
+                        placeholder="Enter price in LKR"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Reason for Consultation *</label>
+                    <input
+                      type="text"
+                      value={scheduleForm.reason}
+                      onChange={(e) => setScheduleForm({...scheduleForm, reason: e.target.value})}
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
+                      placeholder="Enter reason for consultation"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Additional Notes</label>
+                    <textarea
+                      value={scheduleForm.notes}
+                      onChange={(e) => setScheduleForm({...scheduleForm, notes: e.target.value})}
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
+                      rows={3}
+                      placeholder="Enter any additional notes"
+                    />
+                  </div>
+
+                  <div className="bg-gradient-to-r from-[#8D153A]/10 to-[#E5AB22]/10 p-4 rounded-2xl border border-[#8D153A]/20">
+                    <div className="flex items-center justify-between">
+                      <span className="font-black text-slate-950">Total Consultation Fee:</span>
+                      <span className="text-2xl font-black text-[#8D153A]">LKR {scheduleForm.price.toLocaleString()}</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="p-6 border-t border-slate-100">
+                  <div className="flex gap-3">
+                    <button
+                      onClick={handleSaveSchedule}
+                      className="flex-1 py-4 bg-gradient-to-r from-[#8D153A] to-[#E5AB22] text-white rounded-2xl font-black hover:shadow-lg transition-all"
+                    >
+                      Schedule Consultation
+                    </button>
+                    <button
+                      onClick={() => setShowScheduleModal(false)}
+                      className="flex-1 py-4 bg-slate-100 text-slate-600 rounded-2xl font-black hover:bg-slate-200 transition-all"
+                    >
+                      Cancel
                     </button>
                   </div>
                 </div>

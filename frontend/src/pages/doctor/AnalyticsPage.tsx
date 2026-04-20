@@ -11,12 +11,21 @@ export default function AnalyticsPage() {
   const location = useLocation();
   const [timeRange, setTimeRange] = useState<'week' | 'month' | 'quarter' | 'year'>('month');
   const [selectedMetric, setSelectedMetric] = useState('overview');
+  
+  // Enhanced analytics navigation states
+  const [chartType, setChartType] = useState<'bar' | 'line' | 'pie' | 'area'>('bar');
+  const [showDetailedView, setShowDetailedView] = useState(false);
+  const [selectedChart, setSelectedChart] = useState<string | null>(null);
+  const [realTimeData, setRealTimeData] = useState(true);
+  const [customDateRange, setCustomDateRange] = useState({ start: '', end: '' });
+  const [comparisonMode, setComparisonMode] = useState(false);
+  const [exportFormat, setExportFormat] = useState<'pdf' | 'excel' | 'csv'>('pdf');
 
   const stats = {
     overview: {
       totalPatients: 248,
       newPatients: 32,
-      totalRevenue: 45000,
+      totalRevenue: 1250000, // LKR 1,250,000
       averageRating: 4.8,
       totalConsultations: 156,
       completionRate: 94
@@ -30,10 +39,10 @@ export default function AnalyticsPage() {
   };
 
   const monthlyData = [
-    { month: 'Jan', patients: 45, revenue: 8000, consultations: 62 },
-    { month: 'Feb', patients: 52, revenue: 9500, consultations: 71 },
-    { month: 'Mar', patients: 48, revenue: 8700, consultations: 65 },
-    { month: 'Apr', patients: 61, revenue: 11200, consultations: 84 },
+    { month: 'Jan', patients: 45, revenue: 225000, consultations: 62 }, // LKR 225,000
+    { month: 'Feb', patients: 52, revenue: 267500, consultations: 71 }, // LKR 267,500
+    { month: 'Mar', patients: 48, revenue: 245000, consultations: 65 }, // LKR 245,000
+    { month: 'Apr', patients: 61, revenue: 315000, consultations: 84 }, // LKR 315,000
   ];
 
   const patientConditions = [
@@ -140,7 +149,7 @@ export default function AnalyticsPage() {
                 <DollarSign className="text-green-600" size={24} />
                 <span className="text-xs font-black text-emerald-600 uppercase">+18%</span>
               </div>
-              <p className="text-2xl font-black text-slate-950 mb-2">${stats.overview.totalRevenue.toLocaleString()}</p>
+              <p className="text-2xl font-black text-slate-950 mb-2">LKR {stats.overview.totalRevenue.toLocaleString()}</p>
               <p className="text-sm font-black text-slate-400 uppercase tracking-widest">Total Revenue</p>
             </div>
 
@@ -178,9 +187,9 @@ export default function AnalyticsPage() {
                     <div className="flex-1 bg-slate-100 rounded-full h-8 relative overflow-hidden">
                       <div 
                         className="absolute top-0 left-0 h-full bg-gradient-to-r from-[#8D153A] to-[#E5AB22] rounded-full flex items-center justify-end pr-3"
-                        style={{ width: `${(data.revenue / 12000) * 100}%` }}
+                        style={{ width: `${(data.revenue / 350000) * 100}%` }}
                       >
-                        <span className="text-xs font-black text-white">${data.revenue.toLocaleString()}</span>
+                        <span className="text-xs font-black text-white">LKR {(data.revenue / 1000).toFixed(0)}K</span>
                       </div>
                     </div>
                   </div>

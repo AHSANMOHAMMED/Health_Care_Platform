@@ -24,6 +24,23 @@ export default function MedicalReportsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
+  
+  // Enhanced navigation states
+  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'timeline' | 'critical'>('grid');
+  const [showReportPreview, setShowReportPreview] = useState(false);
+  const [selectedReport, setSelectedReport] = useState<MedicalReport | null>(null);
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [showCriticalAlerts, setShowCriticalAlerts] = useState(true);
+  const [dateRange, setDateRange] = useState<'today' | 'week' | 'month' | 'all'>('all');
+  
+  // Upload form state
+  const [uploadForm, setUploadForm] = useState({
+    patientName: '',
+    reportType: '',
+    category: 'lab',
+    description: '',
+    urgency: 'normal'
+  });
 
   const reports: MedicalReport[] = [
     {
@@ -101,6 +118,75 @@ export default function MedicalReportsPage() {
     const matchesStatus = statusFilter === 'all' || report.status === statusFilter;
     return matchesSearch && matchesCategory && matchesStatus;
   });
+
+  // Innovative navigation handlers
+  const handleReportClick = (report: MedicalReport) => {
+    setSelectedReport(report);
+    setShowReportPreview(true);
+  };
+
+  const handleDownloadReport = (report: MedicalReport) => {
+    console.log('Downloading report:', report.fileUrl);
+    alert(`Downloading ${report.reportType} for ${report.patientName}`);
+  };
+
+  const handleUploadReport = () => {
+    setShowUploadModal(true);
+  };
+
+  const handleSaveUpload = () => {
+    if (!uploadForm.patientName || !uploadForm.reportType) {
+      alert('Please fill in all required fields');
+      return;
+    }
+    
+    console.log('Uploading report:', uploadForm);
+    alert('Report uploaded successfully!');
+    setShowUploadModal(false);
+    setUploadForm({
+      patientName: '',
+      reportType: '',
+      category: 'lab',
+      description: '',
+      urgency: 'normal'
+    });
+  };
+
+  const getCriticalReports = () => {
+    return reports.filter(report => report.status === 'critical');
+  };
+
+  const getReportsByDateRange = () => {
+    const today = new Date();
+    const filtered = reports.filter(report => {
+      const reportDate = new Date(report.date);
+      switch (dateRange) {
+        case 'today':
+          return reportDate.toDateString() === today.toDateString();
+        case 'week':
+          const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+          return reportDate >= weekAgo;
+        case 'month':
+          const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+          return reportDate >= monthAgo;
+        default:
+          return true;
+      }
+    });
+    return filtered;
+  };
+
+  const getTimelineData = () => {
+    const timelineData = {};
+    reports.forEach(report => {
+      const date = report.date;
+      if (!timelineData[date]) {
+        timelineData[date] = [];
+      }
+      timelineData[date].push(report);
+    });
+    return timelineData;
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
