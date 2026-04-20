@@ -116,20 +116,26 @@ jobs:
 
       - name: Deploy Infrastructure
         run: |
-          kubectl apply -f k8s/infrastructure/platform-config.yaml
-          kubectl apply -f k8s/infrastructure/config-secret.yaml
-          kubectl apply -f k8s/infrastructure/rabbitmq.yaml
-          kubectl apply -f k8s/infrastructure/rabbitmq-deployment.yaml
+          kubectl apply -f k8s/infrastructure/
 
       - name: Deploy Services
         run: |
           kubectl apply -f k8s/services/
           kubectl apply -f k8s/ingress.yaml
           
-      - name: Force Rollout Restart (Refresh Images)
+      - name: Force Rollout Restart (Refresh Everything)
         run: |
           kubectl rollout restart deployment/frontend
           kubectl rollout restart deployment/api-gateway
           kubectl rollout restart deployment/auth-service
           kubectl rollout restart deployment/config-server
           kubectl rollout restart deployment/service-registry
+          kubectl rollout restart deployment/admin-service
+          kubectl rollout restart deployment/ai-service
+          kubectl rollout restart deployment/appointment-service
+          kubectl rollout restart deployment/doctor-service
+          kubectl rollout restart deployment/notification-service
+          kubectl rollout restart deployment/patient-service
+          kubectl rollout restart deployment/payment-service
+          kubectl rollout restart deployment/prescription-service
+          kubectl rollout restart deployment/telemedicine-service
