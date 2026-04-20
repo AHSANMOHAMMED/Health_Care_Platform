@@ -25,6 +25,11 @@ spec:
             limits:
               memory: "320Mi"
               cpu: "300m"
+          envFrom:
+            - configMapRef:
+                name: platform-config
+            - secretRef:
+                name: platform-secret
           env:
             - name: JAVA_OPTS
               value: "-Xmx192m -Xms128m"
@@ -32,11 +37,8 @@ spec:
               value: "notification_db"
             - name: SPRING_DATASOURCE_URL
               value: "jdbc:postgresql://$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=require"
-          envFrom:
-            - configMapRef:
-                name: platform-config
-            - secretRef:
-                name: platform-secret
+            - name: SPRING_RABBITMQ_PORT
+              value: "5672"
 ---
 apiVersion: v1
 kind: Service
