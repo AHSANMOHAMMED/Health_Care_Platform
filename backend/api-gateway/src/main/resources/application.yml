@@ -16,7 +16,7 @@ spring:
             allowedHeaders: "*"
       routes:
         - id: auth-service
-          uri: lb://AUTH-SERVICE
+          uri: http://auth-service:8081
           predicates:
             - Path=/api/auth/**
           filters:
@@ -24,7 +24,7 @@ spring:
             - AuthenticationFilter
         
         - id: patient-service
-          uri: lb://PATIENT-SERVICE
+          uri: http://patient-service:8082
           predicates:
             - Path=/api/patients/**
           filters:
@@ -32,7 +32,7 @@ spring:
             - AuthenticationFilter
             
         - id: doctor-service
-          uri: lb://DOCTOR-SERVICE
+          uri: http://doctor-service:8083
           predicates:
             - Path=/api/doctors/**
           filters:
@@ -40,7 +40,7 @@ spring:
             - AuthenticationFilter
             
         - id: appointment-service
-          uri: lb://APPOINTMENT-SERVICE
+          uri: http://appointment-service:8084
           predicates:
             - Path=/api/appointments/**
           filters:
@@ -48,7 +48,7 @@ spring:
             - AuthenticationFilter
             
         - id: ai-service
-          uri: lb://AI-SERVICE
+          uri: http://ai-service:8088
           predicates:
             - Path=/api/ai/**
           filters:
@@ -72,7 +72,7 @@ spring:
             - AuthenticationFilter
             
         - id: payment-service
-          uri: lb://PAYMENT-SERVICE
+          uri: http://payment-service:8085
           predicates:
             - Path=/api/payments/**
           filters:
@@ -80,7 +80,7 @@ spring:
             - AuthenticationFilter
             
         - id: notification-service
-          uri: lb://NOTIFICATION-SERVICE
+          uri: http://notification-service:8086
           predicates:
             - Path=/api/notifications/**
           filters:
@@ -88,7 +88,7 @@ spring:
             - AuthenticationFilter
 
         - id: admin-service
-          uri: lb://ADMIN-SERVICE
+          uri: http://admin-service:8089
           predicates:
             - Path=/api/admin/**
           filters:
