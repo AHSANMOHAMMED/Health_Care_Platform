@@ -50,14 +50,14 @@ function AppRoutes() {
       {/* =========================================
           LANKAN LUMINOUS FULL-SCREEN ROUTES
           ========================================= */}
-      <Route path="/" element={<Landing />} />
-      <Route path="/login" element={!role ? <Login /> : <Navigate to={`/${role.toLowerCase()}`} />} />
-      <Route path="/register" element={!role ? <Register /> : <Navigate to={`/${role.toLowerCase()}`} />} />
+      <Route path="/" element={<DoctorDashboard />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
       
       {/* Main Dashboards (Full-Screen Layouts) */}
-      <Route path="/patient" element={role === 'PATIENT' ? <PatientDashboard /> : <Navigate to="/login" />} />
-      <Route path="/doctor" element={role === 'DOCTOR' ? <DoctorDashboard /> : <Navigate to="/login" />} />
-      <Route path="/admin" element={role === 'ADMIN' ? <AdminDashboard /> : <Navigate to="/login" />} />
+      <Route path="/patient" element={<PatientDashboard />} />
+      <Route path="/doctor" element={<DoctorDashboard />} />
+      <Route path="/admin" element={<AdminDashboard />} />
 
       {/* =========================================
           LEGACY / INTERNAL ROUTES
@@ -65,10 +65,9 @@ function AppRoutes() {
           ========================================= */}
       <Route element={<LegacyLayout />}>
         {/* Onboarding */}
-        <Route path="/patient-onboarding" element={role === 'PATIENT' ? <PatientOnboarding /> : <Navigate to="/login" />} />
+        <Route path="/patient-onboarding" element={<PatientOnboarding />} />
         
         {/* Doctor Sub-Pages */}
-        <Route path="/doctor/overview" element={<PatientOverviewPage />} />
         <Route path="/doctor/appointments" element={<AppointmentsPage />} />
         <Route path="/doctor/schedule" element={<DailySchedulePage />} />
         <Route path="/doctor/reports" element={<MedicalReportsPage />} />
@@ -76,7 +75,7 @@ function AppRoutes() {
         <Route path="/doctor/analytics" element={<AnalyticsPage />} />
         
         {/* Patient Sub-Pages */}
-        <Route path="/booking" element={role === 'PATIENT' ? <BookingFlow /> : <Navigate to="/login" />} />
+        <Route path="/booking" element={<BookingFlow />} />
         
         {/* Healthcare Hub Routes */}
         <Route path="/emergency" element={<EmergencyServices />} />
