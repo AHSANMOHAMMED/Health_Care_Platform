@@ -2,7 +2,9 @@ package com.mediconnect.authservice.controller;
 
 import com.mediconnect.authservice.dto.AuthRequest;
 import com.mediconnect.authservice.dto.AuthResponse;
+import com.mediconnect.authservice.dto.AuthTokens;
 import com.mediconnect.authservice.dto.RegisterRequest;
+import com.mediconnect.authservice.dto.UserDTO;
 import com.mediconnect.authservice.entity.UserCredentials;
 import com.mediconnect.authservice.repository.UserRepository;
 import com.mediconnect.authservice.service.JwtService;
@@ -39,6 +41,8 @@ public class AuthController {
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(request.getRole() != null ? request.getRole().toUpperCase() : "PATIENT");
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
         userRepository.save(user);
         return ResponseEntity.ok("User registered successfully");
     }
@@ -49,7 +53,24 @@ public class AuthController {
         if (authenticate.isAuthenticated()) {
             UserCredentials user = userRepository.findByEmail(request.getEmail()).get();
             String token = jwtService.generateToken(request.getEmail(), user.getId(), user.getRole());
-            return ResponseEntity.ok(new AuthResponse(token, user.getRole(), user.getId()));
+            
+            AuthTokens tokens = AuthTokens.builder()
+                .accessToken(token)
+                .refreshToken(token) // Simplified for now, can be improved with actual refresh logic
+                .build();
+                
+            UserDTO userDto = UserDTO.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .role(user.getRole())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .build();
+
+            return ResponseEntity.ok(AuthResponse.builder()
+                .tokens(tokens)
+                .user(userDto)
+                .build());
         } else {
             throw new RuntimeException("invalid access");
         }

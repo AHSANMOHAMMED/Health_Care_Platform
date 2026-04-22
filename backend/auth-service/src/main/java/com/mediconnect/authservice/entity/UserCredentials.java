@@ -23,4 +23,7 @@ public class UserCredentials {
     
     @Column(nullable = false)
     private String role; // PATIENT, DOCTOR, ADMIN
+
+    private String firstName;
+    private String lastName;
 }

@@ -13,9 +13,11 @@ public class SecurityConfig {
     // Disable default security because we are doing custom JWT Gateway filter
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-        http.csrf(ServerHttpSecurity.CsrfSpec::disable)
-            .cors(ServerHttpSecurity.CorsSpec::disable)
-            .authorizeExchange(exchanges -> exchanges.anyExchange().permitAll());
-        return http.build();
+        return http
+            .csrf(ServerHttpSecurity.CsrfSpec::disable)
+            .authorizeExchange(exchanges -> exchanges
+                .anyExchange().permitAll()
+            )
+            .build();
     }
 }
