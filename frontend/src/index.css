@@ -14,7 +14,10 @@
   }
   
   body {
-    @apply bg-slate-50 text-slate-900 bg-fixed selection:bg-[#8D153A]/20 selection:text-[#8D153A];
+    background-color: #0A0A0F;
+    color: white;
+    background-attachment: fixed;
+    @apply selection:bg-[#8D153A]/20 selection:text-[#FF6B8A];
   }
 
   /* Custom subtle scrollbar */
