@@ -441,11 +441,7 @@ export default function DailySchedulePage() {
                     className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
                   />
                 </div>
-                <button className="px-6 py-3 bg-[#8D153A] text-white rounded-xl font-black hover:bg-[#8D153A]/80 transition-all flex items-center gap-2">
-                  <PlusCircle size={20} />
-                  Add Appointment
-                </button>
-              </div>
+                              </div>
             </div>
 
           {/* Schedule Timeline */}

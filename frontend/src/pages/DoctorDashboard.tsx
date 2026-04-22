@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
   Users, Calendar, FileText, Activity, 
   MessageSquare, Settings, Bell, LogOut, Search,
@@ -7,8 +7,7 @@ import {
   PlusCircle, Stethoscope, Briefcase, Zap,
   AlertTriangle, Pill, Download, FileDown,
   Heart, TrendingUp, AlertCircle, CheckCircle, Star,
-  Mic, Send, Paperclip, Phone, Video, Camera,
-  FileImage, FileText as FileMedicalIcon, MessageCircle, Volume2
+  Phone, MapPin, Mail
 } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
@@ -20,132 +19,15 @@ export default function DoctorDashboard() {
   const navigate = useNavigate();
   const location = useLocation();
   const [selectedPatient, setSelectedPatient] = useState(null);
-  const [prescriptionForm, setPrescriptionForm] = useState({
-    medicineName: '',
-    dosage: '',
-    duration: '',
-    instructions: ''
-  });
-  const [appointmentFilter, setAppointmentFilter] = useState('all');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedAppointment, setSelectedAppointment] = useState(null);
-  
-  // Communication Center States
-  const [showCommunicationCenter, setShowCommunicationCenter] = useState(false);
-  const [selectedPatientForChat, setSelectedPatientForChat] = useState(null);
-  const [chatMessage, setChatMessage] = useState('');
-  const [isRecording, setIsRecording] = useState(false);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [activeTab, setActiveTab] = useState('chat');
 
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
 
-  const handleDownloadPrescription = () => {
-    const prescriptionContent = `
-╔══════════════════════════════════════════════════════════════╗
-║                    MEDICONNECT LANKA PRESCRIPTION           ║
-║                      Digital Prescription                   ║
-╠══════════════════════════════════════════════════════════════╣
-║                                                              ║
-║  Doctor: ${(user as any)?.name || 'Dr. Perera'}             ║
-║  Date: ${new Date().toLocaleDateString('en-LK')}            ║
-║  Time: ${new Date().toLocaleTimeString('en-LK')}            ║
-║                                                              ║
-║  ───────────────────────────────────────────────────────    ║
-║                                                              ║
-║  PATIENT PRESCRIPTION                                        ║
-║                                                              ║
-║  Medicine: ${prescriptionForm.medicineName || 'Not specified'}║
-║  Dosage: ${prescriptionForm.dosage || 'Not specified'}      ║
-║  Duration: ${prescriptionForm.duration || 'Not specified'}  ║
-║                                                              ║
-║  Instructions:                                               ║
-║  ${prescriptionForm.instructions || 'No specific instructions'}║
-║                                                              ║
-║  ───────────────────────────────────────────────────────    ║
-║                                                              ║
-║  Doctor Signature: _______________________                  ║
-║                                                              ║
-║  This is a digitally generated prescription.                ║
-║  Valid only with doctor's official signature.               ║
-║                                                              ║
-╚══════════════════════════════════════════════════════════════╝
-    `;
-
-    const blob = new Blob([prescriptionContent], { type: 'text/plain' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `prescription_${new Date().toISOString().split('T')[0]}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    window.URL.revokeObjectURL(url);
-    document.body.removeChild(a);
-  };
-
-  const handleGeneratePrescription = () => {
-    if (!prescriptionForm.medicineName || !prescriptionForm.dosage) {
-      alert('Please fill in medicine name and dosage');
-      return;
-    }
-    
-    // Here you would normally save to backend
-    console.log('Prescription generated:', prescriptionForm);
-    alert('Prescription generated successfully!');
-    
-    // Reset form
-    setPrescriptionForm({
-      medicineName: '',
-      dosage: '',
-      duration: '',
-      instructions: ''
-    });
-  };
-
-  // Communication Center Handlers
-  const handleOpenCommunicationCenter = (patient) => {
-    setSelectedPatientForChat(patient);
-    setShowCommunicationCenter(true);
-  };
-
-  const handleSendMessage = () => {
-    if (!chatMessage.trim()) return;
-    
-    // Here you would normally send to backend
-    console.log('Sending message:', chatMessage);
-    setChatMessage('');
-    alert('Message sent successfully!');
-  };
-
-  const handleVoiceRecord = () => {
-    if (isRecording) {
-      setIsRecording(false);
-      alert('Voice note recorded and sent!');
-    } else {
-      setIsRecording(true);
-      alert('Recording voice note... Click again to stop');
-    }
-  };
-
-  const handleFileUpload = (event) => {
-    const files = Array.from(event.target.files);
-    setUploadedFiles([...uploadedFiles, ...files]);
-    alert(`${files.length} file(s) uploaded successfully!`);
-  };
-
-  const handleSendAppointmentReminder = () => {
-    alert('Appointment reminder sent to patient!');
-  };
-
-  const handleSendPostConsultationInstructions = () => {
-    alert('Post-consultation instructions sent to patient!');
-  };
 
   const navItems = [
-    { name: 'Patient Overview', icon: Users, path: '/doctor' },
+    { name: 'Dashboard', icon: Users, path: '/doctor' },
     { name: 'Appointments', icon: Calendar, path: '/doctor/appointments' },
     { name: 'Daily Schedule', icon: Clock, path: '/doctor/schedule' },
     { name: 'Medical Reports', icon: FileText, path: '/doctor/reports' },
@@ -228,7 +110,10 @@ export default function DoctorDashboard() {
                   <h1 className="text-4xl md:text-5xl font-black text-slate-950 tracking-tighter mb-3">Welcome, <span className="text-[#8D153A]">Doctor.</span></h1>
                   <p className="text-lg text-slate-500 font-bold">You have 8 patients scheduled for follow-up today.</p>
                </div>
-               <button className="btn-gold h-16 !px-8 text-sm">
+               <button
+                  onClick={() => navigate('/doctor/chats', { state: { openSchedule: true } })}
+                  className="btn-gold h-16 !px-8 text-sm"
+               >
                   <PlusCircle size={20} /> New Consultation
                </button>
             </div>
@@ -254,706 +139,402 @@ export default function DoctorDashboard() {
                ))}
             </div>
 
-            {/* Smart Clinical Summary Card */}
-            <div className="clinical-card p-10 mb-8">
+            {/* Patient Overview Section */}
+            <div className="clinical-card p-10">
                <div className="flex justify-between items-center mb-8">
-                  <h3 className="text-2xl font-black tracking-tighter">Smart Clinical Summary</h3>
-                  <button className="px-4 py-2 bg-[#8D153A] rounded-xl text-xs font-bold text-white hover:opacity-90 transition-all">
-                     View Full History
-                  </button>
-               </div>
-
-               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-                  <div className="bg-blue-50 p-6 rounded-2xl border border-blue-100">
-                     <div className="flex items-center gap-3 mb-3">
-                        <Clock className="text-blue-600" size={20} />
-                        <span className="text-xs font-black text-blue-600 uppercase tracking-widest">Last Visit</span>
-                     </div>
-                     <p className="text-lg font-black text-slate-950">3 Days Ago</p>
-                     <p className="text-sm text-slate-600 font-bold mt-1">Routine Checkup</p>
+                  <div>
+                     <h3 className="text-2xl font-black tracking-tighter">My Patients</h3>
+                     <p className="text-sm text-slate-500 font-bold mt-1">Your assigned patients and their current health status</p>
                   </div>
-
-                  <div className="bg-green-50 p-6 rounded-2xl border border-green-100">
-                     <div className="flex items-center gap-3 mb-3">
-                        <Heart className="text-green-600" size={20} />
-                        <span className="text-xs font-black text-green-600 uppercase tracking-widest">Condition</span>
-                     </div>
-                     <p className="text-lg font-black text-slate-950">Stable</p>
-                     <p className="text-sm text-slate-600 font-bold mt-1">Blood Pressure Normal</p>
-                  </div>
-
-                  <div className="bg-red-50 p-6 rounded-2xl border border-red-100">
-                     <div className="flex items-center gap-3 mb-3">
-                        <AlertTriangle className="text-red-600" size={20} />
-                        <span className="text-xs font-black text-red-600 uppercase tracking-widest">Allergies</span>
-                     </div>
-                     <p className="text-lg font-black text-slate-950">2 Found</p>
-                     <p className="text-sm text-slate-600 font-bold mt-1">Penicillin, Peanuts</p>
-                  </div>
-
-                  <div className="bg-purple-50 p-6 rounded-2xl border border-purple-100">
-                     <div className="flex items-center gap-3 mb-3">
-                        <Pill className="text-purple-600" size={20} />
-                        <span className="text-xs font-black text-purple-600 uppercase tracking-widest">Medicines</span>
-                     </div>
-                     <p className="text-lg font-black text-slate-950">3 Active</p>
-                     <p className="text-sm text-slate-600 font-bold mt-1">Metformin, Lisinopril</p>
-                  </div>
-
-                  <div className="bg-orange-50 p-6 rounded-2xl border border-orange-100">
-                     <div className="flex items-center gap-3 mb-3">
-                        <AlertCircle className="text-orange-600" size={20} />
-                        <span className="text-xs font-black text-orange-600 uppercase tracking-widest">Risk Alerts</span>
-                     </div>
-                     <p className="text-lg font-black text-slate-950">1 High</p>
-                     <p className="text-sm text-slate-600 font-bold mt-1">Glucose Levels Rising</p>
+                  <div className="flex gap-2">
+                     <button
+                        onClick={() => navigate('/doctor/patients')}
+                        className="px-4 py-2 bg-slate-100 rounded-xl text-xs font-bold hover:bg-slate-200 transition-all"
+                     >
+                        <Users size={16} className="inline mr-2" />All Patients
+                     </button>
+                     <button
+                        onClick={() => navigate('/doctor/patients', { state: { openAddPatient: true } })}
+                        className="px-4 py-2 bg-[#8D153A] rounded-xl text-xs font-bold text-white hover:opacity-90 transition-all"
+                     >
+                        <PlusCircle size={16} className="inline mr-2" />Add Patient
+                     </button>
                   </div>
                </div>
-            </div>
 
-            {/* Prescription Generator & Schedule Area */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-               
-               {/* Enhanced Appointment Management */}
-               <div className="lg:col-span-2 clinical-card p-10">
-                  <div className="flex justify-between items-center mb-8">
-                     <div>
-                        <h3 className="text-2xl font-black tracking-tighter">Appointment Management</h3>
-                        <p className="text-sm text-slate-500 font-bold mt-1">Manage your patient consultations</p>
-                     </div>
-                     <div className="flex gap-2">
-                        <button className="px-4 py-2 bg-slate-100 rounded-xl text-xs font-bold hover:bg-slate-200 transition-all">
-                           <Calendar size={16} className="inline mr-2" />Calendar View
-                        </button>
-                        <button className="px-4 py-2 bg-[#8D153A] rounded-xl text-xs font-bold text-white hover:opacity-90 transition-all">
-                           <PlusCircle size={16} className="inline mr-2" />New Appointment
-                        </button>
-                     </div>
+               {/* Patient Search and Filter */}
+               <div className="flex flex-col md:flex-row gap-4 mb-8">
+                  <div className="flex-1 relative">
+                     <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} />
+                     <input
+                        type="text"
+                        placeholder="Search your patients..."
+                        className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
+                     />
                   </div>
-
-                  {/* Search and Filter Bar */}
-                  <div className="flex flex-col md:flex-row gap-4 mb-8">
-                     <div className="flex-1 relative">
-                        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} />
-                        <input
-                           type="text"
-                           placeholder="Search patients by name or ID..."
-                           value={searchQuery}
-                           onChange={(e) => setSearchQuery(e.target.value)}
-                           className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
-                        />
-                     </div>
-                     <div className="flex gap-2">
-                        <button
-                           onClick={() => setAppointmentFilter('all')}
-                           className={`px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
-                              appointmentFilter === 'all' 
-                                 ? 'bg-[#8D153A] text-white' 
-                                 : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                           }`}
-                        >
-                           All (8)
-                        </button>
-                        <button
-                           onClick={() => setAppointmentFilter('waiting')}
-                           className={`px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
-                              appointmentFilter === 'waiting' 
-                                 ? 'bg-emerald-600 text-white' 
-                                 : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                           }`}
-                        >
-                           Waiting (2)
-                        </button>
-                        <button
-                           onClick={() => setAppointmentFilter('confirmed')}
-                           className={`px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
-                              appointmentFilter === 'confirmed' 
-                                 ? 'bg-blue-600 text-white' 
-                                 : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                           }`}
-                        >
-                           Confirmed (4)
-                        </button>
-                        <button
-                           onClick={() => setAppointmentFilter('completed')}
-                           className={`px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
-                              appointmentFilter === 'completed' 
-                                 ? 'bg-purple-600 text-white' 
-                                 : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                           }`}
-                        >
-                           Completed (2)
-                        </button>
-                     </div>
+                  <div className="flex gap-2">
+                     <button className="px-4 py-3 bg-slate-100 rounded-xl text-xs font-black text-slate-600 hover:bg-slate-200 transition-all">
+                        All (12)
+                     </button>
+                     <button className="px-4 py-3 bg-emerald-100 rounded-xl text-xs font-black text-emerald-600 hover:bg-emerald-200 transition-all">
+                        Active (8)
+                     </button>
+                     <button className="px-4 py-3 bg-orange-100 rounded-xl text-xs font-black text-orange-600 hover:bg-orange-200 transition-all">
+                        High Risk (2)
+                     </button>
                   </div>
+               </div>
 
-                  {/* Enhanced Appointment Cards */}
-                  <div className="space-y-4">
-                     {[
-                        {
-                           id: 1,
-                           name: 'Aruni Wijesinghe',
-                           age: 34,
-                           gender: 'Female',
-                           time: '10:30 AM',
-                           type: 'Video Consult',
-                           status: 'waiting',
-                           reason: 'Annual Checkup',
-                           duration: '30 mins',
-                           priority: 'normal',
-                           notes: 'Regular follow-up for hypertension'
-                        },
-                        {
-                           id: 2,
-                           name: 'Kasun Perera',
-                           age: 45,
-                           gender: 'Male',
-                           time: '11:15 AM',
-                           type: 'Physical Follow-up',
-                           status: 'confirmed',
-                           reason: 'Post-Surgery Review',
-                           duration: '45 mins',
-                           priority: 'high',
-                           notes: 'Cardiac surgery follow-up, review ECG results'
-                        },
-                        {
-                           id: 3,
-                           name: 'Imara Jaffar',
-                           age: 28,
-                           gender: 'Female',
-                           time: '02:00 PM',
-                           type: 'New Patient',
-                           status: 'confirmed',
-                           reason: 'Initial Consultation',
-                           duration: '60 mins',
-                           priority: 'normal',
-                           notes: 'First-time visit, comprehensive evaluation needed'
-                        }
-                     ].filter(apt => {
-                        const matchesSearch = apt.name.toLowerCase().includes(searchQuery.toLowerCase());
-                        const matchesFilter = appointmentFilter === 'all' || apt.status === appointmentFilter;
-                        return matchesSearch && matchesFilter;
-                     }).map((apt) => (
-                        <div key={apt.id} className="group p-6 rounded-2xl border border-slate-100 hover:border-[#FFBE29]/40 hover:shadow-lg transition-all">
-                           <div className="flex items-start justify-between">
-                              <div className="flex items-start gap-6">
-                                 <div className="relative">
-                                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#8D153A] to-[#E5AB22] flex items-center justify-center text-white font-black text-xl shadow-lg">
-                                       {apt.name.split(' ').map(n => n[0]).join('')}
-                                    </div>
-                                    {apt.priority === 'high' && (
-                                       <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white"></div>
-                                    )}
-                                 </div>
-                                 <div className="flex-1">
-                                    <div className="flex items-center gap-3 mb-2">
-                                       <p className="font-black text-slate-950 text-lg">{apt.name}</p>
-                                       <span className="px-2 py-1 bg-slate-100 rounded-lg text-xs font-black text-slate-600">
-                                          {apt.age}y, {apt.gender}
-                                       </span>
-                                       <span className={`px-2 py-1 rounded-lg text-xs font-black ${
-                                          apt.priority === 'high' 
-                                             ? 'bg-red-100 text-red-600' 
-                                             : 'bg-slate-100 text-slate-600'
-                                       }`}>
-                                          {apt.priority === 'high' ? 'High Priority' : 'Normal'}
-                                       </span>
-                                    </div>
-                                    <div className="flex items-center gap-4 text-sm text-slate-600 font-bold mb-3">
-                                       <span className="flex items-center gap-1">
-                                          <Clock size={14} /> {apt.time}
-                                       </span>
-                                       <span className="flex items-center gap-1">
-                                          <Stethoscope size={14} /> {apt.type}
-                                       </span>
-                                       <span className="flex items-center gap-1">
-                                          <Activity size={14} /> {apt.duration}
-                                       </span>
-                                    </div>
-                                    <p className="text-sm text-slate-600 font-medium mb-2">
-                                       <span className="font-black">Reason:</span> {apt.reason}
-                                    </p>
-                                    <p className="text-xs text-slate-500 italic">
-                                       {apt.notes}
-                                    </p>
-                                 </div>
+               {/* Patient Cards with Photos */}
+               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {[
+                     {
+                        id: 1,
+                        name: 'Aruni Wijesinghe',
+                        age: 34,
+                        gender: 'Female',
+                        bloodType: 'O+',
+                        condition: 'Hypertension, Type 2 Diabetes',
+                        status: 'active',
+                        riskLevel: 'medium',
+                        lastVisit: '2024-04-18',
+                        nextAppointment: '2024-04-21',
+                        bloodPressure: '140/90',
+                        glucose: '145 mg/dL',
+                        medications: 3,
+                        photo: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face'
+                     },
+                     {
+                        id: 2,
+                        name: 'Kasun Perera',
+                        age: 45,
+                        gender: 'Male',
+                        bloodType: 'A+',
+                        condition: 'Post-Surgery Recovery, CAD',
+                        status: 'active',
+                        riskLevel: 'high',
+                        lastVisit: '2024-04-15',
+                        nextAppointment: '2024-04-21',
+                        bloodPressure: '130/85',
+                        glucose: '95 mg/dL',
+                        medications: 4,
+                        photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face'
+                     },
+                     {
+                        id: 3,
+                        name: 'Imara Jaffar',
+                        age: 28,
+                        gender: 'Female',
+                        bloodType: 'B+',
+                        condition: 'Diabetes Type 1, PCOS',
+                        status: 'active',
+                        riskLevel: 'medium',
+                        lastVisit: '2024-04-10',
+                        nextAppointment: '2024-04-21',
+                        bloodPressure: '120/80',
+                        glucose: '165 mg/dL',
+                        medications: 3,
+                        photo: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face'
+                     },
+                     {
+                        id: 4,
+                        name: 'Nimal Fernando',
+                        age: 52,
+                        gender: 'Male',
+                        bloodType: 'AB+',
+                        condition: 'COPD, Hypertension',
+                        status: 'active',
+                        riskLevel: 'high',
+                        lastVisit: '2024-04-12',
+                        nextAppointment: '2024-04-22',
+                        bloodPressure: '150/95',
+                        glucose: '110 mg/dL',
+                        medications: 5,
+                        photo: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face'
+                     },
+                     {
+                        id: 5,
+                        name: 'Samanthi Perera',
+                        age: 41,
+                        gender: 'Female',
+                        bloodType: 'A-',
+                        condition: 'Asthma, Allergies',
+                        status: 'active',
+                        riskLevel: 'low',
+                        lastVisit: '2024-04-16',
+                        nextAppointment: '2024-04-23',
+                        bloodPressure: '125/82',
+                        glucose: '92 mg/dL',
+                        medications: 2,
+                        photo: 'https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=150&h=150&fit=crop&crop=face'
+                     },
+                     {
+                        id: 6,
+                        name: 'Roshan Silva',
+                        age: 38,
+                        gender: 'Male',
+                        bloodType: 'O-',
+                        condition: 'Diabetes Type 2',
+                        status: 'inactive',
+                        riskLevel: 'medium',
+                        lastVisit: '2024-03-28',
+                        nextAppointment: '2024-04-25',
+                        bloodPressure: '135/88',
+                        glucose: '180 mg/dL',
+                        medications: 2,
+                        photo: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face'
+                     }
+                  ].map((patient) => (
+                     <div key={patient.id} className="group bg-white p-6 rounded-2xl border border-slate-100 hover:border-[#FFBE29]/40 hover:shadow-lg transition-all cursor-pointer">
+                        <div className="flex items-start gap-4 mb-4">
+                           <div className="relative">
+                              <img 
+                                 src={patient.photo} 
+                                 alt={patient.name}
+                                 className="w-16 h-16 rounded-2xl object-cover shadow-lg"
+                              />
+                              <div className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-white ${
+                                 patient.riskLevel === 'high' ? 'bg-red-500' : 
+                                 patient.riskLevel === 'medium' ? 'bg-orange-500' : 'bg-green-500'
+                              }`}></div>
+                           </div>
+                           <div className="flex-1 min-w-0">
+                              <h4 className="font-black text-slate-950 text-lg truncate">{patient.name}</h4>
+                              <div className="flex items-center gap-2 mt-1">
+                                 <span className="text-xs text-slate-600">{patient.age}y, {patient.gender}</span>
+                                 <span className="text-xs text-slate-400">•</span>
+                                 <span className="text-xs text-blue-600 font-bold">{patient.bloodType}</span>
                               </div>
-                              <div className="flex flex-col items-end gap-3">
-                                 <div className={`px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest ${
-                                    apt.status === 'waiting' 
-                                       ? 'bg-emerald-100 text-emerald-700' 
-                                       : apt.status === 'confirmed'
-                                       ? 'bg-blue-100 text-blue-700'
-                                       : 'bg-purple-100 text-purple-700'
-                                 }`}>
-                                    {apt.status}
-                                 </div>
-                                 <div className="flex gap-2">
-                                    <button 
-                                       onClick={() => setSelectedAppointment(apt)}
-                                       className="p-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all"
-                                       title="View Details"
-                                    >
-                                       <FileText size={16} />
-                                    </button>
-                                    <button 
-                                       onClick={() => handleOpenCommunicationCenter(apt)}
-                                       className="p-2 rounded-xl bg-[#8D153A] text-white hover:bg-[#8D153A]/80 transition-all"
-                                       title="Open Communication Center"
-                                    >
-                                       <MessageCircle size={16} />
-                                    </button>
-                                    <button 
-                                       className="p-2 rounded-xl bg-emerald-100 text-emerald-600 hover:bg-emerald-200 transition-all"
-                                       title="Start Consultation"
-                                    >
-                                       <Video size={16} />
-                                    </button>
-                                    <button 
-                                       className="p-2 rounded-xl bg-blue-100 text-blue-600 hover:bg-blue-200 transition-all"
-                                       title="Reschedule"
-                                    >
-                                       <Calendar size={16} />
-                                    </button>
-                                 </div>
+                           </div>
+                           <div className={`px-2 py-1 rounded-full text-xs font-black uppercase tracking-widest ${
+                              patient.status === 'active' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-700'
+                           }`}>
+                              {patient.status}
+                           </div>
+                        </div>
+
+                        <div className="space-y-3">
+                           <div>
+                              <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Condition</p>
+                              <p className="text-sm font-black text-slate-950 line-clamp-2">{patient.condition}</p>
+                           </div>
+
+                           <div className="grid grid-cols-2 gap-2">
+                              <div className="bg-slate-50 p-2 rounded-lg">
+                                 <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">BP</p>
+                                 <p className="text-sm font-black text-slate-950">{patient.bloodPressure}</p>
+                              </div>
+                              <div className="bg-slate-50 p-2 rounded-lg">
+                                 <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Glucose</p>
+                                 <p className="text-sm font-black text-slate-950">{patient.glucose}</p>
+                              </div>
+                           </div>
+
+                           <div className="flex items-center justify-between text-xs">
+                              <div className="flex items-center gap-1">
+                                 <Calendar size={12} className="text-slate-400" />
+                                 <span className="text-slate-600">Next: {patient.nextAppointment}</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                 <Pill size={12} className="text-slate-400" />
+                                 <span className="text-slate-600">{patient.medications} meds</span>
                               </div>
                            </div>
                         </div>
-                     ))}
-                  </div>
 
-                  {/* Appointment Details Modal */}
-                  {selectedAppointment && (
-                     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                        <div className="bg-white rounded-3xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-                           <div className="flex justify-between items-start mb-6">
-                              <div>
-                                 <h3 className="text-2xl font-black text-slate-950">Appointment Details</h3>
-                                 <p className="text-slate-600 font-bold mt-1">Patient: {selectedAppointment.name}</p>
-                              </div>
+                        <div className="flex gap-2 mt-4 pt-4 border-t border-slate-100">
+                           <button 
+                              onClick={() => {
+                                 setSelectedPatient(patient);
+                              }}
+                              className="flex-1 px-3 py-2 bg-gradient-to-r from-[#8D153A] to-[#C9204A] text-white rounded-lg text-xs font-black hover:from-[#C9204A] hover:to-[#8D153A] transition-all transform hover:scale-105 shadow-lg"
+                           >
+                              <span className="flex items-center justify-center gap-2">
+                                 <FileText size={14} />
+                                 Medical Profile
+                              </span>
+                           </button>
+                           <button 
+                              onClick={() => {
+                                 // Open quick vitals view
+                                 alert(`Quick vitals for ${patient.name}:\n\nBlood Pressure: ${patient.bloodPressure}\nGlucose: ${patient.glucose}\nMedications: ${patient.medications}\n\nNext appointment: ${patient.nextAppointment}`);
+                              }}
+                              className="px-3 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg text-xs font-black hover:from-emerald-600 hover:to-teal-700 transition-all transform hover:scale-105 shadow-lg"
+                           >
+                              <span className="flex items-center justify-center gap-2">
+                                 <Heart size={14} />
+                                 Quick Vitals
+                              </span>
+                           </button>
+                        </div>
+                     </div>
+                  ))}
+               </div>
+
+               {/* Enhanced Patient Details Modal */}
+               {selectedPatient && (
+                  <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                     <div className="bg-white rounded-3xl max-w-5xl w-full max-h-[90vh] overflow-hidden shadow-2xl transform transition-all">
+                        {/* Modal Header with Gradient */}
+                        <div className="bg-gradient-to-r from-[#8D153A] via-[#C9204A] to-[#E5AB22] p-8 text-white relative">
+                           <div className="absolute top-4 right-4">
                               <button 
-                                 onClick={() => setSelectedAppointment(null)}
-                                 className="p-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all"
+                                 onClick={() => setSelectedPatient(null)}
+                                 className="p-3 rounded-full bg-white/20 hover:bg-white/30 transition-all backdrop-blur-sm"
                               >
                                  <X size={20} />
                               </button>
                            </div>
                            
-                           <div className="grid grid-cols-2 gap-6 mb-8">
-                              <div className="bg-slate-50 p-4 rounded-xl">
-                                 <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Personal Info</p>
-                                 <p className="font-black text-slate-950">{selectedAppointment.name}</p>
-                                 <p className="text-sm text-slate-600">{selectedAppointment.age} years, {selectedAppointment.gender}</p>
+                           <div className="flex items-center gap-6">
+                              <div className="relative">
+                                 <img 
+                                    src={selectedPatient.photo} 
+                                    alt={selectedPatient.name}
+                                    className="w-24 h-24 rounded-3xl object-cover border-4 border-white/30 shadow-2xl"
+                                 />
+                                 <div className={`absolute -bottom-2 -right-2 w-8 h-8 rounded-full border-3 border-white shadow-lg ${
+                                    selectedPatient.riskLevel === 'high' ? 'bg-red-500' : 
+                                    selectedPatient.riskLevel === 'medium' ? 'bg-orange-500' : 'bg-green-500'
+                                 }`}></div>
                               </div>
-                              <div className="bg-slate-50 p-4 rounded-xl">
-                                 <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Consultation</p>
-                                 <p className="font-black text-slate-950">{selectedAppointment.type}</p>
-                                 <p className="text-sm text-slate-600">{selectedAppointment.duration}</p>
-                              </div>
-                           </div>
-
-                           <div className="mb-8">
-                              <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Visit Reason</p>
-                              <p className="text-slate-700 font-medium">{selectedAppointment.reason}</p>
-                           </div>
-
-                           <div className="mb-8">
-                              <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Medical Notes</p>
-                              <p className="text-slate-700 font-medium">{selectedAppointment.notes}</p>
-                           </div>
-
-                           <div className="flex gap-3">
-                              <button className="flex-1 h-14 rounded-2xl bg-emerald-600 text-white font-black flex items-center justify-center gap-3 hover:bg-emerald-700 transition-all">
-                                 <MessageSquare size={20} />
-                                 Start Consultation
-                              </button>
-                              <button className="flex-1 h-14 rounded-2xl bg-blue-600 text-white font-black flex items-center justify-center gap-3 hover:bg-blue-700 transition-all">
-                                 <Calendar size={20} />
-                                 Reschedule
-                              </button>
-                              <button className="h-14 w-14 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center hover:bg-red-200 transition-all">
-                                 <X size={20} />
-                              </button>
-                           </div>
-                        </div>
-                     </div>
-                  )}
-               </div>
-
-               {/* Prescription Generator Panel */}
-               <div className="clinical-card p-10">
-                  <div className="flex items-center gap-3 mb-8">
-                     <div className="w-14 h-14 rounded-2xl bg-[#8D153A]/10 flex items-center justify-center text-[#8D153A]">
-                        <Pill size={28} />
-                     </div>
-                     <div>
-                        <h3 className="text-2xl font-black tracking-tighter">Prescription Generator</h3>
-                        <p className="text-sm text-slate-500 font-bold">Create digital prescriptions instantly</p>
-                     </div>
-                  </div>
-
-                  <div className="space-y-6">
-                     <div>
-                        <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Medicine Name</label>
-                        <input
-                           type="text"
-                           value={prescriptionForm.medicineName}
-                           onChange={(e) => setPrescriptionForm({...prescriptionForm, medicineName: e.target.value})}
-                           className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
-                           placeholder="e.g., Amoxicillin 500mg"
-                        />
-                     </div>
-
-                     <div>
-                        <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Dosage</label>
-                        <input
-                           type="text"
-                           value={prescriptionForm.dosage}
-                           onChange={(e) => setPrescriptionForm({...prescriptionForm, dosage: e.target.value})}
-                           className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
-                           placeholder="e.g., 1 tablet twice daily"
-                        />
-                     </div>
-
-                     <div>
-                        <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Duration</label>
-                        <input
-                           type="text"
-                           value={prescriptionForm.duration}
-                           onChange={(e) => setPrescriptionForm({...prescriptionForm, duration: e.target.value})}
-                           className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
-                           placeholder="e.g., 7 days, 2 weeks"
-                        />
-                     </div>
-
-                     <div>
-                        <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Instructions</label>
-                        <textarea
-                           value={prescriptionForm.instructions}
-                           onChange={(e) => setPrescriptionForm({...prescriptionForm, instructions: e.target.value})}
-                           className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10 h-24 resize-none"
-                           placeholder="e.g., Take after meals, complete full course"
-                        />
-                     </div>
-
-                     <div className="flex gap-3">
-                        <button 
-                           onClick={handleGeneratePrescription}
-                           className="flex-1 h-14 rounded-2xl bg-[#8D153A] text-white font-black flex items-center justify-center gap-3 hover:opacity-90 transition-all"
-                        >
-                           <FileText size={20} />
-                           Generate Prescription
-                        </button>
-                        <button 
-                           onClick={handleDownloadPrescription}
-                           className="h-14 w-14 rounded-2xl bg-slate-100 text-slate-600 flex items-center justify-center hover:bg-slate-200 transition-all"
-                           title="Download Prescription"
-                        >
-                           <Download size={20} />
-                        </button>
-                     </div>
-
-                     <div className="pt-6 border-t border-slate-100">
-                        <div className="flex items-center justify-between text-sm">
-                           <span className="text-slate-500 font-bold">Recent Prescriptions</span>
-                           <span className="text-[#8D153A] font-black">5 Today</span>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-
-            </div>
-
-         </div>
-
-      {/* Patient Communication Center Modal */}
-      {showCommunicationCenter && selectedPatientForChat && (
-         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-3xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col">
-               {/* Header */}
-               <div className="bg-gradient-to-r from-[#8D153A] to-[#C9204A] text-white p-6 flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                     <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center text-white font-black text-xl">
-                        {selectedPatientForChat.name.split(' ').map(n => n[0]).join('')}
-                     </div>
-                     <div>
-                        <h3 className="text-xl font-black">{selectedPatientForChat.name}</h3>
-                        <p className="text-sm opacity-90">Patient Communication Center</p>
-                     </div>
-                  </div>
-                  <button 
-                     onClick={() => setShowCommunicationCenter(false)}
-                     className="p-2 rounded-xl bg-white/20 hover:bg-white/30 transition-all"
-                  >
-                     <X size={20} />
-                  </button>
-               </div>
-
-               {/* Tab Navigation */}
-               <div className="border-b border-slate-200 bg-slate-50">
-                  <div className="flex p-2 gap-2">
-                     {[
-                        { id: 'chat', name: 'Chat', icon: MessageCircle },
-                        { id: 'files', name: 'File Share', icon: Paperclip },
-                        { id: 'voice', name: 'Voice Notes', icon: Mic },
-                        { id: 'reminders', name: 'Reminders', icon: Bell },
-                        { id: 'instructions', name: 'Instructions', icon: FileText }
-                     ].map((tab) => (
-                        <button
-                           key={tab.id}
-                           onClick={() => setActiveTab(tab.id)}
-                           className={`flex items-center gap-2 px-4 py-3 rounded-xl font-black text-sm transition-all ${
-                              activeTab === tab.id
-                                 ? 'bg-white text-[#8D153A] shadow-sm'
-                                 : 'text-slate-600 hover:bg-white/50'
-                           }`}
-                        >
-                           <tab.icon size={16} />
-                           {tab.name}
-                        </button>
-                     ))}
-                  </div>
-               </div>
-
-               {/* Content Area */}
-               <div className="flex-1 overflow-hidden">
-                  {activeTab === 'chat' && (
-                     <div className="h-full flex flex-col">
-                        {/* Chat Messages */}
-                        <div className="flex-1 p-6 overflow-y-auto bg-slate-50">
-                           <div className="space-y-4">
-                              <div className="flex justify-start">
-                                 <div className="max-w-md">
-                                    <div className="bg-white p-4 rounded-2xl rounded-tl-none shadow-sm">
-                                       <p className="text-slate-700 font-medium">Hello Doctor, I have been experiencing headaches for the past few days.</p>
-                                    </div>
-                                    <p className="text-xs text-slate-500 mt-1">Patient • 10:30 AM</p>
-                                 </div>
-                              </div>
-                              <div className="flex justify-end">
-                                 <div className="max-w-md">
-                                    <div className="bg-[#8D153A] text-white p-4 rounded-2xl rounded-tr-none">
-                                       <p className="font-medium">I understand. Let me check your recent medical history. Are you taking any medications currently?</p>
-                                    </div>
-                                    <p className="text-xs text-slate-500 mt-1 text-right">You • 10:32 AM</p>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-
-                        {/* Chat Input */}
-                        <div className="border-t border-slate-200 bg-white p-4">
-                           <div className="flex gap-3">
-                              <input
-                                 type="text"
-                                 value={chatMessage}
-                                 onChange={(e) => setChatMessage(e.target.value)}
-                                 placeholder="Type your message..."
-                                 className="flex-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
-                                 onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                              />
-                              <button
-                                 onClick={handleVoiceRecord}
-                                 className={`p-3 rounded-xl transition-all ${
-                                    isRecording 
-                                       ? 'bg-red-500 text-white animate-pulse' 
-                                       : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                                 }`}
-                                 title={isRecording ? 'Stop Recording' : 'Record Voice Note'}
-                              >
-                                 <Mic size={20} />
-                              </button>
-                              <button
-                                 onClick={handleSendMessage}
-                                 className="px-6 py-3 bg-[#8D153A] text-white rounded-xl font-black hover:bg-[#8D153A]/80 transition-all flex items-center gap-2"
-                              >
-                                 <Send size={16} />
-                                 Send
-                              </button>
-                           </div>
-                        </div>
-                     </div>
-                  )}
-
-                  {activeTab === 'files' && (
-                     <div className="p-6">
-                        <div className="mb-6">
-                           <h4 className="text-lg font-black text-slate-950 mb-4">Share Medical Documents</h4>
-                           <div className="border-2 border-dashed border-slate-300 rounded-2xl p-8 text-center hover:border-[#8D153A] transition-all">
-                              <FileMedicalIcon size={48} className="mx-auto text-slate-400 mb-4" />
-                              <p className="text-slate-600 font-medium mb-2">Drop files here or click to browse</p>
-                              <p className="text-sm text-slate-500 mb-4">Support: PDF, JPG, PNG, DOC (Max 10MB)</p>
-                              <input
-                                 type="file"
-                                 multiple
-                                 onChange={handleFileUpload}
-                                 className="hidden"
-                                 id="file-upload"
-                                 accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
-                              />
-                              <label
-                                 htmlFor="file-upload"
-                                 className="inline-block px-6 py-3 bg-[#8D153A] text-white rounded-xl font-black hover:bg-[#8D153A]/80 transition-all cursor-pointer"
-                              >
-                                 Choose Files
-                              </label>
-                           </div>
-                        </div>
-
-                        <div>
-                           <h4 className="text-lg font-black text-slate-950 mb-4">Shared Files</h4>
-                           <div className="space-y-3">
-                              <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-xl">
-                                 <FileImage className="text-blue-600" size={24} />
-                                 <div className="flex-1">
-                                    <p className="font-black text-slate-950">Lab_Report_2024.pdf</p>
-                                    <p className="text-sm text-slate-500">2.4 MB • Uploaded 2 hours ago</p>
-                                 </div>
-                                 <button className="p-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all">
-                                    <Download size={16} />
-                                 </button>
-                              </div>
-                              <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-xl">
-                                 <FileMedicalIcon className="text-green-600" size={24} />
-                                 <div className="flex-1">
-                                    <p className="font-black text-slate-950">X-Ray_Chest.jpg</p>
-                                    <p className="text-sm text-slate-500">1.8 MB • Uploaded yesterday</p>
-                                 </div>
-                                 <button className="p-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all">
-                                    <Download size={16} />
-                                 </button>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                  )}
-
-                  {activeTab === 'voice' && (
-                     <div className="p-6">
-                        <div className="text-center py-12">
-                           <div className="w-24 h-24 rounded-full bg-[#8D153A]/10 flex items-center justify-center mx-auto mb-6">
-                              <Mic className="text-[#8D153A]" size={40} />
-                           </div>
-                           <h4 className="text-xl font-black text-slate-950 mb-4">Voice Notes</h4>
-                           <p className="text-slate-600 font-medium mb-8">Record and send voice messages for quick communication</p>
-                           
-                           <button
-                              onClick={handleVoiceRecord}
-                              className={`px-8 py-4 rounded-2xl font-black transition-all flex items-center gap-3 mx-auto ${
-                                 isRecording 
-                                    ? 'bg-red-500 text-white animate-pulse' 
-                                    : 'bg-[#8D153A] text-white hover:bg-[#8D153A]/80'
-                              }`}
-                           >
-                              <Mic size={20} />
-                              {isRecording ? 'Stop Recording' : 'Start Recording'}
-                           </button>
-
-                           <div className="mt-12 space-y-4">
-                              <h5 className="font-black text-slate-950">Recent Voice Notes</h5>
-                              <div className="space-y-3">
-                                 <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-xl">
-                                    <button className="p-2 rounded-xl bg-emerald-100 text-emerald-600 hover:bg-emerald-200 transition-all">
-                                       <Volume2 size={16} />
-                                    </button>
-                                    <div className="flex-1">
-                                       <p className="font-black text-slate-950">Medication Instructions</p>
-                                       <p className="text-sm text-slate-500">0:45 • 2 hours ago</p>
-                                    </div>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                  )}
-
-                  {activeTab === 'reminders' && (
-                     <div className="p-6">
-                        <h4 className="text-lg font-black text-slate-950 mb-6">Appointment Reminders</h4>
-                        
-                        <div className="bg-blue-50 border border-blue-100 rounded-2xl p-6 mb-6">
-                           <div className="flex items-start gap-4">
-                              <Calendar className="text-blue-600 mt-1" size={24} />
                               <div className="flex-1">
-                                 <h5 className="font-black text-slate-950 mb-2">Next Appointment</h5>
-                                 <p className="text-slate-700 font-medium mb-4">{selectedPatientForChat.name} - Follow-up Consultation</p>
-                                 <p className="text-sm text-slate-600 mb-4">Date: {selectedPatientForChat.time}, Tomorrow</p>
-                                 <button
-                                    onClick={handleSendAppointmentReminder}
-                                    className="px-4 py-2 bg-blue-600 text-white rounded-xl font-black hover:bg-blue-700 transition-all"
-                                 >
-                                    Send Reminder
-                                 </button>
+                                 <h2 className="text-3xl font-black mb-2">{selectedPatient.name}</h2>
+                                 <div className="flex items-center gap-4 text-white/90">
+                                    <span className="flex items-center gap-2">
+                                       <Calendar size={16} />
+                                       {selectedPatient.age} years, {selectedPatient.gender}
+                                    </span>
+                                    <span className="flex items-center gap-2">
+                                       <Activity size={16} />
+                                       {selectedPatient.bloodType}
+                                    </span>
+                                    <span className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest ${
+                                       selectedPatient.status === 'active' ? 'bg-emerald-500/30 text-white' : 'bg-slate-500/30 text-white'
+                                    }`}>
+                                       {selectedPatient.status}
+                                    </span>
+                                 </div>
                               </div>
                            </div>
                         </div>
 
-                        <div className="space-y-4">
-                           <h5 className="font-black text-slate-950">Quick Reminder Templates</h5>
-                           {[
-                              'Please remember to take your medication before the appointment.',
-                              'Bring your previous medical reports and test results.',
-                              'Fast for 8 hours before the blood test.',
-                              'Arrive 15 minutes early for paperwork.'
-                           ].map((template, idx) => (
-                              <div key={idx} className="p-4 bg-slate-50 rounded-xl flex items-center justify-between">
-                                 <p className="text-slate-700 font-medium">{template}</p>
-                                 <button className="px-3 py-1 bg-[#8D153A] text-white rounded-lg text-xs font-black hover:bg-[#8D153A]/80 transition-all">
-                                    Send
-                                 </button>
+                        {/* Modal Content */}
+                        <div className="p-8 overflow-y-auto max-h-[60vh]">
+                           {/* Quick Stats Grid */}
+                           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                              <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-2xl border border-blue-200">
+                                 <div className="flex items-center gap-2 mb-2">
+                                    <Heart className="text-blue-600" size={18} />
+                                    <span className="text-xs font-black text-blue-600 uppercase tracking-widest">Blood Pressure</span>
+                                 </div>
+                                 <p className="text-2xl font-black text-blue-900">{selectedPatient.bloodPressure}</p>
                               </div>
-                           ))}
+                              <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-2xl border border-purple-200">
+                                 <div className="flex items-center gap-2 mb-2">
+                                    <Activity className="text-purple-600" size={18} />
+                                    <span className="text-xs font-black text-purple-600 uppercase tracking-widest">Glucose</span>
+                                 </div>
+                                 <p className="text-2xl font-black text-purple-900">{selectedPatient.glucose}</p>
+                              </div>
+                              <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-2xl border border-green-200">
+                                 <div className="flex items-center gap-2 mb-2">
+                                    <Pill className="text-green-600" size={18} />
+                                    <span className="text-xs font-black text-green-600 uppercase tracking-widest">Medications</span>
+                                 </div>
+                                 <p className="text-2xl font-black text-green-900">{selectedPatient.medications}</p>
+                              </div>
+                              <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-4 rounded-2xl border border-orange-200">
+                                 <div className="flex items-center gap-2 mb-2">
+                                    <AlertTriangle className="text-orange-600" size={18} />
+                                    <span className="text-xs font-black text-orange-600 uppercase tracking-widest">Risk Level</span>
+                                 </div>
+                                 <p className="text-2xl font-black text-orange-900 capitalize">{selectedPatient.riskLevel}</p>
+                              </div>
+                           </div>
+
+                           {/* Medical Information */}
+                           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                              <div>
+                                 <h3 className="text-xl font-black text-slate-950 mb-4 flex items-center gap-3">
+                                    <div className="w-8 h-8 bg-[#8D153A]/10 rounded-xl flex items-center justify-center">
+                                       <FileText className="text-[#8D153A]" size={16} />
+                                    </div>
+                                    Medical Conditions
+                                 </h3>
+                                 <div className="bg-slate-50 p-6 rounded-2xl">
+                                    <p className="font-black text-slate-950 mb-3">Primary Conditions:</p>
+                                    <p className="text-slate-700 font-medium mb-4">{selectedPatient.condition}</p>
+                                    <div className="flex flex-wrap gap-2">
+                                       {selectedPatient.condition.split(',').map((condition, idx) => (
+                                          <span key={idx} className="px-3 py-1 bg-[#8D153A]/10 text-[#8D153A] rounded-lg text-xs font-black">
+                                             {condition.trim()}
+                                          </span>
+                                       ))}
+                                    </div>
+                                 </div>
+                              </div>
+
+                              <div>
+                                 <h3 className="text-xl font-black text-slate-950 mb-4 flex items-center gap-3">
+                                    <div className="w-8 h-8 bg-emerald-100 rounded-xl flex items-center justify-center">
+                                       <Calendar className="text-emerald-600" size={16} />
+                                    </div>
+                                    Visit Schedule
+                                 </h3>
+                                 <div className="bg-slate-50 p-6 rounded-2xl space-y-4">
+                                    <div className="flex justify-between items-center">
+                                       <span className="text-sm text-slate-600 font-medium">Last Visit:</span>
+                                       <span className="font-black text-slate-950">{selectedPatient.lastVisit}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                       <span className="text-sm text-slate-600 font-medium">Next Appointment:</span>
+                                       <span className="font-black text-emerald-600">{selectedPatient.nextAppointment}</span>
+                                    </div>
+                                    <div className="w-full bg-slate-200 rounded-full h-2 mt-4">
+                                       <div className="bg-gradient-to-r from-[#8D153A] to-[#E5AB22] h-2 rounded-full" style={{width: '65%'}}></div>
+                                    </div>
+                                    <p className="text-xs text-slate-500 text-center">Treatment Progress: 65%</p>
+                                 </div>
+                              </div>
+                           </div>
+
+                           {/* Action Buttons */}
+                           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                              <button className="group p-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-2xl font-black hover:from-blue-600 hover:to-blue-700 transition-all transform hover:scale-105 shadow-lg">
+                                 <div className="flex flex-col items-center gap-2">
+                                    <FileText size={20} />
+                                    <span className="text-xs">Full History</span>
+                                 </div>
+                              </button>
+                              <button className="group p-4 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-2xl font-black hover:from-purple-600 hover:to-purple-700 transition-all transform hover:scale-105 shadow-lg">
+                                 <div className="flex flex-col items-center gap-2">
+                                    <Pill size={20} />
+                                    <span className="text-xs">Medications</span>
+                                 </div>
+                              </button>
+                              <button className="group p-4 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-2xl font-black hover:from-emerald-600 hover:to-emerald-700 transition-all transform hover:scale-105 shadow-lg">
+                                 <div className="flex flex-col items-center gap-2">
+                                    <Activity size={20} />
+                                    <span className="text-xs">Vitals Trend</span>
+                                 </div>
+                              </button>
+                              <button className="group p-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-2xl font-black hover:from-orange-600 hover:to-orange-700 transition-all transform hover:scale-105 shadow-lg">
+                                 <div className="flex flex-col items-center gap-2">
+                                    <AlertTriangle size={20} />
+                                    <span className="text-xs">Risk Analysis</span>
+                                 </div>
+                              </button>
+                           </div>
                         </div>
                      </div>
-                  )}
-
-                  {activeTab === 'instructions' && (
-                     <div className="p-6">
-                        <h4 className="text-lg font-black text-slate-950 mb-6">Post-Consultation Instructions</h4>
-                        
-                        <div className="space-y-6">
-                           <div>
-                              <h5 className="font-black text-slate-950 mb-3">Medication Instructions</h5>
-                              <textarea
-                                 className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10 h-32 resize-none"
-                                 placeholder="Enter detailed medication instructions..."
-                                 defaultValue="Take Amoxicillin 500mg twice daily after meals for 7 days. Complete the full course even if you feel better."
-                              />
-                           </div>
-
-                           <div>
-                              <h5 className="font-black text-slate-950 mb-3">Lifestyle Recommendations</h5>
-                              <textarea
-                                 className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10 h-32 resize-none"
-                                 placeholder="Enter lifestyle and dietary recommendations..."
-                                 defaultValue="Increase water intake to 8 glasses per day. Avoid spicy and oily foods for 2 weeks. Exercise moderately for 30 minutes daily."
-                              />
-                           </div>
-
-                           <div>
-                              <h5 className="font-black text-slate-950 mb-3">Follow-up Schedule</h5>
-                              <textarea
-                                 className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10 h-24 resize-none"
-                                 placeholder="Enter follow-up appointment details..."
-                                 defaultValue="Next review in 2 weeks. Book appointment for blood tests before next visit."
-                              />
-                           </div>
-
-                           <button
-                              onClick={handleSendPostConsultationInstructions}
-                              className="w-full py-4 bg-[#8D153A] text-white rounded-2xl font-black hover:bg-[#8D153A]/80 transition-all flex items-center justify-center gap-3"
-                           >
-                              <Send size={20} />
-                              Send Instructions to Patient
-                           </button>
-                        </div>
-                     </div>
-                  )}
-               </div>
+                  </div>
+               )}
             </div>
+
          </div>
-      )}
-      </main>
+
+            </main>
     </div>
   );
 }

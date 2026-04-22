@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   Calendar, Clock, Search, Filter, PlusCircle, 
   MessageCircle, Video, FileText, Users, ChevronRight,
-  AlertTriangle, CheckCircle, XCircle, Phone, X, Play
+  AlertTriangle, CheckCircle, XCircle, Phone, X
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import logo from '../../assets/logo.png';
@@ -113,7 +113,7 @@ export default function AppointmentsPage() {
       notes: 'Patient reports chest pain, immediate attention required',
       contact: '+94 77 456 7890'
     }
-  ]);
+  ];
 
   const filteredAppointments = appointments.filter(apt => {
     const matchesSearch = apt.patientName.toLowerCase().includes(searchQuery.toLowerCase());
@@ -236,36 +236,6 @@ export default function AppointmentsPage() {
     alert('Appointment rescheduled successfully!');
   };
 
-  // Helper function for priority colors
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case 'urgent':
-        return 'bg-red-100 text-red-600';
-      case 'high':
-        return 'bg-orange-100 text-orange-600';
-      case 'normal':
-        return 'bg-green-100 text-green-600';
-      default:
-        return 'bg-slate-100 text-slate-600';
-    }
-  };
-
-  // Helper function for status colors
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'waiting':
-        return 'bg-emerald-100 text-emerald-700';
-      case 'confirmed':
-        return 'bg-blue-100 text-blue-700';
-      case 'completed':
-        return 'bg-purple-100 text-purple-700';
-      case 'cancelled':
-        return 'bg-red-100 text-red-700';
-      default:
-        return 'bg-slate-100 text-slate-700';
-    }
-  };
-
   const getCalendarDays = () => {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
@@ -304,8 +274,24 @@ export default function AppointmentsPage() {
     return slots;
   };
 
-  
-  
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'waiting': return 'bg-emerald-100 text-emerald-700';
+      case 'confirmed': return 'bg-blue-100 text-blue-700';
+      case 'completed': return 'bg-purple-100 text-purple-700';
+      case 'cancelled': return 'bg-red-100 text-red-700';
+      default: return 'bg-slate-100 text-slate-700';
+    }
+  };
+
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case 'urgent': return 'bg-red-100 text-red-600';
+      case 'high': return 'bg-orange-100 text-orange-600';
+      default: return 'bg-slate-100 text-slate-600';
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 flex overflow-hidden">
       {/* Sidebar */}
@@ -321,7 +307,7 @@ export default function AppointmentsPage() {
 
           <nav className="space-y-2">
             {[
-              { name: 'Dashboard', icon: Users, path: '/doctor' },
+              { name: 'Patient Overview', icon: Users, path: '/doctor' },
               { name: 'Appointments', icon: Calendar, path: '/doctor/appointments' },
               { name: 'Daily Schedule', icon: Clock, path: '/doctor/schedule' },
               { name: 'Medical Reports', icon: FileText, path: '/doctor/reports' },
@@ -353,7 +339,7 @@ export default function AppointmentsPage() {
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h1 className="text-4xl font-black text-slate-950 mb-2">Appointments</h1>
-                <p className="text-lg text-slate-600 font-bold">Manage your patient appointments and schedule</p>
+                <p className="text-lg text-slate-600 font-bold">Manage your patient appointments and consultations</p>
               </div>
               <div className="flex items-center gap-3">
                 <button
@@ -361,7 +347,7 @@ export default function AppointmentsPage() {
                   className="px-6 py-3 bg-gradient-to-r from-[#8D153A] to-[#E5AB22] text-white rounded-2xl font-black hover:shadow-lg transition-all flex items-center gap-2"
                 >
                   <PlusCircle size={20} />
-                  + New Appointment
+                  Quick Appointment
                 </button>
               </div>
             </div>
@@ -484,44 +470,35 @@ export default function AppointmentsPage() {
             </div>
           </div>
 
-          {/* Filters Row */}
+          {/* Search and Filters */}
           <div className="bg-white p-6 rounded-2xl border border-slate-100 mb-6">
-            <div className="flex flex-col lg:flex-row gap-4 items-center">
+            <div className="flex flex-col md:flex-row gap-4">
               <div className="flex-1 relative">
                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} />
                 <input
                   type="text"
-                  placeholder="🔍 Search patients..."
+                  placeholder="Search patients..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
                 />
               </div>
-              
-              <div className="flex gap-3 items-center">
+              <div className="flex gap-2">
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
                   className="px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
                 >
                   <option value="all">All Status</option>
-                  <option value="confirmed">Confirmed</option>
                   <option value="waiting">Waiting</option>
+                  <option value="confirmed">Confirmed</option>
+                  <option value="completed">Completed</option>
                   <option value="cancelled">Cancelled</option>
                 </select>
-                
-                <input
-                  type="date"
-                  className="px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
-                />
-                
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    className="w-4 h-4 text-[#8D153A] bg-slate-50 border-slate-200 rounded focus:ring-[#8D153A] focus:ring-2"
-                  />
-                  <span className="text-sm font-black text-slate-700">Doctor Available</span>
-                </label>
+                <button className="px-6 py-3 bg-[#8D153A] text-white rounded-xl font-black hover:bg-[#8D153A]/80 transition-all flex items-center gap-2">
+                  <PlusCircle size={20} />
+                  New Appointment
+                </button>
               </div>
             </div>
           </div>
@@ -537,58 +514,90 @@ export default function AppointmentsPage() {
                   draggable
                   onDragStart={() => handleDragStart(appointment)}
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-6">
-                      <div className="w-12 h-12 rounded-full bg-[#8D153A] text-white flex items-center justify-center font-black text-lg">
-                        {appointment.patientName.split(' ').map(n => n[0]).join('')}
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-start gap-6">
+                      <div className="relative">
+                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#8D153A] to-[#E5AB22] flex items-center justify-center text-white font-black text-xl shadow-lg">
+                          {appointment.patientName.split(' ').map(n => n[0]).join('')}
+                        </div>
+                        {appointment.priority === 'urgent' && (
+                          <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white animate-pulse"></div>
+                        )}
                       </div>
-                      <div>
-                        <p className="font-black text-slate-950 text-lg mb-1">{appointment.patientName}</p>
-                        <div className="flex items-center gap-4 text-sm text-slate-600 font-medium">
-                          <span className="flex items-center gap-1">
-                            <Clock size={14} />
-                            {appointment.time}
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <p className="font-black text-slate-950 text-lg">{appointment.patientName}</p>
+                          <span className="px-2 py-1 bg-slate-100 rounded-lg text-xs font-black text-slate-600">
+                            {appointment.age}y, {appointment.gender}
                           </span>
-                          <span className="px-2 py-1 bg-slate-100 rounded-lg text-xs font-black">
-                            {appointment.type === 'video' ? 'New' : 'Follow-up'}
-                          </span>
-                          <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-lg text-xs font-black capitalize">
-                            {appointment.type}
+                          <span className={`px-2 py-1 rounded-lg text-xs font-black ${getPriorityColor(appointment.priority)}`}>
+                            {appointment.priority.toUpperCase()}
                           </span>
                         </div>
+                        <div className="flex items-center gap-4 text-sm text-slate-600 font-bold mb-3">
+                          <span className="flex items-center gap-1">
+                            <Calendar size={14} /> {appointment.date}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Clock size={14} /> {appointment.time}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Video size={14} /> {appointment.type}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Phone size={14} /> {appointment.contact}
+                          </span>
+                        </div>
+                        <p className="text-sm text-slate-600 font-medium mb-2">
+                          <span className="font-black">Reason:</span> {appointment.reason}
+                        </p>
+                        <p className="text-xs text-slate-500 italic">
+                          {appointment.notes}
+                        </p>
                       </div>
                     </div>
-                    
-                    <div className="flex items-center gap-3">
-                      <span className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest ${getStatusColor(appointment.status)}`}>
-                        {appointment.status.replace('-', ' ')}
-                      </span>
-                      
+                    <div className="flex flex-col items-end gap-3">
+                      <div className="flex items-center gap-2">
+                        <div className={`px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest ${getStatusColor(appointment.status)}`}>
+                          {appointment.status}
+                        </div>
+                        <div className="flex gap-1">
+                          {appointment.status !== 'completed' && (
+                            <button 
+                              onClick={() => handleUpdateStatus(appointment.id, 'completed')}
+                              className="p-1 rounded-lg bg-green-100 text-green-600 hover:bg-green-200 transition-all" 
+                              title="Mark as Completed"
+                            >
+                              <CheckCircle size={12} />
+                            </button>
+                          )}
+                          {appointment.status !== 'cancelled' && (
+                            <button 
+                              onClick={() => handleUpdateStatus(appointment.id, 'cancelled')}
+                              className="p-1 rounded-lg bg-red-100 text-red-600 hover:bg-red-200 transition-all" 
+                              title="Cancel Appointment"
+                            >
+                              <XCircle size={12} />
+                            </button>
+                          )}
+                        </div>
+                      </div>
                       <div className="flex gap-2">
-                        <button 
-                          onClick={(e) => { e.stopPropagation(); }}
-                          className="p-2 rounded-lg bg-blue-100 text-blue-600 hover:bg-blue-200 transition-all" 
-                          title="Reschedule"
-                        >
-                          <Calendar size={16} />
+                        <button className="p-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all" title="View Details">
+                          <FileText size={16} />
+                        </button>
+                        <button className="p-2 rounded-xl bg-emerald-100 text-emerald-600 hover:bg-emerald-200 transition-all" title="Start Consultation">
+                          <Video size={16} />
+                        </button>
+                        <button className="p-2 rounded-xl bg-blue-100 text-blue-600 hover:bg-blue-200 transition-all" title="Message Patient">
+                          <MessageCircle size={16} />
                         </button>
                         <button 
-                          onClick={(e) => { e.stopPropagation(); handleUpdateStatus(appointment.id, 'cancelled'); }}
-                          className="p-2 rounded-lg bg-red-100 text-red-600 hover:bg-red-200 transition-all" 
-                          title="Cancel"
+                          onClick={() => handleDeleteAppointment(appointment.id)}
+                          className="p-2 rounded-xl bg-red-100 text-red-600 hover:bg-red-200 transition-all" 
+                          title="Delete Appointment"
                         >
                           <X size={16} />
-                        </button>
-                        <button 
-                          onClick={(e) => { 
-                            e.stopPropagation(); 
-                            // Navigate to consultation page
-                            window.location.href = '/doctor/chats';
-                          }}
-                          className="p-2 rounded-lg bg-emerald-100 text-emerald-600 hover:bg-emerald-200 transition-all" 
-                          title="Start Consultation"
-                        >
-                          <Play size={16} />
                         </button>
                       </div>
                     </div>
@@ -907,6 +916,115 @@ export default function AppointmentsPage() {
                   Cancel
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Appointment Details Modal */}
+      {showAppointmentDetails && selectedAppointment && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-start mb-6">
+              <div>
+                <h3 className="text-2xl font-black text-slate-950 mb-2">Appointment Details</h3>
+                <p className="text-slate-600 font-bold">{selectedAppointment.patientName}</p>
+              </div>
+              <button 
+                onClick={() => setShowAppointmentDetails(false)}
+                className="p-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div>
+                <h4 className="text-lg font-black text-slate-950 mb-4">Patient Information</h4>
+                <div className="space-y-4">
+                  <div className="flex justify-between">
+                    <span className="text-sm text-slate-600 font-medium">Name:</span>
+                    <span className="font-black text-slate-950">{selectedAppointment.patientName}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-slate-600 font-medium">Age:</span>
+                    <span className="font-black text-slate-950">{selectedAppointment.age} years</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-slate-600 font-medium">Gender:</span>
+                    <span className="font-black text-slate-950">{selectedAppointment.gender}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-slate-600 font-medium">Contact:</span>
+                    <span className="font-black text-slate-950">{selectedAppointment.contact}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h4 className="text-lg font-black text-slate-950 mb-4">Appointment Details</h4>
+                <div className="space-y-4">
+                  <div className="flex justify-between">
+                    <span className="text-sm text-slate-600 font-medium">Date:</span>
+                    <span className="font-black text-slate-950">{selectedAppointment.date}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-slate-600 font-medium">Time:</span>
+                    <span className="font-black text-slate-950">{selectedAppointment.time}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-slate-600 font-medium">Duration:</span>
+                    <span className="font-black text-slate-950">{selectedAppointment.duration}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-slate-600 font-medium">Type:</span>
+                    <span className="font-black text-slate-950">{selectedAppointment.type}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-slate-600 font-medium">Priority:</span>
+                    <span className={`px-2 py-1 rounded-lg text-xs font-black ${getPriorityColor(selectedAppointment.priority)}`}>
+                      {selectedAppointment.priority.toUpperCase()}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-slate-600 font-medium">Status:</span>
+                    <span className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest ${getStatusColor(selectedAppointment.status)}`}>
+                      {selectedAppointment.status}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-8">
+              <h4 className="text-lg font-black text-slate-950 mb-4">Medical Information</h4>
+              <div className="space-y-4">
+                <div>
+                  <span className="text-sm text-slate-600 font-medium">Reason for Visit:</span>
+                  <p className="font-black text-slate-950 mt-1">{selectedAppointment.reason}</p>
+                </div>
+                <div>
+                  <span className="text-sm text-slate-600 font-medium">Notes:</span>
+                  <p className="font-black text-slate-950 mt-1">{selectedAppointment.notes}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-3 mt-8">
+              <button className="flex-1 py-4 bg-emerald-600 text-white rounded-2xl font-black hover:bg-emerald-700 transition-all flex items-center justify-center gap-2">
+                <Video size={20} />
+                Start Consultation
+              </button>
+              <button className="flex-1 py-4 bg-blue-600 text-white rounded-2xl font-black hover:bg-blue-700 transition-all flex items-center justify-center gap-2">
+                <MessageCircle size={20} />
+                Message Patient
+              </button>
+              <button
+                onClick={() => setShowAppointmentDetails(false)}
+                className="flex-1 py-4 bg-slate-100 text-slate-600 rounded-2xl font-black hover:bg-slate-200 transition-all"
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>

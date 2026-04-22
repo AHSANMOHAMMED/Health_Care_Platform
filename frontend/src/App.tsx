@@ -57,6 +57,7 @@ function AppRoutes() {
       {/* Main Dashboards (Full-Screen Layouts) */}
       <Route path="/patient" element={<PatientDashboard />} />
       <Route path="/doctor" element={<DoctorDashboard />} />
+      <Route path="/doctor/patients" element={<PatientOverviewPage />} />
       <Route path="/admin" element={<AdminDashboard />} />
 
       {/* =========================================

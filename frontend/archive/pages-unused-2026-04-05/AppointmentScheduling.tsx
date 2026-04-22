@@ -303,7 +303,7 @@ export default function AppointmentScheduling() {
     return matchesSearch && matchesSpecialty;
   });
 
-  const getDaysInMonth = (date: Date) => {
+  const getDaysInMonth = (date: Date): Array<Date | null> => {
     const year = date.getFullYear();
     const month = date.getMonth();
     const firstDay = new Date(year, month, 1);
@@ -311,7 +311,7 @@ export default function AppointmentScheduling() {
     const daysInMonth = lastDay.getDate();
     const startingDayOfWeek = firstDay.getDay();
 
-    const days = [];
+    const days: Array<Date | null> = [];
     for (let i = 0; i < startingDayOfWeek; i++) {
       days.push(null);
     }
@@ -322,13 +322,13 @@ export default function AppointmentScheduling() {
     return days;
   };
 
-  const getWeekDays = (date: Date) => {
+  const getWeekDays = (date: Date): Date[] => {
     const startOfWeek = new Date(date);
     const day = startOfWeek.getDay();
     const diff = startOfWeek.getDate() - day;
     startOfWeek.setDate(diff);
 
-    const weekDays = [];
+    const weekDays: Date[] = [];
     for (let i = 0; i < 7; i++) {
       const day = new Date(startOfWeek);
       day.setDate(startOfWeek.getDate() + i);

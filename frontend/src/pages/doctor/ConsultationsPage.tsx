@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { 
   MessageSquare, Search, Filter, PlusCircle, Video, Phone, Mic,
   Send, Paperclip, Calendar, Clock, Users, CheckCircle, AlertCircle,
   Activity, Heart, FileText, ChevronRight, Star
 } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo.png';
 
 interface Consultation {
@@ -32,6 +32,7 @@ interface Message {
 
 export default function ConsultationsPage() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedConsultation, setSelectedConsultation] = useState<Consultation | null>(null);
@@ -49,6 +50,10 @@ export default function ConsultationsPage() {
   const [prescriptionMode, setPrescriptionMode] = useState(false);
   const [emergenciesOnly, setEmergenciesOnly] = useState(false);
   const [showScheduleModal, setShowScheduleModal] = useState(false);
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const recordingChunksRef = useRef<BlobPart[]>([]);
   
   // Schedule consultation form state
   const [scheduleForm, setScheduleForm] = useState({
@@ -61,6 +66,15 @@ export default function ConsultationsPage() {
     price: 0,
     notes: ''
   });
+
+  useEffect(() => {
+    const state = location.state as undefined | { openSchedule?: boolean };
+    if (state?.openSchedule) {
+      setActiveTab('schedule');
+      setShowScheduleModal(true);
+      navigate(location.pathname, { replace: true, state: null });
+    }
+  }, [location.state, location.pathname, navigate]);
 
   const consultations: Consultation[] = [
     {
@@ -112,7 +126,7 @@ export default function ConsultationsPage() {
     }
   ];
 
-  const messages: Message[] = [
+  const initialMessages = useMemo<Message[]>(() => ([
     {
       id: 1,
       sender: 'patient',
@@ -141,7 +155,9 @@ export default function ConsultationsPage() {
       timestamp: '10:40 AM',
       type: 'text'
     }
-  ];
+  ]), []);
+
+  const [chatMessages, setChatMessages] = useState<Message[]>(initialMessages);
 
   const filteredConsultations = consultations.filter(consultation => {
     const matchesSearch = consultation.patientName.toLowerCase().includes(searchQuery.toLowerCase());
@@ -161,16 +177,125 @@ export default function ConsultationsPage() {
     setShowChatWindow(true);
   };
 
+  const handleVoiceCall = (consultation: Consultation) => {
+    alert(`Initiating voice call with ${consultation.patientName}...\n\nPhone: +94 77 123 4567\nThis would connect to a voice call system.`);
+  };
+
+  const handleFileShare = (patientName: string) => {
+    alert(`Opening file sharing with ${patientName}...\n\nYou can share:\n• Medical reports\n• Test results\n• Prescriptions\n• Images\nThis would open a file sharing interface.`);
+  };
+
+  const handleViewDetails = (consultation: Consultation) => {
+    setSelectedConsultation(consultation);
+  };
+
   const handleSendMessage = () => {
-    if (message.trim()) {
-      console.log('Sending message:', message);
-      setMessage('');
+    const trimmed = message.trim();
+    if (!trimmed) return;
+
+    const now = new Date();
+    const timestamp = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    setChatMessages(prev => [
+      ...prev,
+      {
+        id: (prev[prev.length - 1]?.id ?? 0) + 1,
+        sender: 'doctor',
+        content: trimmed,
+        timestamp,
+        type: 'text'
+      }
+    ]);
+    setMessage('');
+  };
+
+  const handleAttachFileClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files ?? []);
+    if (files.length === 0) return;
+
+    const now = new Date();
+    const timestamp = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    setChatMessages(prev => {
+      const baseId = (prev[prev.length - 1]?.id ?? 0) + 1;
+      return [
+        ...prev,
+        ...files.map((f, idx) => ({
+          id: baseId + idx,
+          sender: 'doctor' as const,
+          content: `📎 ${f.name} (${Math.round(f.size / 1024)} KB)`,
+          timestamp,
+          type: 'file' as const
+        }))
+      ];
+    });
+
+    // allow selecting same file again
+    e.target.value = '';
+  };
+
+  const handleToggleRecording = async () => {
+    if (isRecording) {
+      mediaRecorderRef.current?.stop();
+      return;
+    }
+
+    if (!navigator.mediaDevices?.getUserMedia) {
+      alert('Voice recording is not supported in this browser.');
+      return;
+    }
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
+      recordingChunksRef.current = [];
+
+      recorder.ondataavailable = (evt) => {
+        if (evt.data && evt.data.size > 0) recordingChunksRef.current.push(evt.data);
+      };
+
+      recorder.onstop = () => {
+        stream.getTracks().forEach(t => t.stop());
+
+        const blob = new Blob(recordingChunksRef.current, { type: recorder.mimeType || 'audio/webm' });
+        const seconds = Math.max(1, Math.round(blob.size / 16000)); // rough estimate
+
+        const now = new Date();
+        const timestamp = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        setChatMessages(prev => [
+          ...prev,
+          {
+            id: (prev[prev.length - 1]?.id ?? 0) + 1,
+            sender: 'doctor',
+            content: `🎤 Voice message (${seconds}s)`,
+            timestamp,
+            type: 'voice'
+          }
+        ]);
+      };
+
+      mediaRecorderRef.current = recorder;
+      recorder.start();
+      setIsRecording(true);
+    } catch (err) {
+      console.error(err);
+      alert('Microphone permission denied or unavailable.');
     }
   };
 
-  const handleStartRecording = () => {
-    setIsRecording(!isRecording);
-  };
+  useEffect(() => {
+    if (!isRecording) return;
+    const recorder = mediaRecorderRef.current;
+    if (!recorder) return;
+    const handleStop = () => setIsRecording(false);
+    recorder.addEventListener('stop', handleStop);
+    return () => recorder.removeEventListener('stop', handleStop);
+  }, [isRecording]);
 
   const handleSaveConsultationNotes = () => {
     console.log('Saving consultation notes:', consultationNotes);
@@ -330,7 +455,7 @@ export default function ConsultationsPage() {
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-4xl font-black text-slate-950 mb-2">Consultations</h1>
-            <p className="text-lg text-slate-600 font-bold">Manage patient consultations and communications</p>
+            <p className="text-lg text-slate-600 font-bold">Manage patient consultations and communication</p>
           </div>
 
           {/* Tab Navigation */}
@@ -343,7 +468,7 @@ export default function ConsultationsPage() {
                   : 'text-slate-600 hover:bg-slate-100'
               }`}
             >
-              Consultations
+              Active
             </button>
             <button
               onClick={() => setActiveTab('messages')}
@@ -354,6 +479,26 @@ export default function ConsultationsPage() {
               }`}
             >
               Messages
+            </button>
+            <button
+              onClick={() => setActiveTab('history')}
+              className={`px-6 py-3 rounded-xl font-black transition-all ${
+                activeTab === 'history'
+                  ? 'bg-[#8D153A] text-white'
+                  : 'text-slate-600 hover:bg-slate-100'
+              }`}
+            >
+              History
+            </button>
+            <button
+              onClick={() => setActiveTab('schedule')}
+              className={`px-6 py-3 rounded-xl font-black transition-all ${
+                activeTab === 'schedule'
+                  ? 'bg-[#8D153A] text-white'
+                  : 'text-slate-600 hover:bg-slate-100'
+              }`}
+            >
+              Schedule
             </button>
           </div>
 
@@ -488,18 +633,49 @@ export default function ConsultationsPage() {
                         <div className="flex flex-col items-end gap-3">
                           <div className="flex gap-2">
                             {consultation.status === 'scheduled' && (
-                              <button className="px-4 py-2 bg-emerald-600 text-white rounded-xl font-black hover:bg-emerald-700 transition-all flex items-center gap-2">
+                              <button 
+                                onClick={() => handleStartVideoCall(consultation)}
+                                className="px-4 py-2 bg-emerald-600 text-white rounded-xl font-black hover:bg-emerald-700 transition-all flex items-center gap-2"
+                              >
                                 <Video size={16} />
                                 Start
                               </button>
                             )}
                             {consultation.status === 'in-progress' && (
-                              <button className="px-4 py-2 bg-blue-600 text-white rounded-xl font-black hover:bg-blue-700 transition-all flex items-center gap-2">
+                              <button 
+                                onClick={() => handleStartVideoCall(consultation)}
+                                className="px-4 py-2 bg-blue-600 text-white rounded-xl font-black hover:bg-blue-700 transition-all flex items-center gap-2"
+                              >
                                 <Activity size={16} />
                                 Join
                               </button>
                             )}
-                            <button className="p-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all" title="View Details">
+                            <button 
+                              onClick={() => handleOpenChat(consultation.patientName)}
+                              className="p-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all" 
+                              title="Start Chat"
+                            >
+                              <MessageSquare size={16} />
+                            </button>
+                            <button 
+                              onClick={() => handleVoiceCall(consultation)}
+                              className="p-2 rounded-xl bg-green-100 text-green-600 hover:bg-green-200 transition-all" 
+                              title="Voice Call"
+                            >
+                              <Phone size={16} />
+                            </button>
+                            <button 
+                              onClick={() => handleFileShare(consultation.patientName)}
+                              className="p-2 rounded-xl bg-blue-100 text-blue-600 hover:bg-blue-200 transition-all" 
+                              title="Share Files"
+                            >
+                              <Paperclip size={16} />
+                            </button>
+                            <button 
+                              onClick={() => handleViewDetails(consultation)}
+                              className="p-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all" 
+                              title="View Details"
+                            >
                               <ChevronRight size={16} />
                             </button>
                           </div>
@@ -519,7 +695,11 @@ export default function ConsultationsPage() {
                 <h3 className="font-black text-slate-950 mb-4">Recent Messages</h3>
                 <div className="space-y-2">
                   {['Aruni Wijesinghe', 'Kasun Perera', 'Imara Jaffar'].map((name, idx) => (
-                    <div key={idx} className="p-3 rounded-xl hover:bg-slate-50 cursor-pointer transition-all">
+                    <div 
+                      key={idx} 
+                      onClick={() => handleOpenChat(name)}
+                      className="p-3 rounded-xl hover:bg-slate-50 cursor-pointer transition-all"
+                    >
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-[#8D153A] text-white flex items-center justify-center font-black text-sm">
                           {name.split(' ').map(n => n[0]).join('')}
@@ -550,7 +730,7 @@ export default function ConsultationsPage() {
 
                 <div className="flex-1 p-4 overflow-y-auto">
                   <div className="space-y-4">
-                    {messages.map((msg) => (
+                    {chatMessages.map((msg) => (
                       <div key={msg.id} className={`flex ${msg.sender === 'doctor' ? 'justify-end' : 'justify-start'}`}>
                         <div className={`max-w-md px-4 py-3 rounded-2xl ${
                           msg.sender === 'doctor' 
@@ -569,24 +749,380 @@ export default function ConsultationsPage() {
 
                 <div className="p-4 border-t border-slate-100">
                   <div className="flex gap-2">
-                    <button className="p-3 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all">
+                    <button
+                      onClick={handleAttachFileClick}
+                      className="p-3 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all"
+                      title="Attach file"
+                      type="button"
+                    >
                       <Paperclip size={20} />
                     </button>
-                    <button className="p-3 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all">
+                    <button
+                      onClick={handleToggleRecording}
+                      className={`p-3 rounded-xl transition-all ${
+                        isRecording
+                          ? 'bg-red-100 text-red-700 hover:bg-red-200'
+                          : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                      }`}
+                      title={isRecording ? 'Stop recording' : 'Voice message'}
+                      type="button"
+                    >
                       <Mic size={20} />
                     </button>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      className="hidden"
+                      multiple
+                      onChange={handleFileSelected}
+                    />
                     <input
                       type="text"
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') handleSendMessage();
+                      }}
                       placeholder="Type a message..."
                       className="flex-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
                     />
-                    <button className="px-6 py-3 bg-[#8D153A] text-white rounded-xl font-black hover:bg-[#8D153A]/80 transition-all flex items-center gap-2">
+                    <button
+                      onClick={handleSendMessage}
+                      className="px-6 py-3 bg-[#8D153A] text-white rounded-xl font-black hover:bg-[#8D153A]/80 transition-all flex items-center gap-2"
+                      title="Send"
+                      type="button"
+                    >
                       <Send size={20} />
                     </button>
                   </div>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'history' && (
+            <div className="bg-white rounded-2xl border border-slate-100 p-8">
+              <h3 className="text-2xl font-black text-slate-950 mb-6">Consultation History</h3>
+              <div className="space-y-4">
+                {consultations.filter(c => c.status === 'completed').map((consultation) => (
+                  <div key={consultation.id} className="p-4 bg-slate-50 rounded-2xl border border-slate-200">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-black text-slate-950">{consultation.patientName}</p>
+                        <p className="text-sm text-slate-600">{consultation.date} • {consultation.time}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-black text-slate-950">LKR {consultation.price.toLocaleString()}</p>
+                        {consultation.rating && (
+                          <div className="flex gap-1 mt-1">
+                            {renderStars(consultation.rating)}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'schedule' && (
+            <div className="bg-white rounded-2xl border border-slate-100 p-8 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 250px)' }}>
+              <div className="sticky top-0 bg-white z-10 pb-4 mb-2 border-b border-slate-100">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-2xl font-black text-slate-950">Add Appointment</h3>
+                  <div className="flex gap-2">
+                    <button className="px-4 py-2 bg-slate-100 text-slate-600 rounded-xl font-black hover:bg-slate-200 transition-all">
+                      Save Draft
+                    </button>
+                    <button className="px-4 py-2 bg-[#8D153A] text-white rounded-xl font-black hover:bg-[#8D153A]/80 transition-all">
+                      Book
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              <p className="text-lg text-slate-600 font-bold mb-8">Schedule a new consultation</p>
+
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Patient Information Card */}
+                <div className="bg-white border-2 border-slate-200 rounded-2xl p-6">
+                  <h4 className="font-black text-slate-950 mb-4 pb-2 border-b border-slate-200">Patient Information</h4>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Search Patient</label>
+                      <input
+                        type="text"
+                        className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
+                        placeholder="Search patient..."
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Name</label>
+                      <input
+                        type="text"
+                        className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
+                        placeholder="Patient name"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Patient ID</label>
+                      <input
+                        type="text"
+                        className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
+                        placeholder="Patient ID"
+                      />
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Age</label>
+                        <input
+                          type="number"
+                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
+                          placeholder="Age"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Gender</label>
+                        <select className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10">
+                          <option>Male</option>
+                          <option>Female</option>
+                          <option>Other</option>
+                        </select>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Contact</label>
+                      <input
+                        type="tel"
+                        className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
+                        placeholder="Contact number"
+                      />
+                    </div>
+                    
+                    <button className="w-full py-2 bg-[#8D153A] text-white rounded-xl font-black hover:bg-[#8D153A]/80 transition-all">
+                      + Add New Patient
+                    </button>
+                  </div>
+                </div>
+
+                {/* Doctor Availability Card */}
+                <div className="bg-white border-2 border-slate-200 rounded-2xl p-6">
+                  <h4 className="font-black text-slate-950 mb-4 pb-2 border-b border-slate-200">Doctor Availability</h4>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Free Slots</label>
+                      <div className="grid grid-cols-3 gap-2">
+                        <button className="py-2 bg-emerald-100 text-emerald-700 rounded-lg text-xs font-black hover:bg-emerald-200 transition-all">
+                          9:00 AM
+                        </button>
+                        <button className="py-2 bg-emerald-100 text-emerald-700 rounded-lg text-xs font-black hover:bg-emerald-200 transition-all">
+                          10:00 AM
+                        </button>
+                        <button className="py-2 bg-emerald-100 text-emerald-700 rounded-lg text-xs font-black hover:bg-emerald-200 transition-all">
+                          11:00 AM
+                        </button>
+                        <button className="py-2 bg-slate-100 text-slate-500 rounded-lg text-xs font-black line-through">
+                          2:00 PM
+                        </button>
+                        <button className="py-2 bg-emerald-100 text-emerald-700 rounded-lg text-xs font-black hover:bg-emerald-200 transition-all">
+                          3:00 PM
+                        </button>
+                        <button className="py-2 bg-emerald-100 text-emerald-700 rounded-lg text-xs font-black hover:bg-emerald-200 transition-all">
+                          4:00 PM
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-orange-50 border border-orange-200 rounded-xl p-3">
+                      <p className="text-xs font-black text-orange-700 mb-1">⚠️ Conflict Alert</p>
+                      <p className="text-xs text-orange-600">You have another appointment at 2:00 PM</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Patient Quick Summary */}
+                <div className="bg-white border-2 border-slate-200 rounded-2xl p-6">
+                  <h4 className="font-black text-slate-950 mb-4 pb-2 border-b border-slate-200">Patient Quick Summary</h4>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Last Visit</label>
+                      <p className="text-sm text-slate-600">15 March 2024</p>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Allergies</label>
+                      <p className="text-sm text-slate-600">Penicillin, Peanuts</p>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Current Condition</label>
+                      <p className="text-sm text-slate-600">Hypertension, Type 2 Diabetes</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+                {/* Appointment Details Card */}
+                <div className="bg-white border-2 border-slate-200 rounded-2xl p-6">
+                  <h4 className="font-black text-slate-950 mb-4 pb-2 border-b border-slate-200">Appointment Details</h4>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Date</label>
+                      <input
+                        type="date"
+                        className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Time</label>
+                      <input
+                        type="time"
+                        className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Duration</label>
+                      <select className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10">
+                        <option>15 mins</option>
+                        <option>30 mins</option>
+                        <option>45 mins</option>
+                        <option>60 mins</option>
+                      </select>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Consultation Type</label>
+                      <select className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10">
+                        <option>Video Consult</option>
+                        <option>Phone Consult</option>
+                        <option>Physical Examination</option>
+                      </select>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Appointment Type</label>
+                      <select className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10">
+                        <option>New Patient</option>
+                        <option>Follow-up</option>
+                        <option>Emergency</option>
+                        <option>Review</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Medical Purpose Card */}
+                <div className="bg-white border-2 border-slate-200 rounded-2xl p-6">
+                  <h4 className="font-black text-slate-950 mb-4 pb-2 border-b border-slate-200">Medical Purpose</h4>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Reason for Visit</label>
+                      <textarea
+                        className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
+                        rows={3}
+                        placeholder="Describe the reason for visit..."
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Symptoms</label>
+                      <textarea
+                        className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
+                        rows={3}
+                        placeholder="Describe symptoms..."
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Priority</label>
+                      <select className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10">
+                        <option>Normal</option>
+                        <option>High</option>
+                        <option>Urgent</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Notes Card */}
+                <div className="bg-white border-2 border-slate-200 rounded-2xl p-6">
+                  <h4 className="font-black text-slate-950 mb-4 pb-2 border-b border-slate-200">Notes</h4>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Preliminary Notes</label>
+                      <textarea
+                        className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
+                        rows={3}
+                        placeholder="Enter preliminary notes..."
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Special Instructions</label>
+                      <textarea
+                        className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
+                        rows={3}
+                        placeholder="Enter special instructions..."
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Required Tests</label>
+                      <textarea
+                        className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
+                        rows={3}
+                        placeholder="List required tests..."
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Appointment Summary */}
+              <div className="bg-gradient-to-r from-[#8D153A]/10 to-[#E5AB22]/10 border-2 border-[#8D153A]/20 rounded-2xl p-6 mt-6">
+                <h4 className="font-black text-slate-950 mb-4">Appointment Summary</h4>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div>
+                    <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Patient</p>
+                    <p className="font-black text-slate-950">--</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Date</p>
+                    <p className="font-black text-slate-950">--</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Time</p>
+                    <p className="font-black text-slate-950">--</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Type</p>
+                    <p className="font-black text-slate-950">--</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bottom Action Buttons */}
+              <div className="flex justify-between items-center mt-8">
+                <button className="px-6 py-3 bg-slate-100 text-slate-600 rounded-xl font-black hover:bg-slate-200 transition-all">
+                  Cancel
+                </button>
+                <button className="px-8 py-3 bg-gradient-to-r from-[#8D153A] to-[#E5AB22] text-white rounded-xl font-black hover:shadow-lg transition-all">
+                  Confirm Booking
+                </button>
               </div>
             </div>
           )}
@@ -722,6 +1258,120 @@ export default function ConsultationsPage() {
                       className="flex-1 py-4 bg-slate-100 text-slate-600 rounded-2xl font-black hover:bg-slate-200 transition-all"
                     >
                       Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Consultation Details Modal */}
+          {selectedConsultation && (
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+              <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
+                {/* Modal Header */}
+                <div className="bg-gradient-to-r from-[#8D153A] to-[#C9204A] p-6 text-white">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-2xl font-black mb-2">Consultation Details</h3>
+                      <p className="text-white/90 font-medium">{selectedConsultation.patientName}</p>
+                    </div>
+                    <button 
+                      onClick={() => setSelectedConsultation(null)}
+                      className="p-3 rounded-full bg-white/20 hover:bg-white/30 transition-all"
+                    >
+                      <X size={20} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Modal Content */}
+                <div className="p-6 overflow-y-auto max-h-[60vh]">
+                  <div className="grid grid-cols-2 gap-6 mb-6">
+                    <div className="bg-slate-50 p-4 rounded-2xl">
+                      <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Date</p>
+                      <p className="font-black text-slate-950">{selectedConsultation.date}</p>
+                    </div>
+                    <div className="bg-slate-50 p-4 rounded-2xl">
+                      <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Time</p>
+                      <p className="font-black text-slate-950">{selectedConsultation.time}</p>
+                    </div>
+                    <div className="bg-slate-50 p-4 rounded-2xl">
+                      <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Duration</p>
+                      <p className="font-black text-slate-950">{selectedConsultation.duration}</p>
+                    </div>
+                    <div className="bg-slate-50 p-4 rounded-2xl">
+                      <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Type</p>
+                      <p className="font-black text-slate-950 capitalize">{selectedConsultation.type}</p>
+                    </div>
+                  </div>
+
+                  <div className="mb-6">
+                    <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Reason for Consultation</p>
+                    <p className="font-black text-slate-950 bg-slate-50 p-4 rounded-2xl">{selectedConsultation.reason}</p>
+                  </div>
+
+                  {selectedConsultation.notes && (
+                    <div className="mb-6">
+                      <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Notes</p>
+                      <p className="font-black text-slate-950 bg-slate-50 p-4 rounded-2xl">{selectedConsultation.notes}</p>
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-2 gap-6 mb-6">
+                    <div className="bg-slate-50 p-4 rounded-2xl">
+                      <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Status</p>
+                      <span className={`inline-block px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest ${getStatusColor(selectedConsultation.status)}`}>
+                        {selectedConsultation.status.replace('-', ' ')}
+                      </span>
+                    </div>
+                    <div className="bg-slate-50 p-4 rounded-2xl">
+                      <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Consultation Fee</p>
+                      <p className="font-black text-slate-950">LKR {selectedConsultation.price.toLocaleString()}</p>
+                    </div>
+                  </div>
+
+                  {selectedConsultation.rating && (
+                    <div className="mb-6">
+                      <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Patient Rating</p>
+                      <div className="flex items-center gap-2">
+                        <div className="flex gap-1">
+                          {renderStars(selectedConsultation.rating)}
+                        </div>
+                        <span className="font-black text-slate-950">{selectedConsultation.rating}/5</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Action Buttons */}
+                  <div className="flex gap-3">
+                    {selectedConsultation.status === 'scheduled' && (
+                      <button 
+                        onClick={() => {
+                          handleStartVideoCall(selectedConsultation);
+                          setSelectedConsultation(null);
+                        }}
+                        className="flex-1 py-3 bg-emerald-600 text-white rounded-xl font-black hover:bg-emerald-700 transition-all flex items-center justify-center gap-2"
+                      >
+                        <Video size={16} />
+                        Start Consultation
+                      </button>
+                    )}
+                    <button 
+                      onClick={() => {
+                        handleOpenChat(selectedConsultation.patientName);
+                        setSelectedConsultation(null);
+                      }}
+                      className="flex-1 py-3 bg-blue-600 text-white rounded-xl font-black hover:bg-blue-700 transition-all flex items-center justify-center gap-2"
+                    >
+                      <MessageSquare size={16} />
+                      Message Patient
+                    </button>
+                    <button 
+                      onClick={() => setSelectedConsultation(null)}
+                      className="flex-1 py-3 bg-slate-100 text-slate-600 rounded-xl font-black hover:bg-slate-200 transition-all"
+                    >
+                      Close
                     </button>
                   </div>
                 </div>

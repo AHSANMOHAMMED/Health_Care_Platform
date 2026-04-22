@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   Users, Search, Filter, PlusCircle, Calendar, 
   Activity, Heart, AlertTriangle, Pill, Clock,
   FileText, ChevronRight, Phone, Mail, MapPin, X
 } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo.png';
 
 interface Patient {
@@ -26,10 +26,46 @@ interface Patient {
   };
   totalVisits: number;
   riskLevel: 'low' | 'medium' | 'high';
+  // Enhanced medical information
+  medicalHistory: string[];
+  chronicConditions: string[];
+  vitals: {
+    bloodPressure: string;
+    heartRate: string;
+    temperature: string;
+    weight: string;
+    height: string;
+    bmi: string;
+    oxygenSaturation: string;
+  };
+  lifestyle: {
+    smoking: boolean;
+    alcohol: boolean;
+    exercise: string;
+    diet: string;
+  };
+  emergencyContact: {
+    name: string;
+    relationship: string;
+    phone: string;
+  };
+  insurance: {
+    provider: string;
+    policyNumber: string;
+    expiryDate: string;
+  };
+  lastLabResults: {
+    date: string;
+    hemoglobin: string;
+    glucose: string;
+    cholesterol: string;
+    kidneyFunction: string;
+  };
 }
 
 export default function PatientOverviewPage() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
@@ -67,17 +103,52 @@ export default function PatientOverviewPage() {
       bloodType: 'O+',
       lastVisit: '2024-04-18',
       nextAppointment: '2024-04-21',
-      condition: 'Hypertension',
+      condition: 'Hypertension, Type 2 Diabetes',
       status: 'active',
-      allergies: ['Penicillin', 'Peanuts'],
-      medications: ['Metformin', 'Lisinopril'],
+      allergies: ['Penicillin', 'Peanuts', 'Shellfish'],
+      medications: ['Metformin 500mg', 'Lisinopril 10mg', 'Aspirin 81mg'],
       contact: {
         phone: '+94 77 123 4567',
         email: 'aruni@email.com',
         address: 'Colombo 05, Sri Lanka'
       },
       totalVisits: 12,
-      riskLevel: 'medium'
+      riskLevel: 'medium',
+      // Enhanced medical information
+      medicalHistory: ['Hypertension (2020)', 'Type 2 Diabetes (2019)', 'Obesity (2018)'],
+      chronicConditions: ['Hypertension', 'Type 2 Diabetes', 'Obesity'],
+      vitals: {
+        bloodPressure: '140/90 mmHg',
+        heartRate: '72 bpm',
+        temperature: '98.6°F',
+        weight: '75 kg',
+        height: '165 cm',
+        bmi: '27.5',
+        oxygenSaturation: '98%'
+      },
+      lifestyle: {
+        smoking: false,
+        alcohol: false,
+        exercise: 'Moderate (3x/week)',
+        diet: 'Controlled carb diet'
+      },
+      emergencyContact: {
+        name: 'Rohan Wijesinghe',
+        relationship: 'Husband',
+        phone: '+94 77 123 4568'
+      },
+      insurance: {
+        provider: 'Sri Lanka Insurance',
+        policyNumber: 'SLI-2024-001234',
+        expiryDate: '2025-12-31'
+      },
+      lastLabResults: {
+        date: '2024-04-15',
+        hemoglobin: '12.5 g/dL',
+        glucose: '145 mg/dL',
+        cholesterol: '210 mg/dL',
+        kidneyFunction: 'Normal'
+      }
     },
     {
       id: 2,
@@ -87,17 +158,52 @@ export default function PatientOverviewPage() {
       bloodType: 'A+',
       lastVisit: '2024-04-15',
       nextAppointment: '2024-04-21',
-      condition: 'Post-Surgery Recovery',
+      condition: 'Post-Surgery Recovery, Coronary Artery Disease',
       status: 'active',
       allergies: ['None'],
-      medications: ['Aspirin', 'Beta-blockers'],
+      medications: ['Aspirin 81mg', 'Beta-blockers', 'Statins', 'Pain relievers'],
       contact: {
         phone: '+94 71 234 5678',
         email: 'kasun@email.com',
         address: 'Kandy, Sri Lanka'
       },
       totalVisits: 8,
-      riskLevel: 'high'
+      riskLevel: 'high',
+      // Enhanced medical information
+      medicalHistory: ['Coronary Artery Disease (2022)', 'CABG Surgery (2023)', 'Hypertension (2021)'],
+      chronicConditions: ['Coronary Artery Disease', 'Hypertension'],
+      vitals: {
+        bloodPressure: '130/85 mmHg',
+        heartRate: '68 bpm',
+        temperature: '98.4°F',
+        weight: '82 kg',
+        height: '175 cm',
+        bmi: '26.8',
+        oxygenSaturation: '97%'
+      },
+      lifestyle: {
+        smoking: false,
+        alcohol: false,
+        exercise: 'Light (2x/week)',
+        diet: 'Low sodium, heart-healthy'
+      },
+      emergencyContact: {
+        name: 'Nimali Perera',
+        relationship: 'Wife',
+        phone: '+94 71 234 5679'
+      },
+      insurance: {
+        provider: 'Ceylinco Insurance',
+        policyNumber: 'CEY-2024-005678',
+        expiryDate: '2025-06-30'
+      },
+      lastLabResults: {
+        date: '2024-04-10',
+        hemoglobin: '14.2 g/dL',
+        glucose: '95 mg/dL',
+        cholesterol: '180 mg/dL',
+        kidneyFunction: 'Normal'
+      }
     },
     {
       id: 3,
@@ -107,17 +213,52 @@ export default function PatientOverviewPage() {
       bloodType: 'B+',
       lastVisit: '2024-04-10',
       nextAppointment: '2024-04-21',
-      condition: 'Diabetes Type 2',
+      condition: 'Diabetes Type 1, PCOS',
       status: 'active',
-      allergies: ['Shellfish'],
-      medications: ['Insulin', 'Metformin'],
+      allergies: ['Shellfish', 'Latex'],
+      medications: ['Insulin (Lantus)', 'Metformin 500mg', 'Vitamin D supplements'],
       contact: {
         phone: '+94 76 345 6789',
         email: 'imara@email.com',
         address: 'Galle, Sri Lanka'
       },
       totalVisits: 6,
-      riskLevel: 'medium'
+      riskLevel: 'medium',
+      // Enhanced medical information
+      medicalHistory: ['Type 1 Diabetes (2015)', 'PCOS (2018)', 'Vitamin D deficiency (2020)'],
+      chronicConditions: ['Type 1 Diabetes', 'PCOS'],
+      vitals: {
+        bloodPressure: '120/80 mmHg',
+        heartRate: '75 bpm',
+        temperature: '98.6°F',
+        weight: '68 kg',
+        height: '160 cm',
+        bmi: '26.6',
+        oxygenSaturation: '99%'
+      },
+      lifestyle: {
+        smoking: false,
+        alcohol: false,
+        exercise: 'Regular (4x/week)',
+        diet: 'Diabetic diet, low carb'
+      },
+      emergencyContact: {
+        name: 'Ahmed Jaffar',
+        relationship: 'Brother',
+        phone: '+94 76 345 6790'
+      },
+      insurance: {
+        provider: 'Union Assurance',
+        policyNumber: 'UA-2024-009012',
+        expiryDate: '2025-09-30'
+      },
+      lastLabResults: {
+        date: '2024-04-08',
+        hemoglobin: '11.8 g/dL',
+        glucose: '165 mg/dL',
+        cholesterol: '195 mg/dL',
+        kidneyFunction: 'Normal'
+      }
     }
   ];
 
@@ -202,6 +343,14 @@ export default function PatientOverviewPage() {
     });
     setEditingPatient(null);
   };
+
+  useEffect(() => {
+    const state = location.state as undefined | { openAddPatient?: boolean };
+    if (state?.openAddPatient) {
+      handleAddPatient();
+      navigate(location.pathname, { replace: true, state: null });
+    }
+  }, [location.state, location.pathname, navigate]);
 
   const handleViewPatientDetails = (patient: Patient) => {
     setSelectedPatient(patient);
@@ -307,7 +456,7 @@ export default function PatientOverviewPage() {
 
           <nav className="space-y-2">
             {[
-              { name: 'Patient Overview', icon: Users, path: '/doctor' },
+              { name: 'Patient Overview', icon: Users, path: '/doctor/patients' },
               { name: 'Appointments', icon: Calendar, path: '/doctor/appointments' },
               { name: 'Daily Schedule', icon: Clock, path: '/doctor/schedule' },
               { name: 'Medical Reports', icon: FileText, path: '/doctor/reports' },
@@ -481,16 +630,35 @@ export default function PatientOverviewPage() {
                       
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                         <div>
-                          <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Condition</p>
-                          <p className="font-black text-slate-950">{patient.condition}</p>
+                          <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Primary Condition</p>
+                          <p className="font-black text-slate-950 text-sm">{patient.condition}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Chronic Conditions</p>
+                          <p className="font-black text-slate-950 text-sm">{patient.chronicConditions.join(', ')}</p>
                         </div>
                         <div>
                           <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Last Visit</p>
-                          <p className="font-black text-slate-950">{patient.lastVisit}</p>
+                          <p className="font-black text-slate-950 text-sm">{patient.lastVisit}</p>
                         </div>
-                        <div>
-                          <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Next Appointment</p>
-                          <p className="font-black text-slate-950">{patient.nextAppointment}</p>
+                      </div>
+
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                        <div className="bg-slate-50 p-3 rounded-xl">
+                          <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Blood Pressure</p>
+                          <p className="font-black text-slate-950 text-sm">{patient.vitals.bloodPressure}</p>
+                        </div>
+                        <div className="bg-slate-50 p-3 rounded-xl">
+                          <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Heart Rate</p>
+                          <p className="font-black text-slate-950 text-sm">{patient.vitals.heartRate}</p>
+                        </div>
+                        <div className="bg-slate-50 p-3 rounded-xl">
+                          <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">BMI</p>
+                          <p className="font-black text-slate-950 text-sm">{patient.vitals.bmi}</p>
+                        </div>
+                        <div className="bg-slate-50 p-3 rounded-xl">
+                          <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Glucose</p>
+                          <p className="font-black text-slate-950 text-sm">{patient.lastLabResults.glucose}</p>
                         </div>
                       </div>
 
@@ -513,7 +681,7 @@ export default function PatientOverviewPage() {
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-6 text-sm">
+                      <div className="flex items-center gap-6 text-sm mb-4">
                         <div className="flex items-center gap-2">
                           <AlertTriangle size={14} className="text-red-500" />
                           <span className="font-black text-slate-700">Allergies:</span>
@@ -522,12 +690,25 @@ export default function PatientOverviewPage() {
                         <div className="flex items-center gap-2">
                           <Pill size={14} className="text-blue-500" />
                           <span className="font-black text-slate-700">Medications:</span>
-                          <span className="text-slate-600">{patient.medications.join(', ')}</span>
+                          <span className="text-slate-600">{patient.medications.length} medications</span>
                         </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="flex items-center gap-2">
                           <Calendar size={14} className="text-green-500" />
-                          <span className="font-black text-slate-700">Total Visits:</span>
-                          <span className="text-slate-600">{patient.totalVisits}</span>
+                          <span className="font-black text-slate-700 text-sm">Next Visit:</span>
+                          <span className="text-slate-600 text-sm">{patient.nextAppointment}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Users size={14} className="text-purple-500" />
+                          <span className="font-black text-slate-700 text-sm">Emergency:</span>
+                          <span className="text-slate-600 text-sm">{patient.emergencyContact.name}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <FileText size={14} className="text-orange-500" />
+                          <span className="font-black text-slate-700 text-sm">Total Visits:</span>
+                          <span className="text-slate-600 text-sm">{patient.totalVisits}</span>
                         </div>
                       </div>
                     </div>
@@ -948,6 +1129,12 @@ export default function PatientOverviewPage() {
                       {selectedPatient.status}
                     </span>
                   </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-slate-600 font-medium">Risk Level:</span>
+                    <span className={`px-2 py-1 rounded-lg text-xs font-black ${getRiskColor(selectedPatient.riskLevel)}`}>
+                      {selectedPatient.riskLevel.toUpperCase()}
+                    </span>
+                  </div>
                 </div>
               </div>
 
@@ -975,8 +1162,16 @@ export default function PatientOverviewPage() {
                 <h4 className="text-lg font-black text-slate-950 mb-4">Medical Information</h4>
                 <div className="space-y-4">
                   <div>
-                    <span className="text-sm text-slate-600 font-medium">Condition:</span>
+                    <span className="text-sm text-slate-600 font-medium">Primary Condition:</span>
                     <p className="font-black text-slate-950 mt-1">{selectedPatient.condition}</p>
+                  </div>
+                  <div>
+                    <span className="text-sm text-slate-600 font-medium">Chronic Conditions:</span>
+                    <p className="font-black text-slate-950 mt-1">{selectedPatient.chronicConditions.join(', ')}</p>
+                  </div>
+                  <div>
+                    <span className="text-sm text-slate-600 font-medium">Medical History:</span>
+                    <p className="font-black text-slate-950 mt-1">{selectedPatient.medicalHistory.join(', ')}</p>
                   </div>
                   <div>
                     <span className="text-sm text-slate-600 font-medium">Allergies:</span>
@@ -990,8 +1185,130 @@ export default function PatientOverviewPage() {
               </div>
 
               <div>
+                <h4 className="text-lg font-black text-slate-950 mb-4">Current Vitals</h4>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-slate-50 p-3 rounded-xl">
+                    <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Blood Pressure</p>
+                    <p className="font-black text-slate-950 text-sm">{selectedPatient.vitals.bloodPressure}</p>
+                  </div>
+                  <div className="bg-slate-50 p-3 rounded-xl">
+                    <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Heart Rate</p>
+                    <p className="font-black text-slate-950 text-sm">{selectedPatient.vitals.heartRate}</p>
+                  </div>
+                  <div className="bg-slate-50 p-3 rounded-xl">
+                    <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Temperature</p>
+                    <p className="font-black text-slate-950 text-sm">{selectedPatient.vitals.temperature}</p>
+                  </div>
+                  <div className="bg-slate-50 p-3 rounded-xl">
+                    <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Weight</p>
+                    <p className="font-black text-slate-950 text-sm">{selectedPatient.vitals.weight}</p>
+                  </div>
+                  <div className="bg-slate-50 p-3 rounded-xl">
+                    <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Height</p>
+                    <p className="font-black text-slate-950 text-sm">{selectedPatient.vitals.height}</p>
+                  </div>
+                  <div className="bg-slate-50 p-3 rounded-xl">
+                    <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">BMI</p>
+                    <p className="font-black text-slate-950 text-sm">{selectedPatient.vitals.bmi}</p>
+                  </div>
+                  <div className="bg-slate-50 p-3 rounded-xl">
+                    <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">O2 Saturation</p>
+                    <p className="font-black text-slate-950 text-sm">{selectedPatient.vitals.oxygenSaturation}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
+              <div>
+                <h4 className="text-lg font-black text-slate-950 mb-4">Lifestyle</h4>
+                <div className="space-y-3">
+                  <div className="flex justify-between">
+                    <span className="text-sm text-slate-600 font-medium">Smoking:</span>
+                    <span className={`font-black text-sm ${selectedPatient.lifestyle.smoking ? 'text-red-600' : 'text-green-600'}`}>
+                      {selectedPatient.lifestyle.smoking ? 'Yes' : 'No'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-slate-600 font-medium">Alcohol:</span>
+                    <span className={`font-black text-sm ${selectedPatient.lifestyle.alcohol ? 'text-red-600' : 'text-green-600'}`}>
+                      {selectedPatient.lifestyle.alcohol ? 'Yes' : 'No'}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-sm text-slate-600 font-medium">Exercise:</span>
+                    <p className="font-black text-slate-950 text-sm mt-1">{selectedPatient.lifestyle.exercise}</p>
+                  </div>
+                  <div>
+                    <span className="text-sm text-slate-600 font-medium">Diet:</span>
+                    <p className="font-black text-slate-950 text-sm mt-1">{selectedPatient.lifestyle.diet}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h4 className="text-lg font-black text-slate-950 mb-4">Emergency Contact</h4>
+                <div className="space-y-3">
+                  <div>
+                    <span className="text-sm text-slate-600 font-medium">Name:</span>
+                    <p className="font-black text-slate-950 text-sm mt-1">{selectedPatient.emergencyContact.name}</p>
+                  </div>
+                  <div>
+                    <span className="text-sm text-slate-600 font-medium">Relationship:</span>
+                    <p className="font-black text-slate-950 text-sm mt-1">{selectedPatient.emergencyContact.relationship}</p>
+                  </div>
+                  <div>
+                    <span className="text-sm text-slate-600 font-medium">Phone:</span>
+                    <p className="font-black text-slate-950 text-sm mt-1">{selectedPatient.emergencyContact.phone}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h4 className="text-lg font-black text-slate-950 mb-4">Insurance</h4>
+                <div className="space-y-3">
+                  <div>
+                    <span className="text-sm text-slate-600 font-medium">Provider:</span>
+                    <p className="font-black text-slate-950 text-sm mt-1">{selectedPatient.insurance.provider}</p>
+                  </div>
+                  <div>
+                    <span className="text-sm text-slate-600 font-medium">Policy Number:</span>
+                    <p className="font-black text-slate-950 text-sm mt-1">{selectedPatient.insurance.policyNumber}</p>
+                  </div>
+                  <div>
+                    <span className="text-sm text-slate-600 font-medium">Expiry Date:</span>
+                    <p className="font-black text-slate-950 text-sm mt-1">{selectedPatient.insurance.expiryDate}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-8">
+              <h4 className="text-lg font-black text-slate-950 mb-4">Latest Lab Results ({selectedPatient.lastLabResults.date})</h4>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div className="bg-slate-50 p-3 rounded-xl">
+                  <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Hemoglobin</p>
+                  <p className="font-black text-slate-950 text-sm">{selectedPatient.lastLabResults.hemoglobin}</p>
+                </div>
+                <div className="bg-slate-50 p-3 rounded-xl">
+                  <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Glucose</p>
+                  <p className="font-black text-slate-950 text-sm">{selectedPatient.lastLabResults.glucose}</p>
+                </div>
+                <div className="bg-slate-50 p-3 rounded-xl">
+                  <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Cholesterol</p>
+                  <p className="font-black text-slate-950 text-sm">{selectedPatient.lastLabResults.cholesterol}</p>
+                </div>
+                <div className="bg-slate-50 p-3 rounded-xl">
+                  <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Kidney Function</p>
+                  <p className="font-black text-slate-950 text-sm">{selectedPatient.lastLabResults.kidneyFunction}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+              <div>
                 <h4 className="text-lg font-black text-slate-950 mb-4">Visit History</h4>
-                <div className="space-y-4">
+                <div className="space-y-3">
                   <div className="flex justify-between">
                     <span className="text-sm text-slate-600 font-medium">Last Visit:</span>
                     <span className="font-black text-slate-950">{selectedPatient.lastVisit}</span>
@@ -1003,12 +1320,6 @@ export default function PatientOverviewPage() {
                   <div className="flex justify-between">
                     <span className="text-sm text-slate-600 font-medium">Total Visits:</span>
                     <span className="font-black text-slate-950">{selectedPatient.totalVisits}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm text-slate-600 font-medium">Risk Level:</span>
-                    <span className={`px-2 py-1 rounded-lg text-xs font-black ${getRiskColor(selectedPatient.riskLevel)}`}>
-                      {selectedPatient.riskLevel.toUpperCase()}
-                    </span>
                   </div>
                 </div>
               </div>
