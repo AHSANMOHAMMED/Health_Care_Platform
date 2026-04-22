@@ -33,8 +33,8 @@ import AnalyticsPage from './pages/doctor/AnalyticsPage';
 // Dark layout wrapper for sub-pages (no old navbar)
 function LegacyLayout() {
   return (
-    <div className="min-h-screen bg-[#0A0A0F] text-white font-sans">
-      <main className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-[#0C1220] text-slate-300 font-sans selection:bg-[#0EA5E9]/20 selection:text-[#0EA5E9]">
+      <main className="container mx-auto px-4 py-12 max-w-7xl">
         <Outlet />
       </main>
     </div>
