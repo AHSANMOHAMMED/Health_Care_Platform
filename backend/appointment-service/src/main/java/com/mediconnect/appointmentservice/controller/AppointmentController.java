@@ -107,11 +107,18 @@ public class AppointmentController {
     }
     
     @PatchMapping("/{id}/status")
-    public ResponseEntity<Appointment> updateStatus(@PathVariable Long id, @RequestBody StatusUpdateRequest request) {
-        Optional<Appointment> existing = appointmentRepository.findById(id);
+    public ResponseEntity<Appointment> updateStatus(@PathVariable @org.springframework.lang.NonNull Long id, @RequestBody StatusUpdateRequest request) {
+        Optional<Appointment> existing = appointmentRepository.findById(java.util.Objects.requireNonNull(id));
         if (existing.isPresent()) {
             Appointment appointment = existing.get();
-            appointment.setStatus(request.getStatus().toUpperCase());
+            String newStatus = request.getStatus().toUpperCase();
+            appointment.setStatus(newStatus);
+            
+            if ("CONFIRMED".equals(newStatus)) {
+                appointment.setPaidAt(java.time.LocalDateTime.now());
+                appointment.setPaid(true);
+            }
+            
             Appointment updated = appointmentRepository.save(appointment);
             return ResponseEntity.ok(updated);
         }

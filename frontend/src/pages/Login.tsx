@@ -1,15 +1,49 @@
 import { useState } from 'react';
-import { Eye, EyeOff, AlertCircle, Loader2, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Eye, EyeOff, AlertCircle, Loader2, ArrowRight, ShieldCheck, Mail, Lock, Users, Stethoscope, UserCog, X } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '../utils/auth';
-import logo from '../assets/logo.png';
-import hero1 from '../assets/hero-1.png';
 
-interface FormErrors {
-  email?: string;
-  password?: string;
-  general?: string;
+// ── Social Auth Role Selection Modal ──────────────────────────────────────────
+function RoleSelectModal({ platform, onSelect, onClose }: { platform: string; onSelect: (role: 'PATIENT' | 'DOCTOR') => void; onClose: () => void }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)' }}>
+      <div className="bg-[#111B2E] border border-[#1E3A5F]/60 rounded-2xl p-7 w-full max-w-sm shadow-2xl">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Continue with {platform}</p>
+            <h3 className="text-lg font-bold text-white">Select your role</h3>
+          </div>
+          <button onClick={onClose} className="p-2 rounded-lg hover:bg-white/10 text-slate-400 hover:text-white transition-colors">
+            <X size={18} />
+          </button>
+        </div>
+        <div className="space-y-3">
+          <button onClick={() => onSelect('PATIENT')}
+            className="w-full p-4 rounded-xl border border-[#1E3A5F]/60 bg-[#0C1220] hover:border-[#0EA5E9]/50 hover:bg-[#132040] transition-all text-left flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl bg-[#0EA5E9]/15 flex items-center justify-center">
+              <Users size={20} className="text-[#0EA5E9]" />
+            </div>
+            <div>
+              <p className="font-semibold text-white text-sm">Patient</p>
+              <p className="text-xs text-slate-500">Access appointments, records & AI care</p>
+            </div>
+          </button>
+          <button onClick={() => onSelect('DOCTOR')}
+            className="w-full p-4 rounded-xl border border-[#1E3A5F]/60 bg-[#0C1220] hover:border-[#06B6D4]/50 hover:bg-[#132040] transition-all text-left flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl bg-[#06B6D4]/15 flex items-center justify-center">
+              <Stethoscope size={20} className="text-[#06B6D4]" />
+            </div>
+            <div>
+              <p className="font-semibold text-white text-sm">Doctor</p>
+              <p className="text-xs text-slate-500">Manage patients, prescriptions & schedule</p>
+            </div>
+          </button>
+        </div>
+        <p className="text-[11px] text-slate-600 text-center mt-5">You can update your role later in settings</p>
+      </div>
+    </div>
+  );
 }
 
 export default function Login() {
@@ -17,175 +51,153 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<FormErrors>({});
-  
+  const [error, setError] = useState('');
+  const [socialPlatform, setSocialPlatform] = useState<string | null>(null);
   const navigate = useNavigate();
+
+  const handleSocialClick = (platform: string) => {
+    setSocialPlatform(platform);
+  };
+
+  const handleSocialRole = (role: 'PATIENT' | 'DOCTOR') => {
+    const platform = socialPlatform!;
+    setSocialPlatform(null);
+    setLoading(true);
+    setTimeout(() => {
+      const mockUser = {
+        id: 'social-' + Math.random().toString(36).substr(2, 9),
+        firstName: platform,
+        lastName: 'User',
+        email: `user_${Date.now()}@${platform.toLowerCase()}.com`,
+        role,
+      } as any;
+      useAuthStore.getState().setAuth('mock-social-token-' + Date.now(), mockUser);
+      setLoading(false);
+      navigate(role === 'DOCTOR' ? '/doctor' : (role as string) === 'ADMIN' ? '/admin' : '/patient');
+    }, 800);
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setErrors({});
-
+    setError('');
     try {
       const response = await authService.login(email, password);
       useAuthStore.getState().setAuth(response.tokens.accessToken, response.user);
-      
-      const role = response.user.role;
-      if (role === 'PATIENT') navigate('/patient');
-      else if (role === 'DOCTOR') navigate('/doctor');
-      else if (role === 'ADMIN') navigate('/admin');
-      else navigate('/');
-    } catch(err: any) {
-      setErrors({ general: 'Invalid credentials. Please try again.' });
+      const r = response.user.role;
+      navigate(r === 'DOCTOR' ? '/doctor' : r === 'ADMIN' ? '/admin' : '/patient');
+    } catch (err: any) {
+      setError(err.message || 'Invalid credentials. Please check your email and password.');
     } finally {
       setLoading(false);
     }
   };
 
+  const DEMO = [
+    { role: 'Admin', icon: UserCog, email: 'admin@mediconnect.lk', pass: 'Admin@123', color: 'text-amber-400' },
+    { role: 'Doctor', icon: Stethoscope, email: 'doctor@mediconnect.lk', pass: 'Doctor@123', color: 'text-[#06B6D4]' },
+    { role: 'Patient', icon: Users, email: 'patient@mediconnect.lk', pass: 'Patient@123', color: 'text-[#0EA5E9]' },
+  ];
+
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center p-0 lg:p-8 overflow-hidden">
-      
-      {/* Background Decorative Blobs */}
-      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-[#8D153A]/5 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2 animate-blob" />
-      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-[#FFBE29]/10 rounded-full blur-[120px] translate-x-1/2 translate-y-1/2 animate-blob animation-delay-2000" />
+    <div className="min-h-screen bg-[#0C1220] flex items-center justify-center p-4">
+      {socialPlatform && <RoleSelectModal platform={socialPlatform} onSelect={handleSocialRole} onClose={() => setSocialPlatform(null)} />}
 
-      <div className="w-full max-w-[1200px] bg-white lg:rounded-[4rem] lg:shadow-[0_50px_100px_-20px_rgba(141,21,58,0.15)] flex flex-col lg:flex-row overflow-hidden relative z-10 lg:border lg:border-slate-100 h-full lg:h-auto min-h-screen lg:min-h-0">
-        
-        {/* Left Aspect - Premium Branding */}
-        <div className="lg:w-1/2 relative overflow-hidden hidden lg:block">
-           <img src={hero1} alt="Lankan Healthcare" className="absolute inset-0 w-full h-full object-cover" />
-           <div className="absolute inset-0 bg-gradient-to-t from-[#8D153A] via-[#8D153A]/40 to-[#8D153A]/20" />
-           
-           <div className="absolute inset-0 p-20 flex flex-col justify-between text-white">
-              <Link to="/" className="flex items-center gap-4">
-                 <img src={logo} alt="Logo" className="h-16 w-auto brightness-0 invert" />
-              </Link>
-              
-              <div>
-                 <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white font-black text-[10px] uppercase tracking-widest mb-8">
-                    <ShieldCheck size={14} className="text-[#FFBE29]" /> Secure Access Node
-                 </div>
-                 <h1 className="text-6xl font-black tracking-tighter leading-[0.9] mb-8">
-                    Welcome back to the <span className="text-[#FFBE29]">Elite Network.</span>
-                 </h1>
-                 <p className="text-xl text-white/80 font-medium max-w-sm leading-relaxed">
-                    Access your distributed medical records with government-grade security.
-                 </p>
-              </div>
+      <div className="w-full max-w-md">
+        {/* Logo */}
+        <Link to="/" className="flex items-center gap-3 mb-8 justify-center">
+          <div className="w-10 h-10 rounded-xl bg-[#0EA5E9]/20 flex items-center justify-center">
+            <ShieldCheck size={20} className="text-[#0EA5E9]" />
+          </div>
+          <div>
+            <p className="text-base font-bold text-white leading-none">MediConnect <span className="text-[#0EA5E9]">Lanka</span></p>
+            <p className="text-[10px] text-slate-500 uppercase tracking-widest font-medium">National Health Network</p>
+          </div>
+        </Link>
 
-              <div className="flex gap-4">
-                 <div className="w-12 h-1 bg-[#FFBE29] rounded-full" />
-                 <div className="w-4 h-1 bg-white/20 rounded-full" />
-                 <div className="w-4 h-1 bg-white/20 rounded-full" />
+        <div className="bg-[#111B2E] border border-[#1E3A5F]/50 rounded-2xl p-8 shadow-2xl">
+          <h1 className="text-2xl font-bold text-white mb-1">Welcome back</h1>
+          <p className="text-sm text-slate-500 mb-7">Sign in to your health dashboard</p>
+
+          {/* Social Buttons */}
+          <div className="grid grid-cols-3 gap-3 mb-6">
+            {[
+              { label: 'Google', icon: <svg className="w-4 h-4" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg> },
+              { label: 'Apple', icon: <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg> },
+              { label: 'Facebook', icon: <svg className="w-4 h-4 text-[#1877F2]" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg> },
+            ].map(({ label, icon }) => (
+              <button key={label} type="button" onClick={() => handleSocialClick(label)} disabled={loading}
+                className="h-11 rounded-xl bg-[#0C1220] border border-[#1E3A5F]/60 hover:border-[#0EA5E9]/40 hover:bg-[#132040] transition-all flex items-center justify-center gap-2 text-slate-300 text-sm font-medium disabled:opacity-50">
+                {icon} <span className="text-xs">{label}</span>
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-3 mb-6">
+            <div className="flex-1 h-px bg-[#1E3A5F]/50" />
+            <span className="text-[11px] font-medium text-slate-600 uppercase tracking-wider">or email</span>
+            <div className="flex-1 h-px bg-[#1E3A5F]/50" />
+          </div>
+
+          {error && (
+            <div className="mb-5 p-3.5 bg-red-900/20 border border-red-700/40 rounded-xl flex items-center gap-2.5 text-red-400 text-sm">
+              <AlertCircle size={16} className="flex-shrink-0" /> {error}
+            </div>
+          )}
+
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <label className="clinical-label">Email Address</label>
+              <div className="relative">
+                <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
+                <input type="email" required className="clinical-input pl-10" placeholder="aruni@example.com" value={email} onChange={e => setEmail(e.target.value)} />
               </div>
-           </div>
+            </div>
+            <div>
+              <div className="flex justify-between items-center mb-1.5">
+                <label className="clinical-label !mb-0">Password</label>
+                <Link to="#" className="text-[11px] text-[#0EA5E9] hover:underline font-medium">Forgot password?</Link>
+              </div>
+              <div className="relative">
+                <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
+                <input type={showPassword ? 'text' : 'password'} required className="clinical-input pl-10 pr-10" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors">
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+            </div>
+
+            <button type="submit" disabled={loading}
+              className="w-full py-3 rounded-xl bg-[#0EA5E9] hover:bg-[#0284C7] text-white font-semibold text-sm transition-all flex items-center justify-center gap-2 disabled:opacity-60 shadow-lg shadow-[#0EA5E9]/20">
+              {loading ? <><Loader2 size={16} className="animate-spin" />Signing in...</> : <>Sign In <ArrowRight size={16} /></>}
+            </button>
+          </form>
+
+          {/* Demo credentials */}
+          <div className="mt-6 p-4 rounded-xl bg-[#0C1220] border border-[#1E3A5F]/40">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-600 mb-3">Demo Credentials — click to fill</p>
+            <div className="space-y-1.5">
+              {DEMO.map(({ role, icon: Icon, email: e, pass, color }) => (
+                <button key={role} type="button" onClick={() => { setEmail(e); setPassword(pass); }}
+                  className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg bg-[#111B2E] hover:bg-[#132040] transition-all text-left border border-[#1E3A5F]/30 hover:border-[#1E3A5F]/60">
+                  <div className="flex items-center gap-2.5">
+                    <Icon size={14} className={color} />
+                    <div>
+                      <span className="text-[11px] font-semibold text-slate-400">{role}</span>
+                      <p className="text-[11px] text-slate-500">{e}</p>
+                    </div>
+                  </div>
+                  <span className="text-[11px] text-slate-600 font-mono">{pass}</span>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 
-        {/* Right Aspect - Modern Form */}
-        <div className="flex-1 p-8 lg:p-20 flex flex-col justify-center">
-           <div className="max-w-md mx-auto w-full">
-              
-              {/* Mobile Logo */}
-              <Link to="/" className="lg:hidden flex items-center gap-3 mb-12">
-                 <img src={logo} alt="Logo" className="h-12 w-auto" />
-                 <p className="text-xl font-black text-slate-950">MediConnect</p>
-              </Link>
-
-              <h2 className="text-4xl font-black text-slate-950 tracking-tighter mb-4">Sign In</h2>
-              <p className="text-slate-500 font-bold mb-10">Access your personalized health dashboard.</p>
-
-              {errors.general && (
-                 <div className="p-4 bg-red-50 border border-red-100 rounded-2xl flex items-center gap-3 text-red-600 font-bold text-sm mb-8 animate-shake">
-                    <AlertCircle size={20} /> {errors.general}
-                 </div>
-              )}
-
-              <form onSubmit={handleLogin} className="space-y-6">
-                 <div className="space-y-2">
-                    <label className="text-xs font-black uppercase tracking-widest text-slate-400 pl-1">Health ID / Email</label>
-                    <input 
-                      type="email" 
-                      required 
-                      className="input-luminous"
-                      placeholder="name@example.com"
-                      value={email}
-                      onChange={e => setEmail(e.target.value)}
-                    />
-                 </div>
-
-                 <div className="space-y-2">
-                    <div className="flex justify-between pl-1">
-                       <label className="text-xs font-black uppercase tracking-widest text-slate-400">Password</label>
-                       <Link to="#" className="text-xs font-bold text-[#8D153A] hover:underline">Forgot?</Link>
-                    </div>
-                    <div className="relative">
-                       <input 
-                         type={showPassword ? 'text' : 'password'} 
-                         required 
-                         className="input-luminous pr-14"
-                         placeholder="••••••••"
-                         value={password}
-                         onChange={e => setPassword(e.target.value)}
-                       />
-                       <button 
-                         type="button" 
-                         onClick={() => setShowPassword(!showPassword)}
-                         className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 hover:text-[#8D153A] transition-colors"
-                       >
-                         {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                       </button>
-                    </div>
-                 </div>
-
-                 <button type="submit" disabled={loading} className="w-full btn-luminous group h-14 text-sm tracking-widest cursor-pointer hover:scale-[1.02] active:scale-95 transition-all">
-                    {loading ? (
-                      <Loader2 size={24} className="animate-spin mx-auto" />
-                    ) : (
-                      <span className="flex items-center justify-center gap-2">Sign In Now <ArrowRight className="group-hover:translate-x-2 transition-transform" size={18} /></span>
-                    )}
-                 </button>
-              </form>
-
-              {/* Social Auth Separator */}
-              <div className="relative mt-10 mb-8">
-                 <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-slate-200"></div>
-                 </div>
-                 <div className="relative flex justify-center text-xs">
-                    <span className="bg-white px-4 text-slate-400 font-bold uppercase tracking-widest">Or continue with</span>
-                 </div>
-              </div>
-
-              {/* Premium Social Auth Modules */}
-              <div className="grid grid-cols-3 gap-4">
-                 <button className="h-12 border border-slate-200 rounded-xl flex items-center justify-center hover:bg-slate-50 hover:border-slate-300 transition-all group">
-                    <svg className="w-5 h-5 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                       <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                       <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                       <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                       <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-                    </svg>
-                 </button>
-                 <button className="h-12 border border-slate-200 rounded-xl flex items-center justify-center hover:bg-slate-50 hover:border-slate-300 transition-all group">
-                    <svg className="w-5 h-5 text-slate-900 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                       <path d="M16.365 1.44c0 0 1.002 0 1.002 1.34 0 2.21-1.63 4.29-3.69 4.29-1.48 0-1.66-1.12-1.66-1.12s-1.02.04-1.28.09c-.26.04-.63.22-.84.45-.22.22-.52.63-.52 1.25 0 1.3 1.08 2.04 1.48 2.29.39.26.87.52 1.44.52 0 0 .17-.04.48-.09.3-.04.78.04 1.25.17.48.13.91.43 1.25.82.35.39.52.87.52 1.44 0 .91-.39 1.74-1.04 2.34-.65.61-1.48 1.08-2.52 1.39-1.04.3-2.17.43-3.21.39-1.04-.04-1.95-.26-2.73-.61-.78-.35-1.43-.87-1.91-1.48-.48-.61-.78-1.25-.87-1.82-.09-.56-.04-1.08.13-1.48.17-.39.43-.65.74-.82.3-.17.65-.26 1.04-.26 0 0 .13.04.35.09.22.04.52.09.82.04.3-.04.56-.13.78-.3.22-.17.43-.39.56-.65.13-.26.22-.56.26-.91 0 0 .04-.39 0-.87-.04-.48-.17-1.04-.39-1.64-.22-.61-.56-1.25-1.08-1.82-.52-.56-1.17-1.04-2.04-1.25C9.8 4.43 8.84 4.56 8.01 5c-.82.43-1.52.95-2.04 1.39-.52.43-.87.87-1.04 1.25-.17.39-.26.87-.26 1.43 0 1.04.35 1.95.91 2.64.56.7 1.34 1.25 2.29 1.56.95.3 2.04.43 3.12.39 0 0-.04.3-0 .74 0 .44.04.91.13 1.3.09.39.26.78.48 1.13.22.35.52.65.87.82.35.17.78.26 1.34.26 0 0-.04.3-0 .87 0 .56.09 1.25.3 1.95.22.7.56 1.48 1.04 2.21.48.74 1.13 1.39 1.95 1.86.82.48 1.82.78 3.03.78v-1.64c-.95 0-1.74-.22-2.38-.61-.65-.39-1.17-.91-1.56-1.48-.39-.56-.65-1.13-.82-1.69-.17-.56-.26-1.04-.26-1.39 0 0 .17.04.52.09.35.04.82.09 1.34.09.52 0 1.08-.09 1.56-.26.48-.17.91-.43 1.25-.74.35-.3.65-.65.87-1.04.22-.39.39-.82.48-1.3.09-.48.13-.95.13-1.39v-1.34h-.04v1.34h1.69z"/>
-                    </svg>
-                 </button>
-                 <button className="h-12 border border-slate-200 rounded-xl flex items-center justify-center hover:bg-slate-50 hover:border-slate-300 transition-all group">
-                    <svg className="w-5 h-5 text-[#1877F2] group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                       <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                    </svg>
-                 </button>
-              </div>
-
-              <div className="mt-12 pt-8 border-t border-slate-100 text-center">
-                 <p className="text-slate-500 font-bold text-sm">New to MediConnect?</p>
-                 <Link to="/register" className="inline-block mt-4 text-[#8D153A] text-sm font-black hover:underline underline-offset-4 decoration-2">
-                    Create your National Health ID
-                 </Link>
-              </div>
-           </div>
-        </div>
+        <p className="text-center text-sm text-slate-500 mt-6">
+          New to MediConnect?{' '}
+          <Link to="/register" className="text-[#0EA5E9] hover:underline font-medium">Create your Health ID</Link>
+        </p>
       </div>
     </div>
   );

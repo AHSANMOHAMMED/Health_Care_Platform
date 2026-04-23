@@ -44,6 +44,12 @@ public class RabbitMQListener {
                 case "APPOINTMENT_REMINDER":
                     handleAppointmentReminder(event);
                     break;
+                case "DOCTOR_APPROVED":
+                    handleDoctorApproval(event);
+                    break;
+                case "DOCTOR_REJECTED":
+                    handleDoctorRejection(event);
+                    break;
                 default:
                     // Fallback to simple text routing
                     handleGenericNotification(message);
@@ -109,6 +115,24 @@ public class RabbitMQListener {
         }
         if (phone != null) {
             smsService.sendAppointmentReminder(phone, doctorName, time);
+        }
+    }
+
+    private void handleDoctorApproval(Map<String, Object> event) {
+        String email = (String) event.get("email");
+        String firstName = (String) event.get("firstName");
+        String lastName = (String) event.get("lastName");
+        if (email != null) {
+            emailService.sendDoctorApprovalNotification(email, firstName, lastName);
+        }
+    }
+
+    private void handleDoctorRejection(Map<String, Object> event) {
+        String email = (String) event.get("email");
+        String firstName = (String) event.get("firstName");
+        String lastName = (String) event.get("lastName");
+        if (email != null) {
+            emailService.sendDoctorRejectionNotification(email, firstName, lastName);
         }
     }
 

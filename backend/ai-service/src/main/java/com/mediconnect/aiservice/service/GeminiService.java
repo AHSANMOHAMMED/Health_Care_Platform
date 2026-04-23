@@ -39,16 +39,30 @@ public class GeminiService {
             String prompt = buildMedicalPrompt(request);
             
             // Build request body
-            String requestBody = String.format(
-                "{\"contents\":[{\"parts\":[{\"text\":\"%s\"}]}]}",
-                escapeJson(prompt)
-            );
+            StringBuilder requestBody = new StringBuilder("{\"contents\":[{\"parts\":[");
+            requestBody.append(String.format("{\"text\":\"%s\"}", escapeJson(prompt)));
+            
+            if (request.getImage() != null && !request.getImage().isEmpty()) {
+                String base64Data = request.getImage();
+                String mimeType = "image/jpeg"; // Default
+                
+                if (base64Data.contains(";base64,")) {
+                    String[] parts = base64Data.split(";base64,");
+                    mimeType = parts[0].replace("data:", "");
+                    base64Data = parts[1];
+                }
+                
+                requestBody.append(String.format(",{\"inlineData\":{\"mimeType\":\"%s\",\"data\":\"%s\"}}", 
+                    mimeType, base64Data));
+            }
+            
+            requestBody.append("]}]}");
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.set("x-goog-api-key", apiKey);
 
-            HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
+            HttpEntity<String> entity = new HttpEntity<>(requestBody.toString(), headers);
 
             ResponseEntity<String> response = restTemplate.postForEntity(
                 GEMINI_URL,
@@ -59,11 +73,11 @@ public class GeminiService {
             if (response.getStatusCode() == HttpStatus.OK) {
                 return parseGeminiResponse(response.getBody());
             } else {
-                log.error("Gemini API error: {}", response.getBody());
+                log.error("Gemini API error: {}. Status: {}", response.getBody(), response.getStatusCode());
                 return buildErrorResponse();
             }
         } catch (Exception e) {
-            log.error("Error calling Gemini API: {}", e.getMessage());
+            log.error("Error calling Gemini API: {}", e.getMessage(), e);
             return buildErrorResponse();
         }
     }
@@ -74,24 +88,30 @@ public class GeminiService {
     }
 
     private String buildMedicalPrompt(SymptomAnalysisRequest request) {
+        String languageName = "English";
+        if ("si".equalsIgnoreCase(request.getLanguage())) languageName = "Sinhala";
+        else if ("ta".equalsIgnoreCase(request.getLanguage())) languageName = "Tamil";
+
         return String.format(
-            "You are a medical AI assistant. Analyze the following symptoms and provide a structured response:\n\n" +
+            "You are a medical AI assistant. Analyze the following symptoms and provide a structured response in %s language:\n\n" +
             "Patient: %d year old %s\n" +
             "Symptoms: %s\n" +
             "Duration: %s\n" +
             "Severity: %s\n\n" +
-            "Provide a response in this exact format:\n" +
+            "Provide a response in this exact format (but translate the values to %s):\n" +
             "ANALYSIS: [brief assessment of possible conditions - not a diagnosis]\n" +
             "SPECIALTY: [recommended medical specialty to consult - e.g., Cardiology, Dermatology, General Medicine, Neurology, Orthopedics, Psychiatry, etc.]\n" +
             "URGENCY: [LOW, MEDIUM, HIGH, or EMERGENCY]\n" +
             "ACTIONS: [3-5 suggested immediate actions, separated by | ]\n" +
             "CONDITIONS: [3-5 possible conditions, separated by | ]\n\n" +
             "Add a medical disclaimer that this is not a diagnosis.",
+            languageName,
             request.getAge(),
             request.getGender(),
             request.getSymptoms(),
             request.getDuration() != null ? request.getDuration() : "Not specified",
-            request.getSeverity() != null ? request.getSeverity() : "Not specified"
+            request.getSeverity() != null ? request.getSeverity() : "Not specified",
+            languageName
         );
     }
 

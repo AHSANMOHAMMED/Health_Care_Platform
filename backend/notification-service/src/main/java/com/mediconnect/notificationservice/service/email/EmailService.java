@@ -52,6 +52,18 @@ public class EmailService {
         
         sendEmail(to, subject, htmlContent);
     }
+
+    public void sendDoctorApprovalNotification(String to, String firstName, String lastName) {
+        String subject = "Application Approved - Welcome to MediConnect!";
+        String htmlContent = buildDoctorApprovalEmail(firstName, lastName);
+        sendEmail(to, subject, htmlContent);
+    }
+
+    public void sendDoctorRejectionNotification(String to, String firstName, String lastName) {
+        String subject = "MediConnect Application Status Update";
+        String htmlContent = buildDoctorRejectionEmail(firstName, lastName);
+        sendEmail(to, subject, htmlContent);
+    }
     
     private void sendEmail(String to, String subject, String htmlContent) {
         try {
@@ -133,6 +145,33 @@ public class EmailService {
             "<p>Thank you for choosing MediConnect Lanka!</p>" +
             "</body></html>",
             patientName, doctorName, appointmentTime
+        );
+    }
+
+    private String buildDoctorApprovalEmail(String firstName, String lastName) {
+        return String.format(
+            "<html><body style='font-family: Arial, sans-serif;'>" +
+            "<h2 style='color: #059669;'>Application Approved!</h2>" +
+            "<p>Dear Dr. %s %s,</p>" +
+            "<p>We are pleased to inform you that your registration as a medical professional on the MediConnect platform has been <strong>Approved</strong>.</p>" +
+            "<p>You can now log in to your dashboard to manage patients, issue prescriptions, and set your consultation schedule.</p>" +
+            "<p><a href='https://mediconnect.lk/login' style='background: #059669; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>Log In to Dashboard</a></p>" +
+            "<p>Welcome to the national network!</p>" +
+            "</body></html>",
+            firstName, lastName
+        );
+    }
+
+    private String buildDoctorRejectionEmail(String firstName, String lastName) {
+        return String.format(
+            "<html><body style='font-family: Arial, sans-serif;'>" +
+            "<h2 style='color: #DC2626;'>Application Status</h2>" +
+            "<p>Dear Dr. %s %s,</p>" +
+            "<p>Thank you for your interest in joining MediConnect. After reviewing your application, we regret to inform you that we cannot approve your account at this time.</p>" +
+            "<p>This may be due to incomplete documentation or verification issues. If you believe this is an error, please contact our support team at support@mediconnect.lk.</p>" +
+            "<p>Regards,<br/>MediConnect Administration</p>" +
+            "</body></html>",
+            firstName, lastName
         );
     }
 }

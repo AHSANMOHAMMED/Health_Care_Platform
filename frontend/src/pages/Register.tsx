@@ -1,225 +1,359 @@
 import { useState } from 'react';
-import { Eye, EyeOff, AlertCircle, Loader2, ArrowRight, ShieldCheck } from 'lucide-react';
+import {
+  AlertCircle, Loader2, ShieldCheck, ChevronRight, X, Users, Stethoscope, CheckCircle, User, MapPin, Heart, Globe
+} from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '../utils/auth';
 import logo from '../assets/logo.png';
 import hero3 from '../assets/hero-3.png';
 
-interface FormErrors {
-  email?: string;
-  password?: string;
-  confirmPassword?: string;
-  general?: string;
+type Role = 'PATIENT' | 'DOCTOR';
+type Step = 1 | 2 | 3;
+
+const BLOOD_TYPES = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-', 'Unknown'];
+const LANGUAGES = ['Sinhala', 'English', 'Tamil'];
+const SPECIALIZATIONS = [
+  'General Practice', 'Cardiology', 'Neurology', 'Pediatrics',
+  'Orthopedics', 'Dermatology', 'Gynecology', 'Psychiatry',
+  'Ophthalmology', 'ENT', 'Oncology', 'Radiology'
+];
+
+interface FormData {
+  firstName: string; lastName: string; dob: string; gender: string; nic: string;
+  email: string; phone: string; whatsapp: string; province: string; district: string; address: string;
+  emergencyContactName: string; emergencyContactPhone: string; emergencyContactRelation: string;
+  bloodType: string; allergies: string; chronicConditions: string; preferredLanguage: string;
+  specialization: string; licenseNumber: string; password: string; confirmPassword: string;
+}
+
+const INITIAL: FormData = {
+  firstName: '', lastName: '', dob: '', gender: 'Male', nic: '',
+  email: '', phone: '+94', whatsapp: '', province: 'Western', district: '', address: '',
+  emergencyContactName: '', emergencyContactPhone: '+94', emergencyContactRelation: '',
+  bloodType: 'Unknown', allergies: '', chronicConditions: '', preferredLanguage: 'Sinhala',
+  specialization: 'General Practice', licenseNumber: '',
+  password: '', confirmPassword: '',
+};
+
+function RoleSelectModal({ platform, onSelect, onClose }: { platform: string; onSelect: (role: 'PATIENT' | 'DOCTOR') => void; onClose: () => void }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
+      <div className="bg-[#111B2E] border border-[#1E3A5F]/60 rounded-2xl p-7 w-full max-w-sm shadow-2xl">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Sign up with {platform}</p>
+            <h3 className="text-lg font-bold text-white">Select your role</h3>
+          </div>
+          <button onClick={onClose} className="p-2 rounded-lg hover:bg-white/10 text-slate-400 hover:text-white transition-colors">
+            <X size={18} />
+          </button>
+        </div>
+        <div className="space-y-3">
+          <button onClick={() => onSelect('PATIENT')}
+            className="w-full p-4 rounded-xl border border-[#1E3A5F]/60 bg-[#0C1220] hover:border-[#0EA5E9]/50 hover:bg-[#132040] transition-all text-left flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl bg-[#0EA5E9]/15 flex items-center justify-center">
+              <Users size={20} className="text-[#0EA5E9]" />
+            </div>
+            <div>
+              <p className="font-semibold text-white text-sm">Patient</p>
+              <p className="text-xs text-slate-500">I want to manage my health</p>
+            </div>
+          </button>
+          <button onClick={() => onSelect('DOCTOR')}
+            className="w-full p-4 rounded-xl border border-[#1E3A5F]/60 bg-[#0C1220] hover:border-[#06B6D4]/50 hover:bg-[#132040] transition-all text-left flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl bg-[#06B6D4]/15 flex items-center justify-center">
+              <Stethoscope size={20} className="text-[#06B6D4]" />
+            </div>
+            <div>
+              <p className="font-semibold text-white text-sm">Doctor</p>
+              <p className="text-xs text-slate-500">I am a medical professional</p>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Field({ label, req, children }: { label: string; req?: boolean; children: React.ReactNode }) {
+  return (
+    <div>
+      <label className="clinical-label">{label}{req && <span className="text-[#0EA5E9] ml-1">*</span>}</label>
+      {children}
+    </div>
+  );
 }
 
 export default function Register() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [role, setRole] = useState('PATIENT');
-  const [showPassword, setShowPassword] = useState(false);
+  const [step, setStep] = useState<Step>(1);
+  const [role, setRole] = useState<Role>('PATIENT');
+  const [form, setForm] = useState<FormData>(INITIAL);
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<FormErrors>({});
-  
+  const [error, setError] = useState('');
+  const [socialPlatform, setSocialPlatform] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (password !== confirmPassword) {
-      setErrors({ confirmPassword: 'Passwords do not match' });
-      return;
-    }
-    setLoading(true);
-    setErrors({});
+  const setF = (f: keyof FormData, v: string) => setForm(p => ({ ...p, [f]: v }));
 
+  const validateStep1 = (): string | null => {
+    if (!form.firstName.trim()) return 'First name is required';
+    if (!form.lastName.trim()) return 'Last name is required';
+    if (!form.dob) return 'Date of birth is required';
+    if (!form.nic.trim()) return 'NIC / Passport is required';
+    return null;
+  };
+
+  const validateStep2 = (): string | null => {
+    if (!form.email.trim()) return 'Email is required';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) return 'Invalid email';
+    if (form.phone.length < 10) return 'Valid phone number required';
+    if (!form.address.trim()) return 'Address is required';
+    if (!form.emergencyContactName.trim()) return 'Emergency contact name is required';
+    if (form.emergencyContactPhone.length < 10) return 'Valid emergency phone required';
+    return null;
+  };
+
+  const goNext = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setError('');
+    const err = step === 1 ? validateStep1() : validateStep2();
+    if (err) { setError(err); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+    setStep(p => (p + 1) as Step);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const goBack = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setError('');
+    setStep(p => (p - 1) as Step);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleSocialClick = (platform: string) => { setSocialPlatform(platform); };
+
+  const handleSocialRole = (selectedRole: Role) => {
+    const platform = socialPlatform!;
+    setSocialPlatform(null);
+    setLoading(true);
+    setTimeout(() => {
+      const mockUser = {
+        id: 'social-' + Math.random().toString(36).substr(2, 9),
+        firstName: platform,
+        lastName: 'User',
+        email: `user_${Date.now()}@${platform.toLowerCase()}.com`,
+        role: selectedRole,
+      } as any;
+      useAuthStore.getState().setAuth('mock-token-' + Date.now(), mockUser);
+      setLoading(false);
+      navigate(selectedRole === 'DOCTOR' ? '/doctor' : '/patient');
+    }, 1000);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (form.password.length < 8) { setError('Password must be at least 8 characters'); return; }
+    if (form.password !== form.confirmPassword) { setError('Passwords do not match'); return; }
+    setLoading(true);
+    setError('');
     try {
-      await authService.register({ email, password, role: role as 'PATIENT' | 'DOCTOR', firstName: '', lastName: '' });
-      const response = await authService.login(email, password);
-      useAuthStore.getState().setAuth(response.tokens.accessToken, response.user);
+      await authService.register({ ...form, role } as any);
       
-      const userRole = response.user.role;
-      if (userRole === 'PATIENT') navigate('/patient');
-      else if (userRole === 'DOCTOR') navigate('/doctor');
-      else navigate('/');
-    } catch(err: any) {
-      setErrors({ general: 'Registration failed. Try a different email.' });
+      if (role === 'DOCTOR') {
+        setStep(1); // Reset or show success
+        setError('');
+        alert('Registration successful! Your account is now pending administrative approval. You will be notified via email once approved.');
+        navigate('/login');
+        return;
+      }
+
+      const res = await authService.login(form.email, form.password);
+      useAuthStore.getState().setAuth(res.tokens.accessToken, res.user);
+      navigate(res.user.role === 'DOCTOR' ? '/doctor' : '/patient');
+    } catch {
+      setError('Registration failed. Check your connection or use another email.');
     } finally {
       setLoading(false);
     }
   };
 
+  const stepLabels = ['Identity', 'Contact & Emergency', 'Health Profile'];
+
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center p-0 lg:p-8 overflow-hidden">
-      
-      {/* Background Decorative Blobs */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#FFBE29]/5 rounded-full blur-[120px] translate-x-1/2 -translate-y-1/2 animate-blob" />
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#8D153A]/10 rounded-full blur-[120px] -translate-x-1/2 translate-y-1/2 animate-blob animation-delay-2000" />
+    <div className="min-h-screen bg-[#0C1220] flex overflow-hidden">
+      {socialPlatform && <RoleSelectModal platform={socialPlatform} onSelect={handleSocialRole} onClose={() => setSocialPlatform(null)} />}
 
-      <div className="w-full max-w-[1200px] bg-white lg:rounded-[4rem] lg:shadow-[0_50px_100px_-20px_rgba(141,21,58,0.15)] flex flex-col lg:flex-row-reverse overflow-hidden relative z-10 lg:border lg:border-slate-100 h-full lg:h-auto min-h-screen lg:min-h-0">
-        
-        {/* Right Aspect - Premium Branding */}
-        <div className="lg:w-1/2 relative overflow-hidden hidden lg:block">
-           <img src={hero3} alt="Wellness" className="absolute inset-0 w-full h-full object-cover" />
-           <div className="absolute inset-0 bg-gradient-to-t from-[#8D153A] via-[#8D153A]/40 to-[#8D153A]/20" />
-           
-           <div className="absolute inset-0 p-20 flex flex-col justify-between text-white">
-              <Link to="/" className="flex items-center gap-4">
-                 <img src={logo} alt="Logo" className="h-16 w-auto brightness-0 invert" />
-              </Link>
-              
-              <div className="text-right">
-                 <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white font-black text-[10px] uppercase tracking-widest mb-8">
-                    <ShieldCheck size={14} className="text-[#FFBE29]" /> National Health Grid
-                 </div>
-                 <h1 className="text-6xl font-black tracking-tighter leading-[0.9] mb-8">
-                    Join the digital <br/> <span className="text-[#FFBE29]">Healthcare Elite.</span>
-                 </h1>
-                 <p className="text-xl text-white/80 font-medium ml-auto max-w-sm leading-relaxed">
-                   Experience the most advanced medical ecosystem in South Asia.
-                 </p>
+      <div className="hidden lg:flex lg:w-[40%] relative flex-col justify-between p-16 overflow-hidden">
+        <img src={hero3} alt="Medical" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0C1220] via-[#0EA5E9]/40 to-[#0C1220]/80" />
+        <Link to="/" className="relative z-10 flex items-center gap-3">
+          <img src={logo} alt="Logo" className="h-10 w-auto brightness-0 invert" />
+          <p className="text-xl font-bold text-white tracking-tighter">MediConnect <span className="text-[#0EA5E9]">Lanka</span></p>
+        </Link>
+        <div className="relative z-10">
+          <h2 className="text-5xl font-bold text-white tracking-tighter leading-[0.95] mb-6">Start your<br /><span className="text-[#0EA5E9]">Health ID</span><br />journey today.</h2>
+          <p className="text-slate-300 text-sm max-w-sm mb-10">One secure digital ID for all your medical needs in Sri Lanka.</p>
+          <div className="space-y-4">
+            {[{ icon: ShieldCheck, text: 'HIPAA & ISO Compliant Security', color: 'text-emerald-400' },
+              { icon: Globe, text: 'National Multi-language Support', color: 'text-sky-400' }].map((item, i) => (
+              <div key={i} className="flex items-center gap-3">
+                <item.icon size={18} className={item.color} />
+                <span className="text-slate-300 font-medium text-sm">{item.text}</span>
               </div>
-
-              <div className="flex gap-4 justify-end">
-                 <div className="w-4 h-1 bg-white/20 rounded-full" />
-                 <div className="w-12 h-1 bg-[#FFBE29] rounded-full" />
-                 <div className="w-4 h-1 bg-white/20 rounded-full" />
-              </div>
-           </div>
+            ))}
+          </div>
         </div>
+      </div>
 
-        {/* Left Aspect - Modern Form */}
-        <div className="flex-1 p-8 lg:p-20 flex flex-col justify-center">
-           <div className="max-w-md mx-auto w-full">
-              
-              {/* Mobile Logo */}
-              <Link to="/" className="lg:hidden flex items-center gap-3 mb-12">
-                 <img src={logo} alt="Logo" className="h-12 w-auto" />
-                 <p className="text-xl font-black text-slate-950">MediConnect</p>
-              </Link>
+      <div className="flex-1 flex flex-col overflow-y-auto bg-[#0C1220]">
+        <div className="w-full max-w-xl mx-auto p-6 lg:p-16 flex flex-col gap-8">
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-2xl font-bold text-white tracking-tight">Register</h1>
+              <p className="text-sm text-slate-500">Step {step} of 3: {stepLabels[step-1]}</p>
+            </div>
+            <div className="flex gap-2">
+              {([1, 2, 3] as const).map(s => (
+                <div key={s} className={`h-1.5 w-8 rounded-full transition-all ${step >= s ? 'bg-[#0EA5E9]' : 'bg-[#1E3A5F]'}`} />
+              ))}
+            </div>
+          </div>
 
-              <h2 className="text-4xl font-black text-slate-950 tracking-tighter mb-4">Create Health ID</h2>
-              <p className="text-slate-500 font-bold mb-8">Select your role to begin your high-tech journey.</p>
-
-              {/* Role Selector */}
-              <div className="grid grid-cols-2 gap-4 mb-10">
-                 <button 
-                   onClick={() => setRole('PATIENT')}
-                   className={`h-20 rounded-2xl border-2 transition-all flex flex-col items-center justify-center gap-1 ${role === 'PATIENT' ? 'border-[#8D153A] bg-[#8D153A]/5' : 'border-slate-100 opacity-60'}`}
-                 >
-                    <span className={`font-black uppercase tracking-widest text-[10px] ${role === 'PATIENT' ? 'text-[#8D153A]' : 'text-slate-400'}`}>Patient</span>
-                    <p className={`font-bold ${role === 'PATIENT' ? 'text-[#8D153A]' : 'text-slate-950'}`}>Personal Care</p>
-                 </button>
-                 <button 
-                   onClick={() => setRole('DOCTOR')}
-                   className={`h-20 rounded-2xl border-2 transition-all flex flex-col items-center justify-center gap-1 ${role === 'DOCTOR' ? 'border-[#FFBE29] bg-[#FFBE29]/5' : 'border-slate-100 opacity-60'}`}
-                 >
-                    <span className={`font-black uppercase tracking-widest text-[10px] ${role === 'DOCTOR' ? 'text-[#E5AB22]' : 'text-slate-400'}`}>Professional</span>
-                    <p className={`font-bold ${role === 'DOCTOR' ? 'text-[#E5AB22]' : 'text-slate-950'}`}>Medical Expert</p>
-                 </button>
+          <div className="flex items-center gap-2 mb-4">
+            {([1, 2, 3] as const).map((s, i) => (
+              <div key={s} className="flex items-center gap-2 flex-1">
+                <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 ${step === s ? 'bg-[#0EA5E9] text-white shadow-lg shadow-[#0EA5E9]/30' : step > s ? 'bg-emerald-500/20 text-emerald-400' : 'bg-[#1E3A5F]/30 text-slate-600'}`}>
+                  {step > s ? <CheckCircle size={18} /> : i === 0 ? <User size={18} /> : i === 1 ? <MapPin size={18} /> : <Heart size={18} />}
+                </div>
+                {i < 2 && <div className={`flex-1 h-0.5 transition-all duration-500 ${step > s ? 'bg-emerald-500/40' : 'bg-[#1E3A5F]/30'}`} />}
               </div>
+            ))}
+          </div>
 
-              {errors.general && (
-                 <div className="p-4 bg-red-50 border border-red-100 rounded-2xl flex items-center gap-3 text-red-600 font-bold text-sm mb-8 animate-shake">
-                    <AlertCircle size={20} /> {errors.general}
-                 </div>
+          {error && (
+            <div className="p-4 bg-red-900/20 border border-red-700/40 rounded-xl flex items-center gap-3 text-red-400 text-sm font-medium">
+              <AlertCircle size={18} /> {error}
+            </div>
+          )}
+
+          {step === 1 && (
+            <div className="space-y-6">
+              <div>
+                <p className="clinical-label">I am a</p>
+                <div className="grid grid-cols-2 gap-3">
+                  {([['PATIENT', Users], ['DOCTOR', Stethoscope]] as const).map(([r, Icon]) => (
+                    <button key={r} type="button" onClick={() => setRole(r as Role)}
+                      className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all ${role === r ? 'border-[#0EA5E9] bg-[#0EA5E9]/10 text-white' : 'border-[#1E3A5F] text-slate-500 hover:border-[#1E3A5F]/80'}`}>
+                      <Icon size={24} />
+                      <span className="text-xs font-bold uppercase tracking-wider">{r}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <p className="clinical-label">Sign up with</p>
+                <div className="grid grid-cols-3 gap-3">
+                  {['Google', 'Apple', 'Facebook'].map(p => (
+                    <button key={p} type="button" onClick={() => handleSocialClick(p)}
+                      className="h-12 rounded-xl bg-[#111B2E] border border-[#1E3A5F]/60 flex items-center justify-center gap-2 text-white text-xs font-bold hover:bg-[#132040]">
+                      {p}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <Field label="First Name" req>
+                  <input type="text" className="clinical-input" placeholder="Aruni" value={form.firstName} onChange={e => setF('firstName', e.target.value)} />
+                </Field>
+                <Field label="Last Name" req>
+                  <input type="text" className="clinical-input" placeholder="Wijesinghe" value={form.lastName} onChange={e => setF('lastName', e.target.value)} />
+                </Field>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <Field label="Date of Birth" req>
+                  <input type="date" className="clinical-input" value={form.dob} onChange={e => setF('dob', e.target.value)} />
+                </Field>
+                <Field label="NIC / Passport" req>
+                  <input type="text" className="clinical-input" placeholder="901234567V" value={form.nic} onChange={e => setF('nic', e.target.value)} />
+                </Field>
+              </div>
+              <button type="button" onClick={goNext} className="w-full btn-primary justify-center py-4 text-base">Next: Contact Info <ChevronRight size={18} /></button>
+            </div>
+          )}
+
+          {step === 2 && (
+            <div className="space-y-6">
+              <Field label="Email Address" req>
+                <input type="email" className="clinical-input" placeholder="aruni@gmail.com" value={form.email} onChange={e => setF('email', e.target.value)} />
+              </Field>
+              <div className="grid grid-cols-2 gap-4">
+                <Field label="Mobile Number" req>
+                  <input type="tel" className="clinical-input" placeholder="+94 77 123 4567" value={form.phone} onChange={e => setF('phone', e.target.value)} />
+                </Field>
+                <Field label="District">
+                  <input type="text" className="clinical-input" placeholder="Colombo" value={form.district} onChange={e => setF('district', e.target.value)} />
+                </Field>
+              </div>
+              <Field label="Full Address" req>
+                <textarea rows={2} className="clinical-input resize-none" placeholder="No. 42, Galle Road..." value={form.address} onChange={e => setF('address', e.target.value)} />
+              </Field>
+              <div className="p-4 bg-[#1E3A5F]/20 rounded-xl space-y-4">
+                <p className="text-[10px] font-bold text-[#0EA5E9] uppercase tracking-widest">Emergency Contact</p>
+                <div className="grid grid-cols-2 gap-4">
+                  <Field label="Contact Name" req>
+                    <input type="text" className="clinical-input" placeholder="Kasun" value={form.emergencyContactName} onChange={e => setF('emergencyContactName', e.target.value)} />
+                  </Field>
+                  <Field label="Emergency Phone" req>
+                    <input type="tel" className="clinical-input" placeholder="+94 71 123 4567" value={form.emergencyContactPhone} onChange={e => setF('emergencyContactPhone', e.target.value)} />
+                  </Field>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <button type="button" onClick={goBack} className="btn-secondary px-8">Back</button>
+                <button type="button" onClick={goNext} className="flex-1 btn-primary justify-center py-4 text-base">Next: Health Profile <ChevronRight size={18} /></button>
+              </div>
+            </div>
+          )}
+
+          {step === 3 && (
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                <Field label="Blood Type">
+                  <select className="clinical-input" value={form.bloodType} onChange={e => setF('bloodType', e.target.value)}>
+                    {BLOOD_TYPES.map(b => <option key={b} className="bg-[#0C1220]">{b}</option>)}
+                  </select>
+                </Field>
+                <Field label="Preferred Language">
+                  <select className="clinical-input" value={form.preferredLanguage} onChange={e => setF('preferredLanguage', e.target.value)}>
+                    {LANGUAGES.map(l => <option key={l} className="bg-[#0C1220]">{l}</option>)}
+                  </select>
+                </Field>
+              </div>
+              {role === 'DOCTOR' && (
+                <Field label="Specialization" req>
+                  <select className="clinical-input" value={form.specialization} onChange={e => setF('specialization', e.target.value)}>
+                    {SPECIALIZATIONS.map(s => <option key={s} className="bg-[#0C1220]">{s}</option>)}
+                  </select>
+                </Field>
               )}
-
-              <form onSubmit={handleRegister} className="space-y-5">
-                 <div className="space-y-2">
-                    <label className="text-xs font-black uppercase tracking-widest text-slate-400 pl-1">Primary Email</label>
-                    <input 
-                      type="email" 
-                      required 
-                      className="input-luminous"
-                      placeholder="name@example.com"
-                      value={email}
-                      onChange={e => setEmail(e.target.value)}
-                    />
-                 </div>
-
-                 <div className="space-y-2">
-                    <label className="text-xs font-black uppercase tracking-widest text-slate-400 pl-1">Secure Password</label>
-                    <div className="relative">
-                       <input 
-                         type={showPassword ? 'text' : 'password'} 
-                         required 
-                         className="input-luminous pr-14"
-                         placeholder="••••••••"
-                         value={password}
-                         onChange={e => setPassword(e.target.value)}
-                       />
-                       <button 
-                         type="button" 
-                         onClick={() => setShowPassword(!showPassword)}
-                         className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 hover:text-[#8D153A] transition-colors"
-                       >
-                         {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                       </button>
-                    </div>
-                 </div>
-
-                 <div className="space-y-2">
-                    <label className="text-xs font-black uppercase tracking-widest text-slate-400 pl-1">Confirm Identity Key</label>
-                    <input 
-                      type={showPassword ? 'text' : 'password'} 
-                      required 
-                      className={`input-luminous ${errors.confirmPassword ? 'border-red-500' : ''}`}
-                      placeholder="••••••••"
-                      value={confirmPassword}
-                      onChange={e => setConfirmPassword(e.target.value)}
-                    />
-                    {errors.confirmPassword && <p className="text-xs text-red-500 font-bold pl-1">{errors.confirmPassword}</p>}
-                 </div>
-
-                 <button type="submit" disabled={loading} className="w-full btn-luminous group mt-4 h-14 text-sm tracking-widest cursor-pointer hover:scale-[1.02] active:scale-95 transition-all">
-                    {loading ? (
-                      <Loader2 size={24} className="animate-spin mx-auto" />
-                    ) : (
-                      <span className="flex items-center justify-center gap-2">Create Account Now <ArrowRight className="group-hover:translate-x-2 transition-transform" size={18} /></span>
-                    )}
-                 </button>
-              </form>
-
-              {/* Social Auth Separator */}
-              <div className="relative mt-8 mb-6">
-                 <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-slate-200"></div>
-                 </div>
-                 <div className="relative flex justify-center text-xs">
-                    <span className="bg-white px-4 text-slate-400 font-bold uppercase tracking-widest">Or continue with</span>
-                 </div>
+              <Field label="Password" req>
+                <input type="password" required className="clinical-input" placeholder="Min. 8 characters" value={form.password} onChange={e => setF('password', e.target.value)} />
+              </Field>
+              <Field label="Confirm Password" req>
+                <input type="password" required className="clinical-input" placeholder="Repeat password" value={form.confirmPassword} onChange={e => setF('confirmPassword', e.target.value)} />
+              </Field>
+              <div className="flex gap-3">
+                <button type="button" onClick={goBack} className="btn-secondary px-8">Back</button>
+                <button type="submit" disabled={loading} className="flex-1 btn-primary justify-center py-4 text-base">
+                  {loading ? <Loader2 className="animate-spin" /> : 'Complete Registration'}
+                </button>
               </div>
+            </form>
+          )}
 
-              {/* Premium Social Auth Modules */}
-              <div className="grid grid-cols-3 gap-4">
-                 <button className="h-12 border border-slate-200 rounded-xl flex items-center justify-center hover:bg-slate-50 hover:border-slate-300 transition-all group">
-                    <svg className="w-5 h-5 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                       <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                       <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                       <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                       <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-                    </svg>
-                 </button>
-                 <button className="h-12 border border-slate-200 rounded-xl flex items-center justify-center hover:bg-slate-50 hover:border-slate-300 transition-all group">
-                    <svg className="w-5 h-5 text-slate-900 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                       <path d="M16.365 1.44c0 0 1.002 0 1.002 1.34 0 2.21-1.63 4.29-3.69 4.29-1.48 0-1.66-1.12-1.66-1.12s-1.02.04-1.28.09c-.26.04-.63.22-.84.45-.22.22-.52.63-.52 1.25 0 1.3 1.08 2.04 1.48 2.29.39.26.87.52 1.44.52 0 0 .17-.04.48-.09.3-.04.78.04 1.25.17.48.13.91.43 1.25.82.35.39.52.87.52 1.44 0 .91-.39 1.74-1.04 2.34-.65.61-1.48 1.08-2.52 1.39-1.04.3-2.17.43-3.21.39-1.04-.04-1.95-.26-2.73-.61-.78-.35-1.43-.87-1.91-1.48-.48-.61-.78-1.25-.87-1.82-.09-.56-.04-1.08.13-1.48.17-.39.43-.65.74-.82.3-.17.65-.26 1.04-.26 0 0 .13.04.35.09.22.04.52.09.82.04.3-.04.56-.13.78-.3.22-.17.43-.39.56-.65.13-.26.22-.56.26-.91 0 0 .04-.39 0-.87-.04-.48-.17-1.04-.39-1.64-.22-.61-.56-1.25-1.08-1.82-.52-.56-1.17-1.04-2.04-1.25C9.8 4.43 8.84 4.56 8.01 5c-.82.43-1.52.95-2.04 1.39-.52.43-.87.87-1.04 1.25-.17.39-.26.87-.26 1.43 0 1.04.35 1.95.91 2.64.56.7 1.34 1.25 2.29 1.56.95.3 2.04.43 3.12.39 0 0-.04.3-0 .74 0 .44.04.91.13 1.3.09.39.26.78.48 1.13.22.35.52.65.87.82.35.17.78.26 1.34.26 0 0-.04.3-0 .87 0 .56.09 1.25.3 1.95.22.7.56 1.48 1.04 2.21.48.74 1.13 1.39 1.95 1.86.82.48 1.82.78 3.03.78v-1.64c-.95 0-1.74-.22-2.38-.61-.65-.39-1.17-.91-1.56-1.48-.39-.56-.65-1.13-.82-1.69-.17-.56-.26-1.04-.26-1.39 0 0 .17.04.52.09.35.04.82.09 1.34.09.52 0 1.08-.09 1.56-.26.48-.17.91-.43 1.25-.74.35-.3.65-.65.87-1.04.22-.39.39-.82.48-1.3.09-.48.13-.95.13-1.39v-1.34h-.04v1.34h1.69z"/>
-                    </svg>
-                 </button>
-                 <button className="h-12 border border-slate-200 rounded-xl flex items-center justify-center hover:bg-slate-50 hover:border-slate-300 transition-all group">
-                    <svg className="w-5 h-5 text-[#1877F2] group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                       <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                    </svg>
-                 </button>
-              </div>
-
-              <div className="mt-8 pt-6 border-t border-slate-100 text-center">
-                 <p className="text-slate-500 font-bold text-sm">Already part of the network?</p>
-                 <Link to="/login" className="inline-block mt-3 text-[#8D153A] text-sm font-black hover:underline underline-offset-4 decoration-2">
-                    Sign in to your Dashboard
-                 </Link>
-              </div>
-           </div>
+          <p className="text-center text-sm text-slate-500">
+            Already have a Health ID? <Link to="/login" className="text-[#0EA5E9] hover:underline font-bold">Sign In</Link>
+          </p>
         </div>
       </div>
     </div>

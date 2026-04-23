@@ -23,4 +23,10 @@ public class UserCredentials {
     
     @Column(nullable = false)
     private String role; // PATIENT, DOCTOR, ADMIN
+
+    private String firstName;
+    private String lastName;
+    
+    @Column(nullable = false)
+    private String status; // APPROVED, PENDING, REJECTED
 }

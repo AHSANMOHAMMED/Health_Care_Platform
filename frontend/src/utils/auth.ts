@@ -16,6 +16,7 @@ export interface AuthTokens {
 export interface LoginResponse {
   user: User;
   tokens: AuthTokens;
+  message?: string;
 }
 
 // Token management utilities
@@ -194,17 +195,11 @@ export class AuthService {
         password
       });
 
-      const { user, tokens } = response.data;
-      
-      // Store tokens securely
-      tokenManager.setTokens(tokens);
-      
-      // Store user data in localStorage (non-sensitive)
-      tokenManager.setUser(user);
-
       return response.data;
-    } catch (error) {
-      console.error('Login error:', error);
+    } catch (error: any) {
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      }
       throw error;
     }
   }
@@ -306,6 +301,26 @@ export class AuthService {
       throw error;
     }
   }
+
+  // Admin: Get all users
+  async getAllUsers(): Promise<UserCredentials[]> {
+    const response = await api.get('/auth/users');
+    return response.data;
+  }
+
+  // Admin: Update user status
+  async updateUserStatus(id: number, status: 'APPROVED' | 'REJECTED' | 'PENDING'): Promise<void> {
+    await api.put(`/auth/users/${id}/status`, { status });
+  }
+}
+
+interface UserCredentials {
+  id: number;
+  email: string;
+  role: string;
+  firstName: string;
+  lastName: string;
+  status: string;
 }
 
 // Create singleton instance

@@ -24,4 +24,6 @@ public class SymptomAnalysisRequest {
     
     private String duration;
     private String severity;
+    private String image; // Base64 encoded image
+    private String language; // en, si, ta
 }

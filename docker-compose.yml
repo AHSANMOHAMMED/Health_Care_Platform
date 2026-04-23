@@ -2,24 +2,6 @@ services:
   # ==========================================
   # INFRASTRUCTURE SERVICES
   # ==========================================
-  postgres:
-    image: postgres:15-alpine
-    container_name: mediconnect-postgres
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: rootpassword
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-      - ./infrastructure/db-init:/docker-entrypoint-initdb.d
-    networks:
-      - mediconnect-network
-    deploy:
-      resources:
-        limits:
-          memory: 256M
-
   rabbitmq:
     image: rabbitmq:3-management-alpine
     container_name: mediconnect-rabbitmq
@@ -102,9 +84,9 @@ services:
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8888/
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/auth_db
-      - SPRING_DATASOURCE_USERNAME=root
-      - POSTGRES_PASSWORD=rootpassword
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://my-dsproject-deploy-2026.postgres.database.azure.com:5432/auth_db?sslmode=disable
+      - SPRING_DATASOURCE_USERNAME=adminuser
+      - POSTGRES_PASSWORD=Dsproject123
       - JAVA_OPTS=-Xmx384m -Xms256m
     networks:
       - mediconnect-network
@@ -113,7 +95,6 @@ services:
         limits:
           memory: 448M
     depends_on:
-      - postgres
       - service-registry
 
   patient-service:
@@ -122,9 +103,9 @@ services:
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8888/
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/patient_db
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=rootpassword
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://my-dsproject-deploy-2026.postgres.database.azure.com:5432/patient_db?sslmode=disable
+      - SPRING_DATASOURCE_USERNAME=adminuser
+      - SPRING_DATASOURCE_PASSWORD=Dsproject123
       - JAVA_OPTS=-Xmx384m -Xms256m
     networks:
       - mediconnect-network
@@ -133,7 +114,6 @@ services:
         limits:
           memory: 448M
     depends_on:
-      - postgres
       - service-registry
 
   doctor-service:
@@ -142,9 +122,9 @@ services:
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8888/
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/doctor_db
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=rootpassword
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://my-dsproject-deploy-2026.postgres.database.azure.com:5432/doctor_db?sslmode=disable
+      - SPRING_DATASOURCE_USERNAME=adminuser
+      - SPRING_DATASOURCE_PASSWORD=Dsproject123
       - JAVA_OPTS=-Xmx384m -Xms256m
     networks:
       - mediconnect-network
@@ -153,7 +133,6 @@ services:
         limits:
           memory: 448M
     depends_on:
-      - postgres
       - service-registry
 
   appointment-service:
@@ -162,9 +141,9 @@ services:
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8888/
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/appointment_db
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=rootpassword
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://my-dsproject-deploy-2026.postgres.database.azure.com:5432/appointment_db?sslmode=disable
+      - SPRING_DATASOURCE_USERNAME=adminuser
+      - SPRING_DATASOURCE_PASSWORD=Dsproject123
       - SPRING_RABBITMQ_HOST=rabbitmq
       - SPRING_RABBITMQ_USERNAME=root
       - SPRING_RABBITMQ_PASSWORD=rootpassword
@@ -176,7 +155,6 @@ services:
         limits:
           memory: 448M
     depends_on:
-      - postgres
       - rabbitmq
       - service-registry
 
@@ -186,9 +164,9 @@ services:
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8888/
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/payment_db
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=rootpassword
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://my-dsproject-deploy-2026.postgres.database.azure.com:5432/payment_db?sslmode=disable
+      - SPRING_DATASOURCE_USERNAME=adminuser
+      - SPRING_DATASOURCE_PASSWORD=Dsproject123
       - SPRING_RABBITMQ_HOST=rabbitmq
       - SPRING_RABBITMQ_USERNAME=root
       - SPRING_RABBITMQ_PASSWORD=rootpassword
@@ -203,7 +181,6 @@ services:
         limits:
           memory: 448M
     depends_on:
-      - postgres
       - rabbitmq
       - service-registry
 
@@ -243,9 +220,9 @@ services:
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8888/
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/telemedicine_db
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=rootpassword
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://my-dsproject-deploy-2026.postgres.database.azure.com:5432/telemedicine_db?sslmode=disable
+      - SPRING_DATASOURCE_USERNAME=adminuser
+      - SPRING_DATASOURCE_PASSWORD=Dsproject123
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - JAVA_OPTS=-Xmx384m -Xms256m
     networks:
@@ -255,7 +232,6 @@ services:
         limits:
           memory: 448M
     depends_on:
-      - postgres
       - service-registry
 
   ai-service:
@@ -264,9 +240,9 @@ services:
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8888/
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/ai_db
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=rootpassword
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://my-dsproject-deploy-2026.postgres.database.azure.com:5432/ai_db?sslmode=disable
+      - SPRING_DATASOURCE_USERNAME=adminuser
+      - SPRING_DATASOURCE_PASSWORD=Dsproject123
       - GEMINI_API_KEY=${GEMINI_API_KEY:-mock-key}
       - JAVA_OPTS=-Xmx384m -Xms256m
     networks:
@@ -276,7 +252,6 @@ services:
         limits:
           memory: 448M
     depends_on:
-      - postgres
       - service-registry
 
   # NEW: Prescription Service
@@ -286,9 +261,9 @@ services:
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8888/
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/prescription_db
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=rootpassword
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://my-dsproject-deploy-2026.postgres.database.azure.com:5432/prescription_db?sslmode=disable
+      - SPRING_DATASOURCE_USERNAME=adminuser
+      - SPRING_DATASOURCE_PASSWORD=Dsproject123
       - JAVA_OPTS=-Xmx384m -Xms256m
     networks:
       - mediconnect-network
@@ -297,7 +272,6 @@ services:
         limits:
           memory: 448M
     depends_on:
-      - postgres
       - service-registry
 
   # NEW: Admin Service
@@ -307,9 +281,9 @@ services:
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8888/
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/admin_db
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=rootpassword
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://my-dsproject-deploy-2026.postgres.database.azure.com:5432/admin_db?sslmode=disable
+      - SPRING_DATASOURCE_USERNAME=adminuser
+      - SPRING_DATASOURCE_PASSWORD=Dsproject123
       - JAVA_OPTS=-Xmx384m -Xms256m
     networks:
       - mediconnect-network
@@ -318,7 +292,6 @@ services:
         limits:
           memory: 448M
     depends_on:
-      - postgres
       - service-registry
       - patient-service
       - doctor-service
@@ -330,11 +303,6 @@ services:
     container_name: mediconnect-frontend
     ports:
       - "3000:3000"
-    environment:
-      - VITE_API_GATEWAY_URL=http://localhost:8080
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
     networks:
       - mediconnect-network
     deploy:
@@ -348,5 +316,3 @@ networks:
   mediconnect-network:
     driver: bridge
 
-volumes:
-  postgres-data:
