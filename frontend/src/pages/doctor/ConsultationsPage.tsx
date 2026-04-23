@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { 
   MessageSquare, Search, Filter, PlusCircle, Video, Phone, Mic,
   Send, Paperclip, Calendar, Clock, Users, CheckCircle, AlertCircle,
-  Activity, Heart, FileText, ChevronRight, Star
+  Activity, Heart, FileText, ChevronRight, Star, Pill
 } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo.png';
@@ -427,7 +427,8 @@ export default function ConsultationsPage() {
             {[
               { name: 'Patient Overview', icon: ChevronRight, path: '/doctor' },
               { name: 'Appointments', icon: Calendar, path: '/doctor/appointments' },
-              { name: 'Daily Schedule', icon: Clock, path: '/doctor/schedule' },
+              { name: 'Telemedicine Sessions', icon: Video, path: '/doctor/telemedicine' },
+              { name: 'Digital Prescriptions', icon: Pill, path: '/doctor/prescriptions' },
               { name: 'Medical Reports', icon: FileText, path: '/doctor/reports' },
               { name: 'Consultations', icon: MessageSquare, path: '/doctor/chats' },
               { name: 'Analytics', icon: Activity, path: '/doctor/analytics' },

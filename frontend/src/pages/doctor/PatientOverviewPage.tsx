@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { 
   Users, Search, Filter, PlusCircle, Calendar, 
   Activity, Heart, AlertTriangle, Pill, Clock,
-  FileText, ChevronRight, Phone, Mail, MapPin, X
+  FileText, ChevronRight, Phone, Mail, MapPin, X, Video, Download
 } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo.png';
@@ -458,7 +458,8 @@ export default function PatientOverviewPage() {
             {[
               { name: 'Patient Overview', icon: Users, path: '/doctor/patients' },
               { name: 'Appointments', icon: Calendar, path: '/doctor/appointments' },
-              { name: 'Daily Schedule', icon: Clock, path: '/doctor/schedule' },
+              { name: 'Telemedicine Sessions', icon: Video, path: '/doctor/telemedicine' },
+              { name: 'Digital Prescriptions', icon: Pill, path: '/doctor/prescriptions' },
               { name: 'Medical Reports', icon: FileText, path: '/doctor/reports' },
               { name: 'Consultations', icon: ChevronRight, path: '/doctor/chats' },
               { name: 'Analytics', icon: Activity, path: '/doctor/analytics' },
@@ -1326,6 +1327,60 @@ export default function PatientOverviewPage() {
             </div>
 
             <div className="flex gap-3 mt-8">
+              <button
+                onClick={() => {
+                  const content = [
+                    `PATIENT REPORT - ${selectedPatient.name}`,
+                    `Generated: ${new Date().toLocaleString()}`,
+                    ``,
+                    `--- PERSONAL INFORMATION ---`,
+                    `Age: ${selectedPatient.age} | Gender: ${selectedPatient.gender} | Blood Type: ${selectedPatient.bloodType}`,
+                    `Status: ${selectedPatient.status} | Risk Level: ${selectedPatient.riskLevel}`,
+                    ``,
+                    `--- CONTACT ---`,
+                    `Phone: ${selectedPatient.contact.phone}`,
+                    `Email: ${selectedPatient.contact.email}`,
+                    `Address: ${selectedPatient.contact.address}`,
+                    ``,
+                    `--- MEDICAL ---`,
+                    `Primary Condition: ${selectedPatient.condition}`,
+                    `Chronic Conditions: ${selectedPatient.chronicConditions.join(', ')}`,
+                    `Medical History: ${selectedPatient.medicalHistory.join(', ')}`,
+                    `Allergies: ${selectedPatient.allergies.join(', ')}`,
+                    `Medications: ${selectedPatient.medications.join(', ')}`,
+                    ``,
+                    `--- VITALS ---`,
+                    `Blood Pressure: ${selectedPatient.vitals.bloodPressure}`,
+                    `Heart Rate: ${selectedPatient.vitals.heartRate}`,
+                    `Temperature: ${selectedPatient.vitals.temperature}`,
+                    `Weight: ${selectedPatient.vitals.weight} | Height: ${selectedPatient.vitals.height} | BMI: ${selectedPatient.vitals.bmi}`,
+                    `O2 Saturation: ${selectedPatient.vitals.oxygenSaturation}`,
+                    ``,
+                    `--- LAB RESULTS (${selectedPatient.lastLabResults.date}) ---`,
+                    `Hemoglobin: ${selectedPatient.lastLabResults.hemoglobin}`,
+                    `Glucose: ${selectedPatient.lastLabResults.glucose}`,
+                    `Cholesterol: ${selectedPatient.lastLabResults.cholesterol}`,
+                    `Kidney Function: ${selectedPatient.lastLabResults.kidneyFunction}`,
+                    ``,
+                    `--- INSURANCE ---`,
+                    `Provider: ${selectedPatient.insurance.provider}`,
+                    `Policy: ${selectedPatient.insurance.policyNumber} | Expiry: ${selectedPatient.insurance.expiryDate}`,
+                    ``,
+                    `--- EMERGENCY CONTACT ---`,
+                    `${selectedPatient.emergencyContact.name} (${selectedPatient.emergencyContact.relationship}): ${selectedPatient.emergencyContact.phone}`,
+                  ].join('\n');
+                  const blob = new Blob([content], { type: 'text/plain' });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = `${selectedPatient.name.replace(/\s+/g, '_')}_Report.txt`;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                }}
+                className="flex-1 py-4 bg-emerald-600 text-white rounded-2xl font-black hover:bg-emerald-700 transition-all flex items-center justify-center gap-2"
+              >
+                <Download size={18} /> Download Report
+              </button>
               <button
                 onClick={() => {
                   setSelectedPatient(null);

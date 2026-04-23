@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { 
-  Calendar, Clock, Search, Filter, PlusCircle, 
+  Calendar, Clock, Search, Filter, 
   MessageCircle, Video, FileText, Users, ChevronRight,
-  AlertTriangle, CheckCircle, XCircle, Phone, X, Play
+  AlertTriangle, CheckCircle, XCircle, Phone, X, Play, Pill
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import logo from '../../assets/logo.png';
@@ -133,11 +133,7 @@ export default function AppointmentsPage() {
   };
 
   const handleQuickAddAppointment = () => {
-    setShowQuickAddModal(true);
-    setQuickAppointmentForm({
-      ...quickAppointmentForm,
-      date: currentDate.toISOString().split('T')[0]
-    });
+    window.location.href = '/doctor/appointments/new';
   };
 
   const handleDateClick = (date: Date) => {
@@ -229,6 +225,19 @@ export default function AppointmentsPage() {
 
   const handleUpdateStatus = (id: number, status: Appointment['status']) => {
     handleUpdateAppointment(id, { status });
+  };
+
+  // Doctor actions: accept / reject incoming requests
+  const handleAcceptRequest = (id: number) => {
+    handleUpdateStatus(id, 'confirmed');
+    alert('Appointment accepted.');
+  };
+
+  const handleRejectRequest = (id: number) => {
+    if (confirm('Reject this appointment request?')) {
+      handleUpdateStatus(id, 'cancelled');
+      alert('Appointment rejected.');
+    }
   };
 
   const handleRescheduleAppointment = (id: number, newDate: string, newTime: string) => {
@@ -323,7 +332,8 @@ export default function AppointmentsPage() {
             {[
               { name: 'Dashboard', icon: Users, path: '/doctor' },
               { name: 'Appointments', icon: Calendar, path: '/doctor/appointments' },
-              { name: 'Daily Schedule', icon: Clock, path: '/doctor/schedule' },
+              { name: 'Telemedicine Sessions', icon: Video, path: '/doctor/telemedicine' },
+              { name: 'Digital Prescriptions', icon: Pill, path: '/doctor/prescriptions' },
               { name: 'Medical Reports', icon: FileText, path: '/doctor/reports' },
               { name: 'Consultations', icon: MessageCircle, path: '/doctor/chats' },
               { name: 'Analytics', icon: ChevronRight, path: '/doctor/analytics' },
@@ -354,15 +364,6 @@ export default function AppointmentsPage() {
               <div>
                 <h1 className="text-4xl font-black text-slate-950 mb-2">Appointments</h1>
                 <p className="text-lg text-slate-600 font-bold">Manage your patient appointments and schedule</p>
-              </div>
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={handleQuickAddAppointment}
-                  className="px-6 py-3 bg-gradient-to-r from-[#8D153A] to-[#E5AB22] text-white rounded-2xl font-black hover:shadow-lg transition-all flex items-center gap-2"
-                >
-                  <PlusCircle size={20} />
-                  + New Appointment
-                </button>
               </div>
             </div>
 
@@ -565,6 +566,30 @@ export default function AppointmentsPage() {
                       </span>
                       
                       <div className="flex gap-2">
+                        {appointment.status === 'waiting' ? (
+                          <>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleAcceptRequest(appointment.id);
+                              }}
+                              className="p-2 rounded-lg bg-emerald-100 text-emerald-700 hover:bg-emerald-200 transition-all"
+                              title="Accept"
+                            >
+                              <CheckCircle size={16} />
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleRejectRequest(appointment.id);
+                              }}
+                              className="p-2 rounded-lg bg-red-100 text-red-700 hover:bg-red-200 transition-all"
+                              title="Reject"
+                            >
+                              <XCircle size={16} />
+                            </button>
+                          </>
+                        ) : null}
                         <button 
                           onClick={(e) => { e.stopPropagation(); }}
                           className="p-2 rounded-lg bg-blue-100 text-blue-600 hover:bg-blue-200 transition-all" 
@@ -572,13 +597,15 @@ export default function AppointmentsPage() {
                         >
                           <Calendar size={16} />
                         </button>
-                        <button 
-                          onClick={(e) => { e.stopPropagation(); handleUpdateStatus(appointment.id, 'cancelled'); }}
-                          className="p-2 rounded-lg bg-red-100 text-red-600 hover:bg-red-200 transition-all" 
-                          title="Cancel"
-                        >
-                          <X size={16} />
-                        </button>
+                        {appointment.status !== 'cancelled' && (
+                          <button 
+                            onClick={(e) => { e.stopPropagation(); handleUpdateStatus(appointment.id, 'cancelled'); }}
+                            className="p-2 rounded-lg bg-red-100 text-red-600 hover:bg-red-200 transition-all" 
+                            title="Cancel"
+                          >
+                            <X size={16} />
+                          </button>
+                        )}
                         <button 
                           onClick={(e) => { 
                             e.stopPropagation(); 

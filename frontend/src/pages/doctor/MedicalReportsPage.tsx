@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   FileText, Search, Filter, Download, PlusCircle, Calendar,
   Eye, AlertTriangle, CheckCircle, Clock, Activity, Heart,
-  Brain, Stethoscope, Pill, Camera, TestTube, ChevronRight
+  Brain, Stethoscope, Pill, Camera, TestTube, ChevronRight, Video
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import logo from '../../assets/logo.png';
@@ -126,8 +126,27 @@ export default function MedicalReportsPage() {
   };
 
   const handleDownloadReport = (report: MedicalReport) => {
-    console.log('Downloading report:', report.fileUrl);
-    alert(`Downloading ${report.reportType} for ${report.patientName}`);
+    const content = [
+      `MEDICAL REPORT`,
+      `===============================`,
+      `Patient: ${report.patientName}`,
+      `Report Type: ${report.reportType}`,
+      `Date: ${report.date}`,
+      `Doctor: ${report.doctorName}`,
+      `Category: ${report.category}`,
+      `Status: ${report.status.toUpperCase()}`,
+      ``,
+      `Description:`,
+      report.description,
+    ].join('\n');
+
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${report.patientName.replace(/\s+/g, '_')}_${report.reportType.replace(/\s+/g, '_')}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   const handleUploadReport = () => {
@@ -235,7 +254,8 @@ export default function MedicalReportsPage() {
             {[
               { name: 'Patient Overview', icon: ChevronRight, path: '/doctor' },
               { name: 'Appointments', icon: Calendar, path: '/doctor/appointments' },
-              { name: 'Daily Schedule', icon: Clock, path: '/doctor/schedule' },
+              { name: 'Telemedicine Sessions', icon: Video, path: '/doctor/telemedicine' },
+              { name: 'Digital Prescriptions', icon: Pill, path: '/doctor/prescriptions' },
               { name: 'Medical Reports', icon: FileText, path: '/doctor/reports' },
               { name: 'Consultations', icon: Activity, path: '/doctor/chats' },
               { name: 'Analytics', icon: ChevronRight, path: '/doctor/analytics' },
@@ -385,11 +405,11 @@ export default function MedicalReportsPage() {
                         </p>
 
                         <div className="flex items-center gap-2">
-                          <button className="px-4 py-2 bg-blue-600 text-white rounded-xl font-black hover:bg-blue-700 transition-all flex items-center gap-2">
+                          <button onClick={() => handleReportClick(report)} className="px-4 py-2 bg-blue-600 text-white rounded-xl font-black hover:bg-blue-700 transition-all flex items-center gap-2">
                             <Eye size={16} />
                             View Report
                           </button>
-                          <button className="px-4 py-2 bg-slate-100 text-slate-600 rounded-xl font-black hover:bg-slate-200 transition-all flex items-center gap-2">
+                          <button onClick={() => handleDownloadReport(report)} className="px-4 py-2 bg-slate-100 text-slate-600 rounded-xl font-black hover:bg-slate-200 transition-all flex items-center gap-2">
                             <Download size={16} />
                             Download
                           </button>
@@ -415,6 +435,69 @@ export default function MedicalReportsPage() {
           </div>
         </div>
       </main>
+
+      {/* Report Preview Modal */}
+      {showReportPreview && selectedReport && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-start mb-6">
+              <div>
+                <h3 className="text-2xl font-black text-slate-950 mb-1">{selectedReport.reportType}</h3>
+                <p className="text-slate-500 font-bold">{selectedReport.patientName}</p>
+              </div>
+              <button
+                onClick={() => setShowReportPreview(false)}
+                className="p-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all"
+              >
+                <span className="text-xl font-black">✕</span>
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-slate-50 p-4 rounded-xl">
+                  <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Date</p>
+                  <p className="font-black text-slate-950">{selectedReport.date}</p>
+                </div>
+                <div className="bg-slate-50 p-4 rounded-xl">
+                  <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Doctor</p>
+                  <p className="font-black text-slate-950">{selectedReport.doctorName}</p>
+                </div>
+                <div className="bg-slate-50 p-4 rounded-xl">
+                  <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Category</p>
+                  <p className="font-black text-slate-950 capitalize">{selectedReport.category}</p>
+                </div>
+                <div className="bg-slate-50 p-4 rounded-xl">
+                  <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Status</p>
+                  <span className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest border ${getStatusColor(selectedReport.status)}`}>
+                    {selectedReport.status}
+                  </span>
+                </div>
+              </div>
+
+              <div className="bg-slate-50 p-4 rounded-xl">
+                <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Description</p>
+                <p className="text-slate-700 font-medium leading-relaxed">{selectedReport.description}</p>
+              </div>
+            </div>
+
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={() => { handleDownloadReport(selectedReport); }}
+                className="flex-1 py-3 bg-[#8D153A] text-white rounded-2xl font-black hover:bg-[#8D153A]/80 transition-all flex items-center justify-center gap-2"
+              >
+                <Download size={18} /> Download Report
+              </button>
+              <button
+                onClick={() => setShowReportPreview(false)}
+                className="flex-1 py-3 bg-slate-100 text-slate-600 rounded-2xl font-black hover:bg-slate-200 transition-all"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

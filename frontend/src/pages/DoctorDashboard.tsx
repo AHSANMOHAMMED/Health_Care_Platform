@@ -7,7 +7,7 @@ import {
   PlusCircle, Stethoscope, Briefcase, Zap,
   AlertTriangle, Pill, Download, FileDown,
   Heart, TrendingUp, AlertCircle, CheckCircle, Star,
-  Phone, MapPin, Mail
+  Phone, MapPin, Mail, Video
 } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
@@ -29,7 +29,8 @@ export default function DoctorDashboard() {
   const navItems = [
     { name: 'Dashboard', icon: Users, path: '/doctor' },
     { name: 'Appointments', icon: Calendar, path: '/doctor/appointments' },
-    { name: 'Daily Schedule', icon: Clock, path: '/doctor/schedule' },
+    { name: 'Telemedicine Sessions', icon: Video, path: '/doctor/telemedicine' },
+    { name: 'Digital Prescriptions', icon: Pill, path: '/doctor/prescriptions' },
     { name: 'Medical Reports', icon: FileText, path: '/doctor/reports' },
     { name: 'Consultations', icon: MessageSquare, path: '/doctor/chats' },
     { name: 'Analytics', icon: Activity, path: '/doctor/analytics' },
