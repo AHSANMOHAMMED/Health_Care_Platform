@@ -1,18 +1,18 @@
 import { useState, useEffect, useCallback } from 'react';
 import {
-  Users, Calendar, FileText, Activity, Stethoscope, Pill,
-  MessageSquare, Bell, LogOut, Search, CheckCircle,
-  ShieldCheck, Menu, X, Loader2, Plus, AlertCircle
+  Users, Calendar, Activity, Pill,
+  Bell, LogOut, Search,
+  ShieldCheck, Menu, X, Loader2, Plus
 } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import { Link, useNavigate } from 'react-router-dom';
 import { appointmentService, prescriptionService, type Appointment, type Prescription } from '../api/services';
 
 const TABS = [
-  { id: 'schedule', label: 'Schedule', icon: Calendar },
-  { id: 'patients', label: 'My Patients', icon: Users },
-  { id: 'prescriptions', label: 'Prescriptions', icon: Pill },
-  { id: 'reports', label: 'Medical Reports', icon: FileText },
+  { id: 'schedule', label: 'Clinical Schedule', icon: Calendar },
+  { id: 'patients', label: 'Patient Records', icon: Users },
+  { id: 'prescriptions', label: 'Prescription Mgmt', icon: Pill },
+  { id: 'history', label: 'Consultation History', icon: Activity },
 ];
 
 export default function DoctorDashboard() {
@@ -57,7 +57,7 @@ export default function DoctorDashboard() {
       const created = await prescriptionService.create({
         patientId: parseInt(newRx.patientId),
         doctorId: userId ?? 2,
-        medicationName: newRx.medicationName,
+        medicineName: newRx.medicationName,
         dosage: newRx.dosage,
         duration: newRx.duration,
         instructions: newRx.instructions,
@@ -73,7 +73,7 @@ export default function DoctorDashboard() {
 
   const handleCompleteAppointment = async (id: number) => {
     try {
-      const updated = await appointmentService.update(id, { status: 'completed' });
+      const updated = await appointmentService.updateStatus(id, 'completed');
       setAppointments(appointments.map(a => a.id === id ? updated : a));
     } catch (error) {
       console.error('Failed to complete appointment', error);
@@ -152,8 +152,8 @@ export default function DoctorDashboard() {
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div className="clinical-card p-5">
-                  <p className="text-sm text-slate-400">Today's Appointments</p>
-                  <p className="text-3xl font-bold text-white mt-1">{appointments.filter(a => a.status === 'scheduled').length}</p>
+                  <p className="text-sm text-slate-400">Upcoming Today</p>
+                  <p className="text-3xl font-bold text-white mt-1">{appointments.filter(a => a.status === 'confirmed' || a.status === 'waiting').length}</p>
                 </div>
                 <div className="clinical-card p-5">
                   <p className="text-sm text-slate-400">Completed</p>
@@ -171,24 +171,34 @@ export default function DoctorDashboard() {
                       <th>Time</th>
                       <th>Patient</th>
                       <th>Reason</th>
+                      <th>Payment</th>
                       <th>Status</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {appointments.filter(a => a.status === 'scheduled').map(appt => (
+                    {appointments.filter(a => a.status === 'confirmed' || a.status === 'waiting' || a.status === 'pending').map(appt => (
                       <tr key={appt.id}>
-                        <td className="font-medium text-white">{appt.time} <span className="text-xs text-slate-500 block">{appt.date}</span></td>
+                        <td className="font-medium text-white">{appt.time || appt.appointmentTime} <span className="text-xs text-slate-500 block">{appt.date || appt.appointmentDate}</span></td>
                         <td>Patient ID: {appt.patientId}</td>
                         <td>{appt.reason || '-'}</td>
-                        <td><span className="badge-warning">Scheduled</span></td>
                         <td>
-                          <button onClick={() => handleCompleteAppointment(appt.id)} className="text-xs px-2 py-1 bg-emerald-500/10 text-emerald-400 rounded-md hover:bg-emerald-500/20 transition-colors">Mark Complete</button>
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-black ${appt.status === 'confirmed' || appt.status === 'completed' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'}`}>
+                            {appt.status === 'confirmed' || appt.status === 'completed' ? 'PAID' : 'UNPAID'}
+                          </span>
+                        </td>
+                        <td>
+                          <span className={`badge-${appt.status === 'confirmed' ? 'success' : 'warning'}`}>
+                            {appt.status}
+                          </span>
+                        </td>
+                        <td>
+                          <button onClick={() => handleCompleteAppointment(Number(appt.id))} className="text-xs px-2 py-1 bg-emerald-500/10 text-emerald-400 rounded-md hover:bg-emerald-500/20 transition-colors">Mark Complete</button>
                         </td>
                       </tr>
                     ))}
-                    {appointments.filter(a => a.status === 'scheduled').length === 0 && (
-                      <tr><td colSpan={5} className="text-center py-8 text-slate-500">No scheduled appointments.</td></tr>
+                    {appointments.filter(a => a.status === 'confirmed' || a.status === 'waiting' || a.status === 'pending').length === 0 && (
+                      <tr><td colSpan={5} className="text-center py-8 text-slate-500">No active appointments.</td></tr>
                     )}
                   </tbody>
                 </table>
@@ -214,7 +224,7 @@ export default function DoctorDashboard() {
                 {prescriptions.map(rx => (
                   <div key={rx.id} className="clinical-card p-5 border-l-4 border-l-[#06B6D4]">
                     <div className="flex justify-between items-start mb-3">
-                      <h3 className="font-bold text-white">{rx.medicationName}</h3>
+                      <h3 className="font-bold text-white">{rx.medicineName}</h3>
                       <span className="text-xs text-slate-500">Patient ID: {rx.patientId}</span>
                     </div>
                     <div className="text-sm space-y-1 text-slate-400">
@@ -229,10 +239,78 @@ export default function DoctorDashboard() {
             </div>
           )}
 
-          {activeTab === 'reports' && (
-            <div className="clinical-card p-8 text-center text-slate-400">
-              <FileText size={48} className="mx-auto mb-4 opacity-20" />
-              <p>Medical reports module coming soon.</p>
+          {activeTab === 'patients' && (
+            <div className="space-y-6">
+              <div className="flex justify-between items-center">
+                <h2 className="text-lg font-bold text-white">Clinical Patient Records</h2>
+                <div className="relative max-w-xs">
+                  <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                  <input type="text" className="clinical-input pl-10" placeholder="Search by name or ID..." />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {[
+                  { id: 'PT-102', name: 'Aruni Wijesinghe', age: 34, lastVisit: '2024-04-10', condition: 'Hypertension' },
+                  { id: 'PT-105', name: 'Sunil Perera', age: 45, lastVisit: '2024-04-12', condition: 'Type 2 Diabetes' },
+                  { id: 'PT-110', name: 'Kamala Silva', age: 28, lastVisit: '2024-04-05', condition: 'Asthma' },
+                ].map(p => (
+                  <div key={p.id} className="clinical-card p-5 group hover:border-[#06B6D4]/30 cursor-pointer transition-all">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 rounded-full bg-[#06B6D4]/10 flex items-center justify-center text-[#06B6D4] font-bold">
+                        {p.name[0]}
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-white group-hover:text-[#06B6D4] transition-colors">{p.name}</h4>
+                        <p className="text-[10px] text-slate-500">ID: {p.id} • {p.age} Yrs</p>
+                      </div>
+                    </div>
+                    <div className="space-y-2 mb-4">
+                      <div className="flex justify-between text-xs">
+                        <span className="text-slate-500">Primary Condition:</span>
+                        <span className="text-slate-300">{p.condition}</span>
+                      </div>
+                      <div className="flex justify-between text-xs">
+                        <span className="text-slate-500">Last Consultation:</span>
+                        <span className="text-slate-300">{p.lastVisit}</span>
+                      </div>
+                    </div>
+                    <button className="w-full py-2 bg-[#111B2E] border border-[#1E3A5F] rounded-lg text-xs font-bold hover:bg-[#06B6D4]/10 hover:border-[#06B6D4]/50 transition-all">Open Full Record</button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'history' && (
+            <div className="clinical-card overflow-hidden">
+              <div className="p-4 border-b border-[#1E3A5F]/50 bg-[#132040]/50">
+                <h3 className="font-bold text-white">Past Consultations</h3>
+              </div>
+              <table className="clinical-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Patient</th>
+                    <th>Diagnosis</th>
+                    <th>Outcome</th>
+                    <th>Report</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    { date: '2024-04-15', patient: 'Sunil Perera', diagnosis: 'Reflux Esophagitis', outcome: 'Prescribed PPI', report: 'PDF' },
+                    { date: '2024-04-10', patient: 'Aruni Wijesinghe', diagnosis: 'Essential Hypertension', outcome: 'Adjusted Dosage', report: 'PDF' },
+                  ].map((h, i) => (
+                    <tr key={i}>
+                      <td>{h.date}</td>
+                      <td className="font-bold text-white">{h.patient}</td>
+                      <td>{h.diagnosis}</td>
+                      <td><span className="text-xs text-slate-400">{h.outcome}</span></td>
+                      <td><button className="text-[#06B6D4] hover:underline font-bold text-xs">Download</button></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           )}
 

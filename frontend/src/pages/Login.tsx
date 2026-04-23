@@ -3,7 +3,6 @@ import { Eye, EyeOff, AlertCircle, Loader2, ArrowRight, ShieldCheck, Mail, Lock,
 import { useAuthStore } from '../store/useAuthStore';
 import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '../utils/auth';
-import logo from '../assets/logo.png';
 
 // ── Social Auth Role Selection Modal ──────────────────────────────────────────
 function RoleSelectModal({ platform, onSelect, onClose }: { platform: string; onSelect: (role: 'PATIENT' | 'DOCTOR') => void; onClose: () => void }) {
@@ -74,7 +73,7 @@ export default function Login() {
       } as any;
       useAuthStore.getState().setAuth('mock-social-token-' + Date.now(), mockUser);
       setLoading(false);
-      navigate(role === 'DOCTOR' ? '/doctor' : role === 'ADMIN' ? '/admin' : '/patient');
+      navigate(role === 'DOCTOR' ? '/doctor' : (role as string) === 'ADMIN' ? '/admin' : '/patient');
     }, 800);
   };
 
@@ -87,8 +86,8 @@ export default function Login() {
       useAuthStore.getState().setAuth(response.tokens.accessToken, response.user);
       const r = response.user.role;
       navigate(r === 'DOCTOR' ? '/doctor' : r === 'ADMIN' ? '/admin' : '/patient');
-    } catch {
-      setError('Invalid credentials. Please check your email and password.');
+    } catch (err: any) {
+      setError(err.message || 'Invalid credentials. Please check your email and password.');
     } finally {
       setLoading(false);
     }

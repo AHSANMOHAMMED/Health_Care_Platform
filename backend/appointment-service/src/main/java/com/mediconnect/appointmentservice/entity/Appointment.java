@@ -27,6 +27,10 @@ public class Appointment {
     
     private String meetingLink; // Jitsi meeting link
     
+    private Double fee = 2500.0; // Default consultation fee in LKR
+    private boolean isPaid = false;
+    private LocalDateTime paidAt;
+    
     @PrePersist
     public void generateLink() {
         if(this.meetingLink == null) {

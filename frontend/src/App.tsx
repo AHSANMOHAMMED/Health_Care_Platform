@@ -22,6 +22,7 @@ import PharmacyLocator from './pages/PharmacyLocator';
 import LabResultsManagement from './pages/LabResultsManagement';
 import NotificationCenter from './pages/NotificationCenter';
 import AccessibilitySettings from './pages/AccessibilitySettings';
+import PaymentBilling from './pages/PaymentBilling';
 
 import PatientOverviewPage from './pages/doctor/PatientOverviewPage';
 import AppointmentsPage from './pages/doctor/AppointmentsPage';
@@ -80,7 +81,8 @@ function AppRoutes() {
         <Route path="/booking" element={role === 'PATIENT' ? <BookingFlow /> : <Navigate to="/login" />} />
         <Route path="/appointments" element={role === 'PATIENT' ? <BookingFlow /> : <Navigate to="/login" />} />
         <Route path="/records" element={role === 'PATIENT' ? <LabResultsManagement /> : <Navigate to="/login" />} />
-        <Route path="/billing" element={role === 'PATIENT' ? <PrescriptionManagement /> : <Navigate to="/login" />} />
+        <Route path="/billing" element={role === 'PATIENT' ? <PaymentBilling /> : <Navigate to="/login" />} />
+        <Route path="/payment" element={role === 'PATIENT' ? <PaymentBilling /> : <Navigate to="/login" />} />
         <Route path="/prescriptions" element={<PrescriptionManagement />} />
         <Route path="/patient-onboarding" element={role === 'PATIENT' ? <PatientOnboarding /> : <Navigate to="/login" />} />
 

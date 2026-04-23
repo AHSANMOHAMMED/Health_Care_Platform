@@ -26,4 +26,7 @@ public class UserCredentials {
 
     private String firstName;
     private String lastName;
+    
+    @Column(nullable = false)
+    private String status; // APPROVED, PENDING, REJECTED
 }

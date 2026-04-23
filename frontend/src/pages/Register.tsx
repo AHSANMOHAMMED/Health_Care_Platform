@@ -158,6 +158,15 @@ export default function Register() {
     setError('');
     try {
       await authService.register({ ...form, role } as any);
+      
+      if (role === 'DOCTOR') {
+        setStep(1); // Reset or show success
+        setError('');
+        alert('Registration successful! Your account is now pending administrative approval. You will be notified via email once approved.');
+        navigate('/login');
+        return;
+      }
+
       const res = await authService.login(form.email, form.password);
       useAuthStore.getState().setAuth(res.tokens.accessToken, res.user);
       navigate(res.user.role === 'DOCTOR' ? '/doctor' : '/patient');

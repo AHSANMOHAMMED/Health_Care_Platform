@@ -15,6 +15,8 @@ public class RouteValidator {
             "/auth/login",
             "/api/auth/register",
             "/api/auth/login",
+            "/api/ai",
+            "/api/payments/webhook",
             "/eureka"
     );
 

@@ -7,11 +7,12 @@ import {
 import { useAuthStore } from '../store/useAuthStore';
 import { Link, useNavigate } from 'react-router-dom';
 import { appointmentService } from '../api/services';
+import { authService } from '../utils/auth';
 
 const TABS = [
   { id: 'stats', label: 'Analytics', icon: Activity },
+  { id: 'approvals', label: 'Doctor Approvals', icon: ShieldCheck },
   { id: 'users', label: 'User Management', icon: Users },
-  { id: 'doctors', label: 'Doctors', icon: Stethoscope },
   { id: 'appointments', label: 'All Appointments', icon: Calendar },
   { id: 'settings', label: 'System Settings', icon: Settings },
 ];
@@ -30,16 +31,11 @@ export default function AdminDashboard() {
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      // Mock data for admin if real endpoints don't support list-all yet
       const apptRes = await appointmentService.getAll({});
       setAppointments(apptRes.data || []);
       
-      // Mock users since authService.getAll might not exist
-      setUsers([
-        { id: 1, name: 'Aruni Wijesinghe', email: 'aruni@gmail.com', role: 'PATIENT', status: 'Active' },
-        { id: 2, name: 'Dr. Kasun Perera', email: 'kasun@mediconnect.lk', role: 'DOCTOR', status: 'Active' },
-        { id: 3, name: 'Admin User', email: 'admin@mediconnect.lk', role: 'ADMIN', status: 'Active' },
-      ]);
+      const allUsers = await authService.getAllUsers();
+      setUsers(allUsers);
     } catch (e) {
       console.error(e);
     } finally {
@@ -47,12 +43,22 @@ export default function AdminDashboard() {
     }
   }, []);
 
+  const handleStatusUpdate = async (id: number, status: 'APPROVED' | 'REJECTED') => {
+    try {
+      await authService.updateUserStatus(id, status);
+      loadData();
+    } catch (e) {
+      alert('Failed to update status');
+    }
+  };
+
   useEffect(() => { loadData(); }, [loadData]);
 
   const handleLogout = () => { logout(); navigate('/login'); };
 
   const handleDeleteUser = (id: number) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
+      // Future: authService.deleteUser(id);
       setUsers(users.filter(u => u.id !== id));
     }
   };
@@ -152,6 +158,40 @@ export default function AdminDashboard() {
             </div>
           )}
 
+          {activeTab === 'approvals' && (
+            <div className="space-y-4">
+              <h2 className="text-xl font-bold text-white mb-4">Pending Doctor Approvals</h2>
+              <div className="clinical-card overflow-hidden">
+                <table className="clinical-table">
+                  <thead>
+                    <tr>
+                      <th>Doctor Name</th>
+                      <th>Email</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {users.filter(u => u.role === 'DOCTOR' && u.status === 'PENDING').map(u => (
+                      <tr key={u.id}>
+                        <td className="font-bold text-white">{u.firstName} {u.lastName}</td>
+                        <td className="text-slate-400">{u.email}</td>
+                        <td><span className="badge-warning">PENDING</span></td>
+                        <td className="flex gap-2">
+                          <button onClick={() => handleStatusUpdate(u.id, 'APPROVED')} className="px-3 py-1 bg-emerald-500/10 text-emerald-500 rounded-lg text-xs font-bold hover:bg-emerald-500/20 transition-colors">Approve</button>
+                          <button onClick={() => handleStatusUpdate(u.id, 'REJECTED')} className="px-3 py-1 bg-red-500/10 text-red-500 rounded-lg text-xs font-bold hover:bg-red-500/20 transition-colors">Reject</button>
+                        </td>
+                      </tr>
+                    ))}
+                    {users.filter(u => u.role === 'DOCTOR' && u.status === 'PENDING').length === 0 && (
+                      <tr><td colSpan={4} className="text-center py-8 text-slate-500">No pending approvals found.</td></tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
           {activeTab === 'users' && (
             <div className="space-y-4">
               <div className="flex justify-between items-center">
@@ -176,10 +216,10 @@ export default function AdminDashboard() {
                   <tbody>
                     {users.map(u => (
                       <tr key={u.id}>
-                        <td className="font-bold text-white">{u.name}</td>
+                        <td className="font-bold text-white">{u.firstName} {u.lastName}</td>
                         <td className="text-slate-400">{u.email}</td>
                         <td><span className="text-xs font-bold text-slate-500">{u.role}</span></td>
-                        <td><span className="badge-success">{u.status}</span></td>
+                        <td><span className={`badge-${u.status === 'APPROVED' ? 'success' : u.status === 'PENDING' ? 'warning' : 'danger'}`}>{u.status}</span></td>
                         <td className="flex gap-2">
                           <button className="p-2 hover:bg-[#1E3A5F] rounded-lg text-slate-400"><Settings size={14} /></button>
                           <button onClick={() => handleDeleteUser(u.id)} className="p-2 hover:bg-red-500/10 rounded-lg text-red-400"><Trash2 size={14} /></button>
@@ -219,7 +259,7 @@ export default function AdminDashboard() {
             </div>
           )}
 
-          {(activeTab === 'doctors' || activeTab === 'settings') && (
+          {(activeTab === 'settings') && (
             <div className="clinical-card p-12 text-center">
               <Settings size={48} className="mx-auto mb-4 opacity-10" />
               <p className="text-slate-500">Module under maintenance.</p>
