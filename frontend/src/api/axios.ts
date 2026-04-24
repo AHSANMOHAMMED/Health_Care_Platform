@@ -47,7 +47,7 @@ const notifyLoadingListeners = () => {
 
 // Create axios instance with enhanced configuration
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_GATEWAY_URL || 'http://localhost:8081',
+  baseURL: import.meta.env.VITE_API_GATEWAY_URL || '/api',
   timeout: 30000, // 30 seconds timeout
   headers: {
     'Content-Type': 'application/json',

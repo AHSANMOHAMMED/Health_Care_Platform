@@ -71,7 +71,7 @@ function AppRoutes() {
         <Route path="analytics" element={<AnalyticsPage />} />
       </Route>
 
-      <Route path="/admin" element={<AdminDashboard />} />
+      <Route path="/admin" element={role === 'ADMIN' ? <AdminDashboard /> : <Navigate to="/login" />} />
 
       {/* =========================================
           PATIENT SUB-PAGES — dark layout, no legacy nav

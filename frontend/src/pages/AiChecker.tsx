@@ -304,11 +304,15 @@ export default function AiChecker() {
 
         <div className="bg-[#0D0D18] border border-white/10 rounded-3xl p-4 shadow-2xl">
           <div className="flex gap-2 mb-4 overflow-x-auto pb-2">
-            {[['text', TypeIcon, 'Text'], ['voice', Mic, 'Voice'], ['image', ImageIcon, 'Image']] as const.map(([m, I, l]) => (
+            {(['text', 'voice', 'image'] as const).map((m) => {
+              const modeConfig = { text: [TypeIcon, 'Text'], voice: [Mic, 'Voice'], image: [ImageIcon, 'Image'] } as const;
+              const [I, l] = modeConfig[m] as [React.ElementType, string];
+              return (
               <button key={m} onClick={() => setInputMode(m as any)} className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${inputMode === m ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:bg-white/5'}`}>
                 <I size={14} />{l}
               </button>
-            ))}
+              );
+            })}
           </div>
 
           {inputMode === 'text' && <textarea rows={2} className="w-full bg-transparent text-white outline-none placeholder-slate-600" placeholder={labels.inputPlaceholder} value={inputText} onChange={e => setInputText(e.target.value)} />}

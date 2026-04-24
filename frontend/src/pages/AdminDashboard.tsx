@@ -99,7 +99,13 @@ export default function AdminDashboard() {
       setAppointments(apptRes.data || []);
       
       const allUsers = await authService.getAllUsers();
-      setUsers(allUsers);
+      // Normalize: API returns firstName/lastName, UI needs name
+      const normalized = allUsers.map((u: any) => ({
+        ...u,
+        name: u.name || `${u.firstName || ''} ${u.lastName || ''}`.trim() || u.email,
+        status: u.status || 'Active',
+      }));
+      setUsers(normalized);
     } catch (e) {
       console.error(e);
     } finally {
@@ -648,30 +654,6 @@ export default function AdminDashboard() {
                 </button>
               </div>
 
-<<<<<<< HEAD
-              <div className="clinical-card overflow-hidden">
-                <table className="clinical-table">
-                  <thead>
-                    <tr>
-                      <th>User</th>
-                      <th>Email</th>
-                      <th>Role</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {users.map(u => (
-                      <tr key={u.id}>
-                        <td className="font-bold text-white">{u.firstName} {u.lastName}</td>
-                        <td className="text-slate-400">{u.email}</td>
-                        <td><span className="text-xs font-bold text-slate-500">{u.role}</span></td>
-                        <td><span className={`badge-${u.status === 'APPROVED' ? 'success' : u.status === 'PENDING' ? 'warning' : 'danger'}`}>{u.status}</span></td>
-                        <td className="flex gap-2">
-                          <button className="p-2 hover:bg-[#1E3A5F] rounded-lg text-slate-400"><Settings size={14} /></button>
-                          <button onClick={() => handleDeleteUser(u.id)} className="p-2 hover:bg-red-500/10 rounded-lg text-red-400"><Trash2 size={14} /></button>
-                        </td>
-=======
               {/* Glass Users Table */}
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-br from-white/50 to-white/30 backdrop-blur-xl rounded-3xl border border-white/70 shadow-xl shadow-slate-200/20" />
@@ -714,7 +696,6 @@ export default function AdminDashboard() {
                         <th className="px-6 py-5 text-left text-base font-semibold text-slate-500 uppercase tracking-wider">Role</th>
                         <th className="px-6 py-5 text-left text-base font-semibold text-slate-500 uppercase tracking-wider">Status</th>
                         <th className="px-6 py-5 text-right text-base font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
->>>>>>> 0c5931b (feat: admin dashboard updates and routing logic)
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100/50">
@@ -816,12 +797,6 @@ export default function AdminDashboard() {
             </div>
           )}
 
-<<<<<<< HEAD
-          {(activeTab === 'settings') && (
-            <div className="clinical-card p-12 text-center">
-              <Settings size={48} className="mx-auto mb-4 opacity-10" />
-              <p className="text-slate-500">Module under maintenance.</p>
-=======
           {activeTab === 'verifications' && (
             <div className="space-y-8 max-w-7xl mx-auto">
               {/* Header with Stats */}
@@ -923,7 +898,6 @@ export default function AdminDashboard() {
                   )}
                 </div>
               </div>
->>>>>>> 0c5931b (feat: admin dashboard updates and routing logic)
             </div>
           )}
 
