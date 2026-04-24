@@ -174,18 +174,24 @@ export default function Register() {
       await authService.register({ ...form, role } as any);
       
       if (role === 'DOCTOR') {
-        setStep(1); // Reset or show success
-        setError('');
+        setLoading(false);
         alert('Registration successful! Your account is now pending administrative approval. You will be notified via email once approved.');
         navigate('/login');
         return;
       }
 
-      const res = await authService.login(form.email, form.password);
-      useAuthStore.getState().setAuth(res.tokens.accessToken, res.user);
-      navigate(res.user.role === 'DOCTOR' ? '/doctor' : '/patient');
-    } catch {
-      setError('Registration failed. Check your connection or use another email.');
+      // Automatically login for patients
+      try {
+        const res = await authService.login(form.email, form.password);
+        useAuthStore.getState().setAuth(res.tokens.accessToken, res.user);
+        navigate('/patient');
+      } catch (loginErr) {
+        setError('Account created, but automatic sign-in failed. Please sign in manually.');
+        setLoading(false);
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.message || err.message || 'Registration failed. This email may already be in use.');
+      setLoading(false);
     } finally {
       setLoading(false);
     }

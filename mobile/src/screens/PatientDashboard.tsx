@@ -6,13 +6,51 @@ import {
 import { 
   Activity, Calendar, Pill, Brain, 
   CreditCard, Bell, Menu, ShieldCheck,
-  ChevronRight, Heart, Star
+  ChevronRight, Heart, Star, LogOut
 } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { api } from '../api/axios';
 
 const { width } = Dimensions.get('window');
 
 export default function PatientDashboard({ navigation }: any) {
+  const [user, setUser] = React.useState<any>(null);
+  const [loading, setLoading] = React.useState(true);
+  const [appointments, setAppointments] = React.useState<any[]>([]);
+  const [prescriptions, setPrescriptions] = React.useState<any[]>([]);
+
+  React.useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    try {
+      const userData = await AsyncStorage.getItem('user_data');
+      if (userData) {
+        const parsedUser = JSON.parse(userData);
+        setUser(parsedUser);
+        
+        // Fetch real data
+        const [apptRes, rxRes] = await Promise.all([
+          api.get(`/appointments/patient/${parsedUser.id}`),
+          api.get(`/prescriptions/patient/${parsedUser.id}`)
+        ]);
+        
+        setAppointments(apptRes.data || []);
+        setPrescriptions(rxRes.data || []);
+      }
+    } catch (err) {
+      console.error('Failed to load dashboard data:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    await AsyncStorage.clear();
+    navigation.replace('Login');
+  };
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -32,7 +70,7 @@ export default function PatientDashboard({ navigation }: any) {
         
         <View style={styles.welcomeSection}>
           <Text style={styles.welcomeLabel}>Good Morning,</Text>
-          <Text style={styles.welcomeName}>Ahsan Ali</Text>
+          <Text style={styles.welcomeName}>{user?.firstName || 'Guest'} {user?.lastName || ''}</Text>
         </View>
       </View>
 
@@ -51,8 +89,10 @@ export default function PatientDashboard({ navigation }: any) {
             </View>
             <Text style={styles.cardTag}>NEXT APPOINTMENT</Text>
           </View>
-          <Text style={styles.cardTitle}>Dr. Saman Perera</Text>
-          <Text style={styles.cardSubtitle}>Cardiology · Today at 10:30 AM</Text>
+          <Text style={styles.cardTitle}>{appointments[0]?.doctorName || 'No upcoming'}</Text>
+          <Text style={styles.cardSubtitle}>
+            {appointments[0] ? `${appointments[0].specialization} · ${appointments[0].date}` : 'Schedule a checkup today'}
+          </Text>
           <TouchableOpacity style={styles.cardButton}>
             <Text style={styles.cardButtonText}>View Details</Text>
             <ChevronRight color="#fff" size={16} />
@@ -72,25 +112,11 @@ export default function PatientDashboard({ navigation }: any) {
             <Text style={styles.gridLabel}>AI Doctor</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.gridItem}>
-            <View style={[styles.gridIcon, { backgroundColor: 'rgba(16, 185, 129, 0.1)' }]}>
-              <Calendar color="#10b981" size={24} />
-            </View>
-            <Text style={styles.gridLabel}>Booking</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.gridItem}>
+          <TouchableOpacity style={styles.gridItem} onPress={handleLogout}>
             <View style={[styles.gridIcon, { backgroundColor: 'rgba(244, 63, 94, 0.1)' }]}>
-              <CreditCard color="#f43f5e" size={24} />
+              <LogOut color="#f43f5e" size={24} />
             </View>
-            <Text style={styles.gridLabel}>Payments</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.gridItem}>
-            <View style={[styles.gridIcon, { backgroundColor: 'rgba(245, 158, 11, 0.1)' }]}>
-              <Pill color="#f59e0b" size={24} />
-            </View>
-            <Text style={styles.gridLabel}>Pharmacy</Text>
+            <Text style={styles.gridLabel}>Logout</Text>
           </TouchableOpacity>
         </View>
 
@@ -116,20 +142,22 @@ export default function PatientDashboard({ navigation }: any) {
 
         {/* Recent Prescriptions */}
         <Text style={styles.sectionTitle}>Recent Prescriptions</Text>
-        {[1, 2].map((i) => (
+        {prescriptions.length > 0 ? prescriptions.map((p, i) => (
           <View key={i} style={styles.prescriptionItem}>
             <View style={styles.pIconContainer}>
               <Pill color="#6366f1" size={20} />
             </View>
             <View style={styles.pInfo}>
-              <Text style={styles.pName}>Lisinopril 10mg</Text>
-              <Text style={styles.pDesc}>Take 1 tablet daily · 15 days remaining</Text>
+              <Text style={styles.pName}>{p.medicineName}</Text>
+              <Text style={styles.pDesc}>{p.dosage} · {p.duration}</Text>
             </View>
             <TouchableOpacity>
               <Text style={styles.pLink}>Refill</Text>
             </TouchableOpacity>
           </View>
-        ))}
+        )) : (
+          <Text style={{ color: '#64748b', fontSize: 14 }}>No prescriptions found.</Text>
+        )}
 
       </ScrollView>
     </View>

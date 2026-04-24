@@ -7,18 +7,38 @@ import {
 import { ShieldCheck, Lock, Mail, ChevronRight } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
+import { api } from '../api/axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 export default function LoginScreen({ navigation }: any) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
+    if (!email || !password) {
+      setError('Please enter both email and password');
+      return;
+    }
+
     setLoading(true);
-    // Mock login
-    setTimeout(() => {
+    setError('');
+    
+    try {
+      const response = await api.post('/auth/login', { email, password });
+      const { tokens, user } = response.data;
+      
+      // Store token and user data
+      await AsyncStorage.setItem('access_token', tokens.accessToken);
+      await AsyncStorage.setItem('user_data', JSON.stringify(user));
+      
       setLoading(false);
       navigation.replace('Dashboard');
-    }, 1500);
+    } catch (err: any) {
+      setLoading(false);
+      setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
+    }
   };
 
   return (
@@ -92,7 +112,7 @@ export default function LoginScreen({ navigation }: any) {
 
         <View style={styles.footer}>
           <Text style={styles.footerText}>Don't have an account?</Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Register')}>
             <Text style={styles.signUpText}>Create Account</Text>
           </TouchableOpacity>
         </View>

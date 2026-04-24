@@ -62,7 +62,7 @@ public class AuthController {
         }
         
         userRepository.save(user);
-        return ResponseEntity.ok("User registered successfully");
+        return ResponseEntity.ok(java.util.Map.of("message", "User registered successfully"));
     }
 
     @PostMapping("/login")

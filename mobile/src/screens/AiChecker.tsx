@@ -19,13 +19,15 @@ const LANGUAGES = [
   { code: 'Tamil', label: 'தமிழ்' },
 ];
 
+import { api } from '../api/axios';
+
 export default function AiChecker({ navigation }: any) {
   const insets = useSafeAreaInsets();
   const [language, setLanguage] = useState('English');
   const [inputText, setInputText] = useState('');
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState<any[]>([
-    { id: '1', role: 'ai', content: 'Hello! I am your AI Symptom Doctor. You can describe your symptoms in English, Sinhala, or Tamil. You can also upload a photo of a symptom (like a rash) for analysis.' }
+    { id: '1', role: 'ai', content: 'Hello! I am your AI Symptom Doctor. Describe your symptoms (e.g. fever, cough) and I will provide a professional assessment.' }
   ]);
 
   const handleSend = async () => {
@@ -36,17 +38,29 @@ export default function AiChecker({ navigation }: any) {
     setInputText('');
     setLoading(true);
 
-    // Mock API call (similar logic to web)
-    setTimeout(() => {
+    try {
+      const response = await api.post('/ai/symptom-checker', { 
+        symptoms: inputText 
+      });
+      
+      const analysisText = response.data.analysis || 'Analysis received';
+      
       const aiMsg = { 
         id: (Date.now()+1).toString(), 
         role: 'ai', 
-        content: `Based on your symptoms in ${language}, this appears to be a mild viral infection. However, please consult a doctor for a definitive diagnosis.`,
-        severity: 'low'
+        content: analysisText,
       };
       setMessages(prev => [...prev, aiMsg]);
+    } catch (err: any) {
+      const errorMsg = { 
+        id: (Date.now()+1).toString(), 
+        role: 'ai', 
+        content: 'I encountered an error analyzing your symptoms. Please check your connection.',
+      };
+      setMessages(prev => [...prev, errorMsg]);
+    } finally {
       setLoading(false);
-    }, 1500);
+    }
   };
 
   const pickImage = async () => {

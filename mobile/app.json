@@ -1,0 +1,19 @@
+{
+  "expo": {
+    "name": "MediConnect",
+    "slug": "mediconnect-mobile",
+    "sdkVersion": "54.0.0",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "backgroundColor": "#0A0A0F"
+    }
+  }
+}

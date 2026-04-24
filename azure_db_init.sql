@@ -1,3 +1,4 @@
+-- Active: 1775997698244@@127.0.0.1@27017
 -- MediConnect Azure Database Initialization Script
 -- Run this script against your Azure PostgreSQL server (my-dsproject-deploy-2026.postgres.database.azure.com)
 -- This will create the individual databases required for each microservice.
