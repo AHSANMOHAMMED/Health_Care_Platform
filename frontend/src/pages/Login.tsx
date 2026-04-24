@@ -51,6 +51,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState('Signing in...');
   const [error, setError] = useState('');
   const [socialPlatform, setSocialPlatform] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -63,9 +64,24 @@ export default function Login() {
     const platform = socialPlatform!;
     setSocialPlatform(null);
     setLoading(true);
+    
+    // Professional simulation of social auth flow
+    const stages = ['Connecting to ' + platform + '...', 'Fetching secure profile...', 'Synchronizing Health ID...'];
+    let currentStage = 0;
+    
+    const interval = setInterval(() => {
+      currentStage++;
+      if (currentStage < stages.length) {
+        setLoadingMessage(stages[currentStage]);
+      }
+    }, 600);
+
+    setLoadingMessage(stages[0]);
     setTimeout(() => {
+      clearInterval(interval);
+      clearInterval(interval);
       const mockUser = {
-        id: 'social-' + Math.random().toString(36).substr(2, 9),
+        id: '100' + Math.floor(Math.random() * 900),
         firstName: platform,
         lastName: 'User',
         email: `user_${Date.now()}@${platform.toLowerCase()}.com`,
@@ -73,8 +89,8 @@ export default function Login() {
       } as any;
       useAuthStore.getState().setAuth('mock-social-token-' + Date.now(), mockUser);
       setLoading(false);
-      navigate(role === 'DOCTOR' ? '/doctor' : (role as string) === 'ADMIN' ? '/admin' : '/patient');
-    }, 800);
+      navigate(role === 'DOCTOR' ? '/doctor' : role === 'ADMIN' ? '/admin' : '/patient');
+    }, 2000);
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -169,7 +185,7 @@ export default function Login() {
 
             <button type="submit" disabled={loading}
               className="w-full py-3 rounded-xl bg-[#0EA5E9] hover:bg-[#0284C7] text-white font-semibold text-sm transition-all flex items-center justify-center gap-2 disabled:opacity-60 shadow-lg shadow-[#0EA5E9]/20">
-              {loading ? <><Loader2 size={16} className="animate-spin" />Signing in...</> : <>Sign In <ArrowRight size={16} /></>}
+              {loading ? <><Loader2 size={16} className="animate-spin" />{loadingMessage}</> : <>Sign In <ArrowRight size={16} /></>}
             </button>
           </form>
 

@@ -23,11 +23,35 @@ public class SymptomCheckerController {
         }
         
         String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + geminiApiKey;
-        String requestBody = "{\"contents\":[{\"parts\":[{\"text\":\"Analyze symptoms: " + query + "\"}]}]}";
+        String prompt = "You are a professional medical AI assistant for the MediConnect Lanka platform. " +
+                       "Analyze the following symptoms provided by a patient in Sri Lanka. " +
+                       "Symptoms: " + query + ". " +
+                       "Provide a structured response including: " +
+                       "1. Professional Assessment (Analysis) " +
+                       "2. Urgency Level (LOW, MEDIUM, HIGH, CRITICAL) " +
+                       "3. Recommended Medical Specialty (e.g., Cardiologist, Neurologist) " +
+                       "4. Next Steps. " +
+                       "Keep it concise and clinical. DISCLAIMER: Always mention this is not a substitute for a real doctor.";
+        
+        String requestBody = "{\"contents\":[{\"parts\":[{\"text\":\"" + prompt + "\"}]}]}";
         
         try {
             RestTemplate restTemplate = new RestTemplate();
-            return restTemplate.postForEntity(url, requestBody, String.class);
+            ResponseEntity<Map> response = restTemplate.postForEntity(url, requestBody, Map.class);
+            
+            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+                java.util.List candidates = (java.util.List) response.getBody().get("candidates");
+                if (candidates != null && !candidates.isEmpty()) {
+                    Map candidate = (Map) candidates.get(0);
+                    Map content = (Map) candidate.get("content");
+                    java.util.List parts = (java.util.List) content.get("parts");
+                    if (parts != null && !parts.isEmpty()) {
+                        String text = (String) ((Map) parts.get(0)).get("text");
+                        return ResponseEntity.ok(Map.of("analysis", text));
+                    }
+                }
+            }
+            return ResponseEntity.ok("AI Analysis: No response from model.");
         } catch(Exception e) {
             return ResponseEntity.internalServerError().body("Failed: " + e.getMessage());
         }

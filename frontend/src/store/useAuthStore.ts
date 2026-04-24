@@ -109,17 +109,15 @@ export const useAuthStore = create<AuthState>()(
             // Try to refresh the access token
             const newAccessToken = await tokenManager.refreshAccessToken();
             
-            if (newAccessToken) {
-              set({
-                user,
-                token: newAccessToken,
-                role: user.role,
-                userId: parseInt(user.id),
-                isAuthenticated: true,
-                isLoading: false
-              });
-              return true;
-            }
+            set({
+              user,
+              token: newAccessToken || tokens.accessToken,
+              role: user.role,
+              userId: user.id ? parseInt(user.id.toString()) : null,
+              isAuthenticated: true,
+              isLoading: false
+            });
+            return true;
           }
         } catch (error) {
           console.error('Auth restoration error:', error);

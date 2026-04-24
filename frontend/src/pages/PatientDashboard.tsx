@@ -36,10 +36,17 @@ export default function PatientDashboard() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
+      const currentUserId = userId || (user as any)?.id;
+      if (!currentUserId) {
+        console.warn('No userId available for data load');
+        setLoading(false);
+        return;
+      }
+
       const [apptRes, rxRes, txRes] = await Promise.all([
-        appointmentService.getAll({ patientId: userId ?? undefined }),
-        prescriptionService.getAll({ patientId: userId ?? undefined }),
-        api.get(`/payments/transactions/patient/${userId}`)
+        appointmentService.getAll({ patientId: currentUserId }),
+        prescriptionService.getAll({ patientId: currentUserId }),
+        api.get(`/payments/transactions/patient/${currentUserId}`)
       ]);
       setAppointments(apptRes.data || []);
       setPrescriptions(rxRes.data || []);

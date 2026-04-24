@@ -90,6 +90,7 @@ export default function Register() {
   const [role, setRole] = useState<Role>('PATIENT');
   const [form, setForm] = useState<FormData>(INITIAL);
   const [loading, setLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState('Creating account...');
   const [error, setError] = useState('');
   const [socialPlatform, setSocialPlatform] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -136,9 +137,22 @@ export default function Register() {
     const platform = socialPlatform!;
     setSocialPlatform(null);
     setLoading(true);
+    
+    const stages = ['Connecting to ' + platform + '...', 'Fetching secure profile...', 'Creating Health ID...'];
+    let currentStage = 0;
+    
+    const interval = setInterval(() => {
+      currentStage++;
+      if (currentStage < stages.length) {
+        setLoadingMessage(stages[currentStage]);
+      }
+    }, 600);
+
+    setLoadingMessage(stages[0]);
     setTimeout(() => {
+      clearInterval(interval);
       const mockUser = {
-        id: 'social-' + Math.random().toString(36).substr(2, 9),
+        id: '100' + Math.floor(Math.random() * 900),
         firstName: platform,
         lastName: 'User',
         email: `user_${Date.now()}@${platform.toLowerCase()}.com`,
@@ -147,7 +161,7 @@ export default function Register() {
       useAuthStore.getState().setAuth('mock-token-' + Date.now(), mockUser);
       setLoading(false);
       navigate(selectedRole === 'DOCTOR' ? '/doctor' : '/patient');
-    }, 1000);
+    }, 2000);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -345,7 +359,7 @@ export default function Register() {
               <div className="flex gap-3">
                 <button type="button" onClick={goBack} className="btn-secondary px-8">Back</button>
                 <button type="submit" disabled={loading} className="flex-1 btn-primary justify-center py-4 text-base">
-                  {loading ? <Loader2 className="animate-spin" /> : 'Complete Registration'}
+                  {loading ? <><Loader2 className="animate-spin" /> {loadingMessage}</> : 'Complete Registration'}
                 </button>
               </div>
             </form>
