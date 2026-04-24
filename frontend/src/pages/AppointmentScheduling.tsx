@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Calendar, Clock, User, ChevronLeft, ChevronRight, Search, Filter, Plus, CheckCircle, XCircle, AlertCircle, Loader2 } from 'lucide-react';
 import { api } from '../api/axios';
 import { useAuthStore } from '../store/useAuthStore';
@@ -16,7 +16,6 @@ interface Appointment {
 }
 
 export default function AppointmentScheduling() {
-  const navigate = useNavigate();
   const user = useAuthStore(state => state.user);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [appointments, setAppointments] = useState<Appointment[]>([]);
