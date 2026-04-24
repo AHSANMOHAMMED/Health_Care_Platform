@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Eye, EyeOff, AlertCircle, Loader2, ArrowRight, ShieldCheck, Mail, Lock, Users, Stethoscope, UserCog, X } from 'lucide-react';
+import { Eye, EyeOff, AlertCircle, Loader2, ArrowRight, ShieldCheck, Mail, Lock, Users, Stethoscope, X } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '../utils/auth';
@@ -56,41 +56,74 @@ export default function Login() {
   const [socialPlatform, setSocialPlatform] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  const [showRoleSelect, setShowRoleSelect] = useState(false);
+  const [pendingOAuthPlatform, setPendingOAuthPlatform] = useState<string | null>(null);
+
   const handleSocialClick = (platform: string) => {
-    setSocialPlatform(platform);
+    // For OAuth, we need to select role first since new users won't have one
+    setPendingOAuthPlatform(platform);
+    setShowRoleSelect(true);
   };
 
-  const handleSocialRole = (role: 'PATIENT' | 'DOCTOR') => {
-    const platform = socialPlatform!;
-    setSocialPlatform(null);
+  const handleSocialRole = async (role: 'PATIENT' | 'DOCTOR') => {
+    const platform = pendingOAuthPlatform!;
+    setShowRoleSelect(false);
+    setPendingOAuthPlatform(null);
     setLoading(true);
-    
-    // Professional simulation of social auth flow
-    const stages = ['Connecting to ' + platform + '...', 'Fetching secure profile...', 'Synchronizing Health ID...'];
-    let currentStage = 0;
-    
-    const interval = setInterval(() => {
-      currentStage++;
-      if (currentStage < stages.length) {
-        setLoadingMessage(stages[currentStage]);
-      }
-    }, 600);
+    setLoadingMessage(`Connecting to ${platform}...`);
 
-    setLoadingMessage(stages[0]);
-    setTimeout(() => {
-      clearInterval(interval);
-      clearInterval(interval);
-      const mockUser = {
-        id: '100' + Math.floor(Math.random() * 900),
-        firstName: platform,
-        lastName: 'User',
-        email: `user_${Date.now()}@${platform.toLowerCase()}.com`,
-        role,
-      } as any;
-      useAuthStore.getState().setAuth('mock-social-token-' + Date.now(), mockUser);
+    try {
+      // Open OAuth popup
+      const width = 500;
+      const height = 600;
+      const left = window.screenX + (window.outerWidth - width) / 2;
+      const top = window.screenY + (window.outerHeight - height) / 2;
+      
+      const popup = window.open(
+        `${import.meta.env.VITE_API_GATEWAY_URL || '/api'}/oauth/${platform.toLowerCase()}?role=${role}`,
+        `${platform} OAuth`,
+        `width=${width},height=${height},left=${left},top=${top},popup=1`
+      );
+
+      if (!popup) {
+        throw new Error('Popup blocked. Please allow popups for this site.');
+      }
+
+      // Listen for OAuth callback message
+      const handleMessage = (event: MessageEvent) => {
+        // Verify origin
+        if (event.origin !== window.location.origin && !event.origin.includes('localhost')) {
+          return;
+        }
+
+        if (event.data?.type === 'OAUTH_SUCCESS') {
+          window.removeEventListener('message', handleMessage);
+          const { token, user } = event.data.payload;
+          useAuthStore.getState().setAuth(token, user);
+          setLoading(false);
+          navigate(user.role === 'DOCTOR' ? '/doctor' : user.role === 'ADMIN' ? '/admin' : '/patient');
+        } else if (event.data?.type === 'OAUTH_ERROR') {
+          window.removeEventListener('message', handleMessage);
+          setLoading(false);
+          setError(event.data.payload?.message || 'Social login failed. Please try again.');
+        }
+      };
+
+      window.addEventListener('message', handleMessage);
+
+      // Check if popup was closed manually
+      const checkClosed = setInterval(() => {
+        if (popup.closed) {
+          clearInterval(checkClosed);
+          window.removeEventListener('message', handleMessage);
+          setLoading(false);
+        }
+      }, 1000);
+
+    } catch (err: any) {
       setLoading(false);
-      navigate(role === 'DOCTOR' ? '/doctor' : role === 'ADMIN' ? '/admin' : '/patient');
-    }, 2000);
+      setError(err.message || 'Social login failed. Please try email login instead.');
+    }
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -109,15 +142,10 @@ export default function Login() {
     }
   };
 
-  const DEMO = [
-    { role: 'Admin', icon: UserCog, email: 'admin@mediconnect.lk', pass: 'Admin@123', color: 'text-amber-400' },
-    { role: 'Doctor', icon: Stethoscope, email: 'doctor@mediconnect.lk', pass: 'Doctor@123', color: 'text-[#06B6D4]' },
-    { role: 'Patient', icon: Users, email: 'patient@mediconnect.lk', pass: 'Patient@123', color: 'text-[#0EA5E9]' },
-  ];
 
   return (
     <div className="min-h-screen bg-[#0C1220] flex items-center justify-center p-4">
-      {socialPlatform && <RoleSelectModal platform={socialPlatform} onSelect={handleSocialRole} onClose={() => setSocialPlatform(null)} />}
+      {showRoleSelect && pendingOAuthPlatform && <RoleSelectModal platform={pendingOAuthPlatform} onSelect={handleSocialRole} onClose={() => { setShowRoleSelect(false); setPendingOAuthPlatform(null); }} />}
 
       <div className="w-full max-w-md">
         {/* Logo */}
@@ -172,7 +200,7 @@ export default function Login() {
             <div>
               <div className="flex justify-between items-center mb-1.5">
                 <label className="clinical-label !mb-0">Password</label>
-                <Link to="#" className="text-[11px] text-[#0EA5E9] hover:underline font-medium">Forgot password?</Link>
+                <Link to="/reset-password" className="text-[11px] text-[#0EA5E9] hover:underline font-medium">Forgot password?</Link>
               </div>
               <div className="relative">
                 <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
@@ -189,25 +217,6 @@ export default function Login() {
             </button>
           </form>
 
-          {/* Demo credentials */}
-          <div className="mt-6 p-4 rounded-xl bg-[#0C1220] border border-[#1E3A5F]/40">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-600 mb-3">Demo Credentials — click to fill</p>
-            <div className="space-y-1.5">
-              {DEMO.map(({ role, icon: Icon, email: e, pass, color }) => (
-                <button key={role} type="button" onClick={() => { setEmail(e); setPassword(pass); }}
-                  className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg bg-[#111B2E] hover:bg-[#132040] transition-all text-left border border-[#1E3A5F]/30 hover:border-[#1E3A5F]/60">
-                  <div className="flex items-center gap-2.5">
-                    <Icon size={14} className={color} />
-                    <div>
-                      <span className="text-[11px] font-semibold text-slate-400">{role}</span>
-                      <p className="text-[11px] text-slate-500">{e}</p>
-                    </div>
-                  </div>
-                  <span className="text-[11px] text-slate-600 font-mono">{pass}</span>
-                </button>
-              ))}
-            </div>
-          </div>
         </div>
 
         <p className="text-center text-sm text-slate-500 mt-6">

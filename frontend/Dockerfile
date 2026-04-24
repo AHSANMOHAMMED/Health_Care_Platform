@@ -4,6 +4,9 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install --legacy-peer-deps
 COPY . .
+# Build-time arguments for Azure deployment
+ARG VITE_API_GATEWAY_URL=http://localhost:8080/api
+ENV VITE_API_GATEWAY_URL=${VITE_API_GATEWAY_URL}
 # Compile the React application for production deployment
 RUN npm run build
 

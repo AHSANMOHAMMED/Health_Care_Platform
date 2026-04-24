@@ -29,4 +29,7 @@ public class UserCredentials {
     
     @Column(nullable = false)
     private String status; // APPROVED, PENDING, REJECTED
+
+    @Column(nullable = false)
+    private Boolean emailVerified = false;
 }

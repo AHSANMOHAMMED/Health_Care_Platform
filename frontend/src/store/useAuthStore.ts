@@ -32,7 +32,7 @@ export const useAuthStore = create<AuthState>()(
           user,
           token,
           role: user.role,
-          userId: parseInt(user.id),
+          userId: typeof user.id === 'string' ? parseInt(user.id) : user.id,
           isAuthenticated: true,
           isLoading: false
         });
@@ -68,7 +68,7 @@ export const useAuthStore = create<AuthState>()(
           set({ 
             user: updatedUser, 
             role: updatedUser.role,
-            userId: parseInt(updatedUser.id),
+            userId: typeof updatedUser.id === 'string' ? parseInt(updatedUser.id) : updatedUser.id,
             isLoading: false 
           });
         } catch (error) {

@@ -86,7 +86,19 @@ services:
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8888/
       - SPRING_DATASOURCE_URL=jdbc:postgresql://my-dsproject-deploy-2026.postgres.database.azure.com:5432/auth_db?sslmode=disable
       - SPRING_DATASOURCE_USERNAME=adminuser
-      - POSTGRES_PASSWORD=Dsproject123
+      - SPRING_DATASOURCE_PASSWORD=Dsproject123
+      - JWT_SECRET=mediconnect_super_secret_jwt_key_that_must_be_long_enough_32chars
+      # SMTP Email Configuration
+      - SMTP_HOST=smtp.gmail.com
+      - SMTP_PORT=587
+      - SMTP_USERNAME=ahsanmohammed828@gmail.com
+      - SMTP_PASSWORD=hkvrlmtnjkvnifox
+      # OAuth Configuration
+      - FRONTEND_URL=${FRONTEND_URL:-http://localhost:3000}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+      - FACEBOOK_APP_ID=${FACEBOOK_APP_ID:-}
+      - FACEBOOK_APP_SECRET=${FACEBOOK_APP_SECRET:-}
       - JAVA_OPTS=-Xmx384m -Xms256m
     networks:
       - mediconnect-network

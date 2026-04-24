@@ -22,6 +22,13 @@ spring:
           filters:
             - StripPrefix=1
             - AuthenticationFilter
+
+        - id: oauth-service
+          uri: http://auth-service:8081
+          predicates:
+            - Path=/api/oauth/**
+          filters:
+            - StripPrefix=1
         
         - id: patient-service
           uri: http://patient-service:8082

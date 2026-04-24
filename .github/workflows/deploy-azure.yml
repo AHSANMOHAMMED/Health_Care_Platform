@@ -42,11 +42,14 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Build with Maven
+      - name: Build JAR with Maven
         run: mvn clean package -Dmaven.test.skip=true
         working-directory: backend/${{ matrix.service }}
 
-      - name: Log in to ACR
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Azure Container Registry
         uses: azure/docker-login@v1
         with:
           login-server: ${{ env.ACR_NAME }}.azurecr.io
@@ -79,8 +82,13 @@ jobs:
       - name: Build frontend
         run: npm run build
         working-directory: frontend
+        env:
+          VITE_API_GATEWAY_URL: https://mediconnect-api-gateway.azurewebsites.net/api
 
-      - name: Log in to ACR
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Azure Container Registry
         uses: azure/docker-login@v1
         with:
           login-server: ${{ env.ACR_NAME }}.azurecr.io
@@ -89,7 +97,7 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          docker build -t ${{ env.ACR_NAME }}.azurecr.io/mediconnect-frontend:latest .
+          docker build --build-arg VITE_API_GATEWAY_URL=https://mediconnect-api-gateway.azurewebsites.net/api -t ${{ env.ACR_NAME }}.azurecr.io/mediconnect-frontend:latest .
           docker push ${{ env.ACR_NAME }}.azurecr.io/mediconnect-frontend:latest
         working-directory: frontend
 

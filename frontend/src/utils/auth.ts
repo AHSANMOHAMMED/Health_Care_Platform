@@ -1,7 +1,7 @@
 import { api } from '../api/axios';
 
 export interface User {
-  id: string;
+  id: string | number;
   email: string;
   role: 'PATIENT' | 'DOCTOR' | 'ADMIN';
   firstName: string;
@@ -292,12 +292,24 @@ export class AuthService {
     }
   }
 
-  // Verify email
-  async verifyEmail(token: string): Promise<void> {
+  // Verify email with token
+  async verifyEmail(token: string): Promise<{ message: string }> {
     try {
-      await api.post('/auth/verify-email', { token });
+      const response = await api.get(`/auth/verify-email?token=${token}`);
+      return response.data;
     } catch (error) {
       console.error('Email verification error:', error);
+      throw error;
+    }
+  }
+
+  // Resend verification email
+  async resendVerificationEmail(email: string): Promise<{ message: string }> {
+    try {
+      const response = await api.post('/auth/resend-verification', { email });
+      return response.data;
+    } catch (error) {
+      console.error('Resend verification error:', error);
       throw error;
     }
   }

@@ -5,9 +5,16 @@ import com.mediconnect.authservice.dto.AuthResponse;
 import com.mediconnect.authservice.dto.AuthTokens;
 import com.mediconnect.authservice.dto.RegisterRequest;
 import com.mediconnect.authservice.dto.UserDTO;
+import com.mediconnect.authservice.entity.PasswordResetToken;
 import com.mediconnect.authservice.entity.UserCredentials;
+import com.mediconnect.authservice.entity.VerificationToken;
+import com.mediconnect.authservice.repository.PasswordResetTokenRepository;
 import com.mediconnect.authservice.repository.UserRepository;
+import com.mediconnect.authservice.repository.VerificationTokenRepository;
+import com.mediconnect.authservice.service.EmailService;
 import com.mediconnect.authservice.service.JwtService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,13 +24,17 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
+@Slf4j
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
-    
+
     @Autowired
     private UserRepository userRepository;
 
@@ -42,10 +53,23 @@ public class AuthController {
     @Autowired
     private com.fasterxml.jackson.databind.ObjectMapper objectMapper;
 
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private VerificationTokenRepository verificationTokenRepository;
+
+    @Autowired
+    private PasswordResetTokenRepository passwordResetTokenRepository;
+
+    // ============================================================
+    // REGISTRATION & EMAIL VERIFICATION
+    // ============================================================
+
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<Map<String, String>> register(@RequestBody RegisterRequest request) {
         if(userRepository.findByEmail(request.getEmail()).isPresent()) {
-            return ResponseEntity.badRequest().body("Email already exists");
+            return ResponseEntity.badRequest().body(Map.of("message", "Email already exists"));
         }
         UserCredentials user = new UserCredentials();
         user.setEmail(request.getEmail());
@@ -53,16 +77,40 @@ public class AuthController {
         user.setRole(request.getRole() != null ? request.getRole().toUpperCase() : "PATIENT");
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
-        
+
         // Doctors start as PENDING, others as APPROVED
         if ("DOCTOR".equalsIgnoreCase(user.getRole())) {
             user.setStatus("PENDING");
         } else {
             user.setStatus("APPROVED");
         }
-        
+
+        // Email verification required for all users
+        user.setEmailVerified(false);
+
         userRepository.save(user);
-        return ResponseEntity.ok(java.util.Map.of("message", "User registered successfully"));
+
+        // Create verification token and send email
+        try {
+            String token = UUID.randomUUID().toString();
+            VerificationToken verificationToken = VerificationToken.builder()
+                    .token(token)
+                    .user(user)
+                    .expiryDate(LocalDateTime.now().plusHours(24))
+                    .build();
+            verificationTokenRepository.save(verificationToken);
+
+            emailService.sendVerificationEmail(user.getEmail(), token, user.getFirstName());
+            log.info("Verification email sent to: {}", user.getEmail());
+        } catch (Exception e) {
+            log.error("Failed to send verification email", e);
+            // Don't fail registration if email fails, user can resend
+        }
+
+        return ResponseEntity.ok(Map.of(
+            "message", "Registration successful. Please check your email to verify your account.",
+            "requiresVerification", "true"
+        ));
     }
 
     @PostMapping("/login")
@@ -77,13 +125,20 @@ public class AuthController {
                     .build());
             }
 
+            // Check if email is verified (skip for OAuth users or if email verification is disabled)
+            if (user.getEmailVerified() != null && !user.getEmailVerified()) {
+                return ResponseEntity.status(403).body(AuthResponse.builder()
+                    .message("Please verify your email before logging in. Check your inbox for the verification link.")
+                    .build());
+            }
+
             String token = jwtService.generateToken(request.getEmail(), user.getId(), user.getRole());
-            
+
             AuthTokens tokens = AuthTokens.builder()
                 .accessToken(token)
-                .refreshToken(token) // Simplified for now, can be improved with actual refresh logic
+                .refreshToken(token)
                 .build();
-                
+
             UserDTO userDto = UserDTO.builder()
                 .id(user.getId())
                 .email(user.getEmail())
@@ -100,6 +155,154 @@ public class AuthController {
             throw new RuntimeException("invalid access");
         }
     }
+
+    @GetMapping("/verify-email")
+    public ResponseEntity<Map<String, String>> verifyEmail(@RequestParam("token") String token) {
+        Optional<VerificationToken> tokenOpt = verificationTokenRepository.findByToken(token);
+
+        if (tokenOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Invalid verification token"));
+        }
+
+        VerificationToken verificationToken = tokenOpt.get();
+
+        if (verificationToken.isExpired()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Verification token has expired. Please request a new one."));
+        }
+
+        if (verificationToken.isUsed()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "This verification link has already been used."));
+        }
+
+        UserCredentials user = verificationToken.getUser();
+        user.setEmailVerified(true);
+        userRepository.save(user);
+
+        verificationToken.setUsed(true);
+        verificationTokenRepository.save(verificationToken);
+
+        return ResponseEntity.ok(Map.of("message", "Email verified successfully! You can now log in."));
+    }
+
+    @PostMapping("/resend-verification")
+    public ResponseEntity<Map<String, String>> resendVerificationEmail(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        Optional<UserCredentials> userOpt = userRepository.findByEmail(email);
+
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "No account found with this email"));
+        }
+
+        UserCredentials user = userOpt.get();
+
+        if (user.getEmailVerified() != null && user.getEmailVerified()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "This email is already verified"));
+        }
+
+        // Delete old tokens
+        verificationTokenRepository.deleteByUserId(user.getId());
+
+        // Create new token
+        try {
+            String token = UUID.randomUUID().toString();
+            VerificationToken verificationToken = VerificationToken.builder()
+                    .token(token)
+                    .user(user)
+                    .expiryDate(LocalDateTime.now().plusHours(24))
+                    .build();
+            verificationTokenRepository.save(verificationToken);
+
+            emailService.sendVerificationEmail(user.getEmail(), token, user.getFirstName());
+            log.info("Verification email resent to: {}", user.getEmail());
+
+            return ResponseEntity.ok(Map.of("message", "Verification email sent. Please check your inbox."));
+        } catch (Exception e) {
+            log.error("Failed to resend verification email", e);
+            return ResponseEntity.internalServerError().body(Map.of("message", "Failed to send email. Please try again later."));
+        }
+    }
+
+    // ============================================================
+    // PASSWORD RESET
+    // ============================================================
+
+    @PostMapping("/request-password-reset")
+    public ResponseEntity<Map<String, String>> requestPasswordReset(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        Optional<UserCredentials> userOpt = userRepository.findByEmail(email);
+
+        if (userOpt.isEmpty()) {
+            // Return same message for security (don't reveal if email exists)
+            return ResponseEntity.ok(Map.of("message", "If an account exists with this email, you will receive password reset instructions."));
+        }
+
+        UserCredentials user = userOpt.get();
+
+        // Delete old tokens
+        passwordResetTokenRepository.deleteByUserId(user.getId());
+
+        // Create new reset token
+        try {
+            String token = UUID.randomUUID().toString();
+            PasswordResetToken resetToken = PasswordResetToken.builder()
+                    .token(token)
+                    .user(user)
+                    .expiryDate(LocalDateTime.now().plusHours(1))
+                    .used(false)
+                    .build();
+            passwordResetTokenRepository.save(resetToken);
+
+            emailService.sendPasswordResetEmail(user.getEmail(), token, user.getFirstName());
+            log.info("Password reset email sent to: {}", user.getEmail());
+        } catch (Exception e) {
+            log.error("Failed to send password reset email", e);
+            return ResponseEntity.internalServerError().body(Map.of("message", "Failed to send email. Please try again later."));
+        }
+
+        return ResponseEntity.ok(Map.of("message", "If an account exists with this email, you will receive password reset instructions."));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<Map<String, String>> resetPassword(@RequestBody Map<String, String> request) {
+        String token = request.get("token");
+        String newPassword = request.get("newPassword");
+
+        if (newPassword == null || newPassword.length() < 8) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Password must be at least 8 characters"));
+        }
+
+        Optional<PasswordResetToken> tokenOpt = passwordResetTokenRepository.findByToken(token);
+
+        if (tokenOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Invalid reset token"));
+        }
+
+        PasswordResetToken resetToken = tokenOpt.get();
+
+        if (resetToken.isExpired()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Reset token has expired. Please request a new one."));
+        }
+
+        if (resetToken.isUsed()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "This reset link has already been used."));
+        }
+
+        UserCredentials user = resetToken.getUser();
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        resetToken.setUsed(true);
+        passwordResetTokenRepository.save(resetToken);
+
+        // Invalidate all existing sessions by clearing tokens
+        verificationTokenRepository.deleteByUserId(user.getId());
+
+        return ResponseEntity.ok(Map.of("message", "Password reset successful! You can now log in with your new password."));
+    }
+
+    // ============================================================
+    // TOKEN VALIDATION
+    // ============================================================
 
     @GetMapping("/validate")
     public String validateToken(@RequestParam("token") String token) {

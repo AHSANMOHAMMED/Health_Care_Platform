@@ -5,6 +5,8 @@ import GlobalLoading from './components/GlobalLoading';
 import Landing from './pages/LandingPremium';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import VerifyEmail from './pages/VerifyEmail';
+import ResetPassword from './pages/ResetPassword';
 import PatientDashboard from './pages/PatientDashboard';
 import DoctorDashboard from './pages/DoctorDashboard';
 import AdminDashboard from './pages/AdminDashboard';
@@ -23,6 +25,15 @@ import LabResultsManagement from './pages/LabResultsManagement';
 import NotificationCenter from './pages/NotificationCenter';
 import AccessibilitySettings from './pages/AccessibilitySettings';
 import PaymentBilling from './pages/PaymentBilling';
+import AISymptomChecker from './pages/AISymptomChecker';
+import AppointmentScheduling from './pages/AppointmentScheduling';
+import DataExportPortal from './pages/DataExportPortal';
+import DoctorAvailabilityFinder from './pages/DoctorAvailabilityFinder';
+import DoctorReviews from './pages/DoctorReviews';
+import ElectronicHealthRecords from './pages/ElectronicHealthRecords';
+import RealTimeConsultation from './pages/RealTimeConsultation';
+import SymptomChecker from './pages/SymptomChecker';
+import WearableIntegration from './pages/WearableIntegration';
 
 import PatientOverviewPage from './pages/doctor/PatientOverviewPage';
 import AppointmentsPage from './pages/doctor/AppointmentsPage';
@@ -53,6 +64,8 @@ function AppRoutes() {
       <Route path="/" element={<Landing />} />
       <Route path="/login" element={!role ? <Login /> : <Navigate to={`/${role.toLowerCase()}`} />} />
       <Route path="/register" element={!role ? <Register /> : <Navigate to={`/${role.toLowerCase()}`} />} />
+      <Route path="/verify-email" element={<VerifyEmail />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
 
       {/* AI Checker — full screen, no navbar, accessible to all */}
       <Route path="/ai-checker" element={<AiChecker />} />
@@ -101,6 +114,17 @@ function AppRoutes() {
         <Route path="/telemedicine" element={<Telemedicine />} />
         <Route path="/video" element={<Navigate to="/telemedicine" replace />} />
         <Route path="/video-consultation" element={<VideoConsultation />} />
+
+        {/* NEW: All previously empty pages now implemented */}
+        <Route path="/ai-symptom" element={<AISymptomChecker />} />
+        <Route path="/appointment-scheduling" element={<AppointmentScheduling />} />
+        <Route path="/data-export" element={<DataExportPortal />} />
+        <Route path="/doctor-search" element={<DoctorAvailabilityFinder />} />
+        <Route path="/doctor-reviews" element={<DoctorReviews />} />
+        <Route path="/health-records" element={<ElectronicHealthRecords />} />
+        <Route path="/realtime-consultation" element={<RealTimeConsultation />} />
+        <Route path="/symptom-checker" element={<SymptomChecker />} />
+        <Route path="/wearables" element={<WearableIntegration />} />
       </Route>
 
       {/* Catch-all */}

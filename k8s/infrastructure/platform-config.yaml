@@ -13,6 +13,14 @@ data:
   DB_HOST: "my-dsproject-deploy-2026.postgres.database.azure.com"
   DB_PORT: "5432"
   JWT_EXPIRATION: "86400000"
+  # SMTP Email Configuration
+  SMTP_HOST: "smtp.gmail.com"
+  SMTP_PORT: "587"
+  SMTP_USERNAME: "ahsanmohammed828@gmail.com"
+  # OAuth Configuration
+  FRONTEND_URL: "http://localhost:3000"
+  GOOGLE_CLIENT_ID: ""  # Add via secret or override
+  FACEBOOK_APP_ID: ""  # Add via secret or override
 ---
 apiVersion: v1
 kind: Secret
@@ -33,3 +41,8 @@ stringData:
   BREVO_API_KEY: "your_brevo_api_key"
   STRIPE_SECRET_KEY: "sk_test_..."
   STRIPE_WEBHOOK_SECRET: "whsec_..."
+  # SMTP Password
+  SMTP_PASSWORD: "hkvrlmtnjkvnifox"
+  # OAuth Secrets (to be filled with real values)
+  GOOGLE_CLIENT_SECRET: ""
+  FACEBOOK_APP_SECRET: ""
