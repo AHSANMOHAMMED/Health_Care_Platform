@@ -83,7 +83,7 @@ jobs:
         run: npm run build
         working-directory: frontend
         env:
-          VITE_API_GATEWAY_URL: https://mediconnect-api-gateway.azurewebsites.net/api
+          VITE_API_GATEWAY_URL: /api
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -97,7 +97,7 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          docker build --build-arg VITE_API_GATEWAY_URL=https://mediconnect-api-gateway.azurewebsites.net/api -t ${{ env.ACR_NAME }}.azurecr.io/mediconnect-frontend:latest .
+          docker build --build-arg VITE_API_GATEWAY_URL=/api -t ${{ env.ACR_NAME }}.azurecr.io/mediconnect-frontend:latest .
           docker push ${{ env.ACR_NAME }}.azurecr.io/mediconnect-frontend:latest
         working-directory: frontend
 
