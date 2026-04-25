@@ -201,12 +201,12 @@ export default function LandingPremium() {
       {/* ============================================================
           HERO CAROUSEL — Full viewport, cinematic
       ============================================================ */}
-      <section className="relative h-screen min-h-[700px] w-full overflow-hidden bg-slate-100">
+      <section className="relative h-screen min-h-[700px] w-full overflow-hidden bg-white">
         {heroSlides.map((slide, idx) => (
-          <div key={idx} className={`absolute inset-0 transition-all duration-[2000ms] ease-in-out ${idx === currentSlide ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-            <img src={slide.image} alt={slide.title} className="w-full h-full object-cover scale-105 animate-slow-zoom opacity-30 mix-blend-multiply" />
-            <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-transparent to-white/40" />
+          <div key={idx} className={`absolute inset-0 transition-all duration-[2000ms] ease-in-out ${idx === currentSlide ? 'opacity-100 scale-100' : 'opacity-0 scale-110 pointer-events-none'}`}>
+            <img src={slide.image} alt={slide.title} className="w-full h-full object-cover opacity-20" />
+            <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-white/20" />
           </div>
         ))}
 
