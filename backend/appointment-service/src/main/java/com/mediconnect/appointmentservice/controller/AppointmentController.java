@@ -125,6 +125,26 @@ public class AppointmentController {
         return ResponseEntity.notFound().build();
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteAppointment(@PathVariable Long id) {
+        if (appointmentRepository.existsById(id)) {
+            appointmentRepository.deleteById(id);
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Appointment> updateAppointment(@PathVariable Long id, @RequestBody BookingRequest request) {
+        return appointmentRepository.findById(id)
+                .map(appointment -> {
+                    appointment.setDoctorId(request.getDoctorId());
+                    appointment.setAppointmentTime(request.getAppointmentTime());
+                    return ResponseEntity.ok(appointmentRepository.save(appointment));
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     /**
      * DTO for status update requests
      */

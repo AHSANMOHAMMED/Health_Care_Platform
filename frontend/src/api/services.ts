@@ -245,7 +245,10 @@ export const appointmentService = {
   },
 
   async update(id: number | string, data: Partial<Appointment>) {
-    const res = await apiRequest.put<Appointment>(`/appointments/${id}`, data);
+    const res = await apiRequest.put<Appointment>(`/appointments/${id}`, {
+      doctorId: data.doctorId,
+      appointmentTime: data.date + 'T' + (data.time || '10:00:00'),
+    });
     return res.data as Appointment;
   },
 

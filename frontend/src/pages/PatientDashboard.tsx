@@ -31,6 +31,7 @@ export default function PatientDashboard() {
 
   // Forms
   const [showApptModal, setShowApptModal] = useState(false);
+  const [editingAppt, setEditingAppt] = useState<Appointment | null>(null);
   const [newAppt, setNewAppt] = useState({ date: '', time: '', reason: '' });
 
   const load = useCallback(async () => {
@@ -56,7 +57,7 @@ export default function PatientDashboard() {
     } finally {
       setLoading(false);
     }
-  }, [userId]);
+  }, [userId, user]);
 
   useEffect(() => { load(); }, [load]);
 
@@ -66,26 +67,49 @@ export default function PatientDashboard() {
     e.preventDefault();
     if (!newAppt.date || !newAppt.time) return;
     try {
-      const created = await appointmentService.create({
-        patientId: userId ?? 1,
-        doctorId: 2, // Mock doctor
-        date: newAppt.date,
-        time: newAppt.time,
-        status: 'pending',
-        reason: newAppt.reason
-      });
-      setAppointments([...appointments, created]);
+      if (editingAppt) {
+        // Update
+        const updated = await appointmentService.update(editingAppt.id, {
+          date: newAppt.date,
+          time: newAppt.time,
+          reason: newAppt.reason
+        });
+        setAppointments(appointments.map(a => a.id === updated.id ? updated : a));
+      } else {
+        // Create
+        const created = await appointmentService.create({
+          patientId: userId ?? (user as any)?.id ?? 1,
+          doctorId: 2, // Mock doctor for demo
+          date: newAppt.date,
+          time: newAppt.time,
+          status: 'pending',
+          reason: newAppt.reason
+        });
+        setAppointments([...appointments, created]);
+      }
       setShowApptModal(false);
+      setEditingAppt(null);
       setNewAppt({ date: '', time: '', reason: '' });
     } catch (error) {
-      console.error('Failed to create appointment', error);
+      console.error('Failed to save appointment', error);
     }
   };
 
+  const handleEditAppointment = (appt: Appointment) => {
+    setEditingAppt(appt);
+    setNewAppt({
+      date: appt.date || '',
+      time: appt.time || '',
+      reason: appt.reason || ''
+    });
+    setShowApptModal(true);
+  };
+
   const handleCancelAppointment = async (id: number) => {
+    if (!window.confirm('Are you sure you want to cancel this appointment?')) return;
     try {
       await appointmentService.delete(id);
-      setAppointments(appointments.filter(a => a.id !== id));
+      setAppointments(appointments.filter(a => Number(a.id) !== id));
     } catch (error) {
       console.error('Failed to delete appointment', error);
     }
@@ -241,12 +265,17 @@ export default function PatientDashboard() {
                           </span>
                         </td>
                         <td>
-                          {appt.status === 'waiting' && (
-                            <button onClick={() => handleCancelAppointment(Number(appt.id))} className="text-xs text-red-400 hover:underline">Cancel</button>
-                          )}
-                          {appt.status === 'pending' && (
-                            <button onClick={() => handlePayNow(Number(appt.id), 2500, Number(appt.doctorId || 0), appt.date || '')} className="ml-3 px-3 py-1 bg-emerald-500/10 text-emerald-400 rounded-lg text-[10px] font-bold hover:bg-emerald-500/20 transition-colors">Pay Now</button>
-                          )}
+                          <div className="flex items-center gap-3">
+                            {(appt.status === 'waiting' || appt.status === 'pending') && (
+                              <button onClick={() => handleEditAppointment(appt)} className="text-xs text-[#0EA5E9] hover:underline">Edit</button>
+                            )}
+                            {(appt.status === 'waiting' || appt.status === 'pending') && (
+                              <button onClick={() => handleCancelAppointment(Number(appt.id))} className="text-xs text-red-400 hover:underline">Cancel</button>
+                            )}
+                            {appt.status === 'pending' && (
+                              <button onClick={() => handlePayNow(Number(appt.id), 2500, Number(appt.doctorId || 0), appt.date || '')} className="px-3 py-1 bg-emerald-500/10 text-emerald-400 rounded-lg text-[10px] font-bold hover:bg-emerald-500/20 transition-colors">Pay Now</button>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -389,8 +418,8 @@ export default function PatientDashboard() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <div className="clinical-card p-6 w-full max-w-md">
             <div className="flex justify-between items-center mb-5">
-              <h3 className="text-lg font-bold text-slate-900">Book Appointment</h3>
-              <button onClick={() => setShowApptModal(false)} className="text-slate-600 hover:text-slate-900"><X size={20} /></button>
+              <h3 className="text-lg font-bold text-slate-900">{editingAppt ? 'Reschedule Appointment' : 'Book Appointment'}</h3>
+              <button onClick={() => { setShowApptModal(false); setEditingAppt(null); }} className="text-slate-600 hover:text-slate-900"><X size={20} /></button>
             </div>
             <form onSubmit={handleCreateAppointment} className="space-y-4">
               <div>
@@ -406,8 +435,8 @@ export default function PatientDashboard() {
                 <textarea className="clinical-input resize-none" rows={3} value={newAppt.reason} onChange={e => setNewAppt({...newAppt, reason: e.target.value})}></textarea>
               </div>
               <div className="pt-2 flex gap-3">
-                <button type="button" onClick={() => setShowApptModal(false)} className="flex-1 btn-secondary justify-center">Cancel</button>
-                <button type="submit" className="flex-1 btn-primary justify-center">Confirm Booking</button>
+                <button type="button" onClick={() => { setShowApptModal(false); setEditingAppt(null); }} className="flex-1 btn-secondary justify-center">Cancel</button>
+                <button type="submit" className="flex-1 btn-primary justify-center">{editingAppt ? 'Update Booking' : 'Confirm Booking'}</button>
               </div>
             </form>
           </div>
