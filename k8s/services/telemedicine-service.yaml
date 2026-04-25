@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: telemedicine-service
 spec:
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels:
       app: telemedicine-service
@@ -27,7 +27,7 @@ spec:
               cpu: "300m"
           env:
             - name: JAVA_OPTS
-              value: "-Xmx192m -Xms128m"
+              value: "-Xmx96m -Xms64m"
             - name: DB_NAME
               value: "telemedicine_db"
             - name: SPRING_DATASOURCE_URL

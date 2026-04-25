@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: notification-service
 spec:
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels:
       app: notification-service
@@ -32,7 +32,7 @@ spec:
                 name: platform-secret
           env:
             - name: JAVA_OPTS
-              value: "-Xmx192m -Xms128m"
+              value: "-Xmx96m -Xms64m"
             - name: DB_NAME
               value: "notification_db"
             - name: SPRING_DATASOURCE_URL
