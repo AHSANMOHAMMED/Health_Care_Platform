@@ -16,8 +16,8 @@ cd "$SCRIPT_DIR"
 ACR_NAME="healthcaredsmediconnectreg"
 RESOURCE_GROUP="my-assignment-group"
 CLUSTER_NAME="mediconnect-aks"
-FRONTEND_URL="https://mediconnect-lanka.azurewebsites.net"
-API_URL="https://mediconnect-api-gateway.azurewebsites.net"
+FRONTEND_URL="http://20.207.96.72"
+API_URL="/api"
 
 # Colors for output
 RED='\033[0;31m'
