@@ -243,22 +243,22 @@ export default function AiChecker() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F] flex flex-col font-sans">
-      <header className="border-b border-white/5 bg-[#0D0D18]/80 backdrop-blur-xl sticky top-0 z-20">
+    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
+      <header className="border-b border-slate-200 bg-white/80 backdrop-blur-xl sticky top-0 z-20">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center shadow-lg">
-              <Brain size={24} className="text-slate-900" />
+            <div className="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center shadow-lg">
+              <Brain size={24} className="text-white" />
             </div>
             <div>
               <p className="font-black text-slate-900 text-lg leading-none">{labels.title}</p>
-              <p className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">{labels.online}</p>
+              <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">{labels.online}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Languages size={16} className="text-indigo-400" />
-            <select value={language} onChange={e => setLanguage(e.target.value as Language)} className="bg-transparent text-slate-900 text-xs font-bold outline-none cursor-pointer">
-              {Object.entries(LANG_DISPLAY_LABELS).map(([k, v]) => <option key={k} value={k} className="bg-slate-900">{v}</option>)}
+            <Languages size={16} className="text-indigo-600" />
+            <select value={language} onChange={e => setLanguage(e.target.value as Language)} className="bg-transparent text-slate-700 text-xs font-bold outline-none cursor-pointer">
+              {Object.entries(LANG_DISPLAY_LABELS).map(([k, v]) => <option key={k} value={k} className="bg-white">{v}</option>)}
             </select>
           </div>
         </div>
@@ -267,8 +267,8 @@ export default function AiChecker() {
       <main className="flex-1 max-w-4xl mx-auto w-full px-4 py-6 flex flex-col gap-4">
         {messages.length === 0 && (
           <div className="flex-1 flex flex-col items-center justify-center text-center gap-8 py-10">
-            <div className="w-24 h-24 rounded-3xl bg-indigo-600/20 flex items-center justify-center border border-indigo-500/30 shadow-2xl">
-              <Bot size={44} className="text-indigo-400" />
+            <div className="w-24 h-24 rounded-3xl bg-indigo-600/10 flex items-center justify-center border border-indigo-500/20 shadow-xl">
+              <Bot size={44} className="text-indigo-600" />
             </div>
             <h1 className="text-4xl font-black text-slate-900 tracking-tighter">{labels.title}</h1>
             <p className="text-slate-600 max-w-lg">{labels.disclaimer}</p>
@@ -278,13 +278,13 @@ export default function AiChecker() {
         <div className="flex-1 space-y-5">
           {messages.map(msg => (
             <div key={msg.id} className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-              <div className={`w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0 ${msg.role === 'user' ? 'bg-indigo-900' : 'bg-indigo-600'}`}>
-                {msg.role === 'user' ? <Users size={18} className="text-slate-900" /> : <Bot size={18} className="text-slate-900" />}
+              <div className={`w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0 ${msg.role === 'user' ? 'bg-slate-200' : 'bg-indigo-600'}`}>
+                {msg.role === 'user' ? <Users size={18} className="text-slate-600" /> : <Bot size={18} className="text-white" />}
               </div>
-              <div className={`max-w-[85%] px-5 py-4 rounded-3xl ${msg.role === 'user' ? 'bg-white/5 border border-white/10' : msg.severity ? severityConfig[msg.severity].color : 'bg-white/5'}`}>
+              <div className={`max-w-[85%] px-5 py-4 rounded-3xl ${msg.role === 'user' ? 'bg-indigo-600 text-white shadow-md' : msg.severity ? severityConfig[msg.severity].color : 'bg-white border border-slate-200 shadow-sm'}`}>
                 {msg.imageUrl && <img src={msg.imageUrl} className="w-48 rounded-xl mb-3" alt="clinical" />}
-                {msg.loading ? <Loader2 className="animate-spin text-indigo-400" /> : <p className="text-slate-800 text-sm whitespace-pre-wrap">{msg.content}</p>}
-                {msg.specialty && <div className="mt-4 p-3 bg-white/5 rounded-xl border border-white/10 flex items-center gap-3">
+                {msg.loading ? <Loader2 className="animate-spin text-indigo-600" /> : <p className={`text-sm whitespace-pre-wrap ${msg.role === 'user' ? 'text-white' : 'text-slate-800'}`}>{msg.content}</p>}
+                {msg.specialty && <div className="mt-4 p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center gap-3">
                   <span className="text-2xl">{msg.specialty.icon}</span>
                   <div><p className="text-[10px] text-slate-500 font-bold uppercase">{labels.specialty}</p><p className="text-slate-900 font-bold">{msg.specialty.specialty}</p></div>
                 </div>}
@@ -295,53 +295,53 @@ export default function AiChecker() {
         </div>
 
         {hasCritical && (
-          <div className="p-4 bg-red-950 border border-red-500/50 rounded-2xl flex items-center gap-4">
+          <div className="p-4 bg-red-50 border border-red-200 rounded-2xl flex items-center gap-4">
             <AlertTriangle className="text-red-500 animate-pulse" />
-            <div className="flex-1"><p className="text-slate-900 font-bold">{labels.emergencyDetected}</p><p className="text-xs text-red-300">{labels.call1990}</p></div>
-            <a href="tel:1990" className="px-4 py-2 bg-red-600 text-slate-900 rounded-xl font-bold">Call 1990</a>
+            <div className="flex-1"><p className="text-red-900 font-bold">{labels.emergencyDetected}</p><p className="text-xs text-red-700">{labels.call1990}</p></div>
+            <a href="tel:1990" className="px-4 py-2 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700 transition-colors">Call 1990</a>
           </div>
         )}
 
-        <div className="bg-[#0D0D18] border border-white/10 rounded-3xl p-4 shadow-2xl">
+        <div className="bg-white border border-slate-200 rounded-3xl p-4 shadow-xl">
           <div className="flex gap-2 mb-4 overflow-x-auto pb-2">
             {(['text', 'voice', 'image'] as const).map((m) => {
-              const modeConfig = { text: [TypeIcon, 'Text'], voice: [Mic, 'Voice'], image: [ImageIcon, 'Image'] } as const;
-              const [I, l] = modeConfig[m] as [React.ElementType, string];
+              const modeConfig = { text: [TypeIcon, 'Text'], voice: [Mic, 'Voice'], image: [ImageIcon, 'Image'] };
+              const [I, l] = modeConfig[m] as [any, string];
               return (
-              <button key={m} onClick={() => setInputMode(m as any)} className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${inputMode === m ? 'bg-indigo-600 text-slate-900' : 'text-slate-500 hover:bg-white/5'}`}>
+              <button key={m} onClick={() => setInputMode(m as any)} className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${inputMode === m ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-500 hover:bg-slate-50'}`}>
                 <I size={14} />{l}
               </button>
               );
             })}
           </div>
 
-          {inputMode === 'text' && <textarea rows={2} className="w-full bg-transparent text-slate-900 outline-none placeholder-slate-600" placeholder={labels.inputPlaceholder} value={inputText} onChange={e => setInputText(e.target.value)} />}
+          {inputMode === 'text' && <textarea rows={2} className="w-full bg-slate-50 p-3 rounded-xl border border-slate-200 text-slate-900 outline-none placeholder-slate-400 focus:border-indigo-500 transition-all" placeholder={labels.inputPlaceholder} value={inputText} onChange={e => setInputText(e.target.value)} />}
           
           {inputMode === 'voice' && (
             <div className="flex flex-col items-center py-6 gap-3">
-              <button onClick={isRecording ? stopRecording : startRecording} className={`w-16 h-16 rounded-full flex items-center justify-center text-slate-900 ${isRecording ? 'bg-red-600 animate-pulse' : 'bg-indigo-600'}`}>
+              <button onClick={isRecording ? stopRecording : startRecording} className={`w-16 h-16 rounded-full flex items-center justify-center text-white shadow-lg transition-all ${isRecording ? 'bg-red-600 animate-pulse' : 'bg-indigo-600 hover:scale-105'}`}>
                 {isRecording ? <MicOff /> : <Mic />}
               </button>
-              <p className="text-xs text-slate-500">{isRecording ? 'Listening...' : 'Tap to speak'}</p>
+              <p className="text-xs font-bold text-slate-500">{isRecording ? 'Listening...' : 'Tap to speak'}</p>
             </div>
           )}
 
           {inputMode === 'image' && (
-            <div className="py-8 border-2 border-dashed border-white/10 rounded-2xl flex flex-col items-center gap-2 cursor-pointer" onClick={() => fileInputRef.current?.click()}>
-              <UploadCloud className="text-slate-500" />
-              <p className="text-xs text-slate-500">Upload medical photo</p>
+            <div className="py-8 border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center gap-2 cursor-pointer hover:bg-slate-50 transition-all" onClick={() => fileInputRef.current?.click()}>
+              <UploadCloud className="text-slate-400" />
+              <p className="text-xs font-bold text-slate-500">Upload medical photo</p>
               <input ref={fileInputRef} type="file" className="hidden" onChange={handleImageSelect} />
             </div>
           )}
 
-          <div className="mt-4 flex justify-between items-center border-t border-white/5 pt-4">
+          <div className="mt-4 flex justify-between items-center border-t border-slate-100 pt-4">
             <div className="flex gap-2">
-              <input type="number" className="bg-white/5 text-slate-900 text-xs p-2 rounded-lg w-12" placeholder="Age" value={age} onChange={e => setAge(e.target.value)} />
-              <select className="bg-white/5 text-slate-900 text-xs p-2 rounded-lg" value={gender} onChange={e => setGender(e.target.value)}>
+              <input type="number" className="bg-slate-50 border border-slate-200 text-slate-900 text-xs p-2 rounded-lg w-16" placeholder="Age" value={age} onChange={e => setAge(e.target.value)} />
+              <select className="bg-slate-50 border border-slate-200 text-slate-900 text-xs p-2 rounded-lg" value={gender} onChange={e => setGender(e.target.value)}>
                 <option>Male</option><option>Female</option>
               </select>
             </div>
-            <button onClick={sendMessage} className="px-6 py-2 bg-indigo-600 hover:bg-indigo-500 text-slate-900 rounded-xl font-black text-sm flex items-center gap-2 shadow-lg shadow-indigo-900/40">
+            <button onClick={sendMessage} className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-black text-sm flex items-center gap-2 shadow-lg shadow-indigo-600/20 transition-all hover:-translate-y-0.5">
               {loading ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
               {labels.send}
             </button>

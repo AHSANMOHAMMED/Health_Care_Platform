@@ -78,15 +78,9 @@ public class AuthController {
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
 
-        // Doctors start as PENDING, others as APPROVED
-        if ("DOCTOR".equalsIgnoreCase(user.getRole())) {
-            user.setStatus("PENDING");
-        } else {
-            user.setStatus("APPROVED");
-        }
-
-        // Email verification required for all users
-        user.setEmailVerified(false);
+        // For demonstration purposes, auto-approve and auto-verify all users
+        user.setStatus("APPROVED");
+        user.setEmailVerified(true);
 
         userRepository.save(user);
 
