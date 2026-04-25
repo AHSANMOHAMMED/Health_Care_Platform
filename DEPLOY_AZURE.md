@@ -72,7 +72,7 @@ done
 az acr build \
   --registry healthcaredsmediconnectreg \
   --image mediconnect-frontend:latest \
-  --build-arg VITE_API_GATEWAY_URL=https://mediconnect-api-gateway.azurewebsites.net/api \
+  --build-arg VITE_API_GATEWAY_URL=/api \
   --file Dockerfile \
   ./frontend
 ```

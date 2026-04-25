@@ -46,8 +46,11 @@ const notifyLoadingListeners = () => {
 };
 
 // Create axios instance with enhanced configuration
-const baseURL = import.meta.env.VITE_API_GATEWAY_URL || '/api';
+// Use relative URL in production for AKS Ingress compatibility, or fallback to environment variable
+const isProd = import.meta.env.PROD;
+const baseURL = isProd ? '/api' : (import.meta.env.VITE_API_GATEWAY_URL || '/api');
 console.log('🌐 MediConnect API BaseURL:', baseURL);
+console.log('🏗️ Environment:', isProd ? 'Production' : 'Development');
 
 export const api = axios.create({
   baseURL,
