@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: notification-service
 spec:
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels:
       app: notification-service
