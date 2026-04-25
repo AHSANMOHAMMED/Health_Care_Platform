@@ -17,13 +17,6 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-
-jwt:
-  secret: ${JWT_SECRET:mediconnect_super_secret_jwt_key_that_must_be_long_enough}
-  expiration: ${JWT_EXPIRATION:86400000}
-
-# Email Configuration (SMTP)
-spring:
   mail:
     host: ${SMTP_HOST:smtp.gmail.com}
     port: ${SMTP_PORT:587}
@@ -35,6 +28,14 @@ spring:
           auth: true
           starttls:
             enable: true
+
+jwt:
+  secret: ${JWT_SECRET:mediconnect_super_secret_jwt_key_that_must_be_long_enough}
+  expiration: ${JWT_EXPIRATION:86400000}
+
+# Email Configuration (SMTP)
+# spring: mail is merged above (wait, I will just append it to the main spring block instead of doing this).
+
 
 # OAuth Configuration
 oauth:

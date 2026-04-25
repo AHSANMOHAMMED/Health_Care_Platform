@@ -1,5 +1,8 @@
 #!/bin/zsh
 
+export JAVA_HOME=/Users/ahsan/.antigravity/extensions/redhat.java-1.54.0-darwin-arm64/jre/21.0.10-macosx-aarch64
+export PATH=$JAVA_HOME/bin:$PATH
+
 # Set the docker environment for Mac
 export DOCKER_HOST=unix:///Users/ahsan/.docker/run/docker.sock
 
