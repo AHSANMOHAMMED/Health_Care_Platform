@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: telemedicine-service
 spec:
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels:
       app: telemedicine-service
@@ -20,14 +20,14 @@ spec:
             - containerPort: 8087
           resources:
             requests:
-              memory: "64Mi"
-              cpu: "10m"
+              memory: "32Mi"
+              cpu: "1m"
             limits:
               memory: "256Mi"
               cpu: "300m"
           env:
             - name: JAVA_OPTS
-              value: "-Xmx96m -Xms64m"
+              value: "-Xmx128m -Xms64m"
             - name: DB_NAME
               value: "telemedicine_db"
             - name: SPRING_DATASOURCE_URL
