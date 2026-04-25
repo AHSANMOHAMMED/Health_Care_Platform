@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: payment-service
 spec:
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: payment-service
@@ -23,7 +23,7 @@ spec:
               memory: "64Mi"
               cpu: "10m"
             limits:
-              memory: "320Mi"
+              memory: "256Mi"
               cpu: "300m"
           env:
             - name: JAVA_OPTS
