@@ -46,8 +46,11 @@ const notifyLoadingListeners = () => {
 };
 
 // Create axios instance with enhanced configuration
+const baseURL = import.meta.env.VITE_API_GATEWAY_URL || '/api';
+console.log('🌐 MediConnect API BaseURL:', baseURL);
+
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_GATEWAY_URL || '/api',
+  baseURL,
   timeout: 30000, // 30 seconds timeout
   headers: {
     'Content-Type': 'application/json',
