@@ -148,31 +148,50 @@ export default function Register() {
     const platform = socialPlatform!;
     setSocialPlatform(null);
     setLoading(true);
-    
-    const stages = ['Connecting to ' + platform + '...', 'Fetching secure profile...', 'Creating Health ID...'];
-    let currentStage = 0;
-    
-    const interval = setInterval(() => {
-      currentStage++;
-      if (currentStage < stages.length) {
-        setLoadingMessage(stages[currentStage]);
-      }
-    }, 600);
+    setLoadingMessage(`Connecting to ${platform}...`);
 
-    setLoadingMessage(stages[0]);
-    setTimeout(() => {
-      clearInterval(interval);
-      const mockUser = {
-        id: '100' + Math.floor(Math.random() * 900),
-        firstName: platform,
-        lastName: 'User',
-        email: `user_${Date.now()}@${platform.toLowerCase()}.com`,
-        role: selectedRole,
-      } as any;
-      useAuthStore.getState().setAuth('mock-token-' + Date.now(), mockUser);
+    try {
+      const width = 500;
+      const height = 600;
+      const left = window.screenX + (window.outerWidth - width) / 2;
+      const top = window.screenY + (window.outerHeight - height) / 2;
+      
+      const popup = window.open(
+        `${import.meta.env.VITE_API_GATEWAY_URL || '/api'}/oauth/${platform.toLowerCase()}?role=${selectedRole}`,
+        `${platform} OAuth`,
+        `width=${width},height=${height},left=${left},top=${top},popup=1`
+      );
+
+      if (!popup) throw new Error('Popup blocked.');
+
+      const handleMessage = (event: MessageEvent) => {
+        if (event.origin !== window.location.origin && !event.origin.includes('localhost')) return;
+
+        if (event.data?.type === 'OAUTH_SUCCESS') {
+          window.removeEventListener('message', handleMessage);
+          const { token, user } = event.data.payload;
+          useAuthStore.getState().setAuth(token, user);
+          setLoading(false);
+          navigate(selectedRole === 'DOCTOR' ? '/doctor' : '/patient');
+        } else if (event.data?.type === 'OAUTH_ERROR') {
+          window.removeEventListener('message', handleMessage);
+          setLoading(false);
+          setError('Social login failed.');
+        }
+      };
+
+      window.addEventListener('message', handleMessage);
+      const checkClosed = setInterval(() => {
+        if (popup.closed) {
+          clearInterval(checkClosed);
+          window.removeEventListener('message', handleMessage);
+          setLoading(false);
+        }
+      }, 1000);
+    } catch (err: any) {
       setLoading(false);
-      navigate(selectedRole === 'DOCTOR' ? '/doctor' : '/patient');
-    }, 2000);
+      setError(err.message || 'Social login failed.');
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
