@@ -15,11 +15,11 @@ public class SymptomCheckerController {
     private String geminiApiKey;
 
     @PostMapping("/symptom-checker")
-    public ResponseEntity<String> checkSymptoms(@RequestBody Map<String, String> payload) {
+    public ResponseEntity<Map<String, Object>> checkSymptoms(@RequestBody Map<String, String> payload) {
         String query = payload.get("symptoms");
         
         if(geminiApiKey == null || "mock_key".equals(geminiApiKey) || geminiApiKey.contains("insert-key-here")) {
-            return ResponseEntity.ok("AI Analysis (Mock Mode): Based on your symptoms ('" + query + "'), please consult a professional.");
+            return ResponseEntity.ok(Map.of("analysis", "AI Analysis (Mock Mode): Based on your symptoms ('" + query + "'), please consult a professional."));
         }
         
         String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + geminiApiKey;
@@ -51,9 +51,9 @@ public class SymptomCheckerController {
                     }
                 }
             }
-            return ResponseEntity.ok("AI Analysis: No response from model.");
+            return ResponseEntity.ok(Map.of("analysis", "AI Analysis: No response from model."));
         } catch(Exception e) {
-            return ResponseEntity.internalServerError().body("Failed: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(Map.of("error", "Failed: " + e.getMessage()));
         }
     }
 }
