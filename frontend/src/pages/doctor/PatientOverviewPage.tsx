@@ -189,7 +189,7 @@ export default function PatientOverviewPage() {
 
   const InputField = ({ label, required, ...props }: any) => (
     <div>
-      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">
+      <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">
         {label} {required && <span className="text-red-500">*</span>}
       </label>
       <input {...props} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10" />
@@ -198,7 +198,7 @@ export default function PatientOverviewPage() {
 
   const SelectField = ({ label, options, ...props }: any) => (
     <div>
-      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">{label}</label>
+      <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">{label}</label>
       <select {...props} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10">
         {options.map((o: string) => <option key={o} value={o}>{o}</option>)}
       </select>
@@ -233,7 +233,7 @@ export default function PatientOverviewPage() {
     <div className="min-h-screen bg-slate-50 flex overflow-hidden">
       {/* Toast */}
       {toast && (
-        <div className={`fixed top-6 right-6 z-[100] flex items-center gap-3 px-6 py-4 rounded-2xl shadow-2xl text-white font-bold text-sm transition-all animate-slide-up ${toast.type === 'success' ? 'bg-emerald-600' : 'bg-red-600'}`}>
+        <div className={`fixed top-6 right-6 z-[100] flex items-center gap-3 px-6 py-4 rounded-2xl shadow-2xl text-slate-900 font-bold text-sm transition-all animate-slide-up ${toast.type === 'success' ? 'bg-emerald-600' : 'bg-red-600'}`}>
           {toast.type === 'success' ? <CheckCircle size={18} /> : <AlertCircle size={18} />}
           {toast.message}
         </div>
@@ -251,7 +251,7 @@ export default function PatientOverviewPage() {
           </div>
           <nav className="space-y-2">
             {navItems.map(item => (
-              <Link key={item.name} to={item.path} className={`flex items-center gap-4 px-6 py-4 rounded-2xl font-bold transition-all ${location.pathname === item.path || (item.path === '/doctor' && location.pathname === '/doctor/overview') ? 'bg-[#8D153A] text-white shadow-lg shadow-[#8D153A]/20' : 'text-slate-500 hover:bg-[#8D153A]/5 hover:text-[#8D153A]'}`}>
+              <Link key={item.name} to={item.path} className={`flex items-center gap-4 px-6 py-4 rounded-2xl font-bold transition-all ${location.pathname === item.path || (item.path === '/doctor' && location.pathname === '/doctor/overview') ? 'bg-[#8D153A] text-slate-900 shadow-lg shadow-[#8D153A]/20' : 'text-slate-500 hover:bg-[#8D153A]/5 hover:text-[#8D153A]'}`}>
                 <item.icon size={22} /><span>{item.name}</span>
               </Link>
             ))}
@@ -275,7 +275,7 @@ export default function PatientOverviewPage() {
               <button onClick={loadPatients} className="p-3 rounded-xl bg-white border border-slate-200 text-slate-500 hover:text-[#8D153A] hover:border-[#8D153A]/30 transition-all" title="Refresh">
                 <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
               </button>
-              <button onClick={() => { resetForm(); setShowAddModal(true); }} className="px-6 py-3 bg-[#8D153A] text-white rounded-xl font-black hover:bg-[#71112D] transition-all flex items-center gap-2 shadow-lg shadow-[#8D153A]/20">
+              <button onClick={() => { resetForm(); setShowAddModal(true); }} className="px-6 py-3 bg-[#8D153A] text-slate-900 rounded-xl font-black hover:bg-[#71112D] transition-all flex items-center gap-2 shadow-lg shadow-[#8D153A]/20">
                 <PlusCircle size={20} /> Add Patient
               </button>
             </div>
@@ -294,7 +294,7 @@ export default function PatientOverviewPage() {
                   <div className={`w-10 h-10 rounded-xl ${s.bg} flex items-center justify-center ${s.color}`}><s.icon size={20} /></div>
                   <span className="text-2xl font-black text-slate-950">{loading ? '—' : s.value}</span>
                 </div>
-                <p className="text-xs font-black text-slate-400 uppercase tracking-widest">{s.label}</p>
+                <p className="text-xs font-black text-slate-600 uppercase tracking-widest">{s.label}</p>
               </div>
             ))}
           </div>
@@ -302,7 +302,7 @@ export default function PatientOverviewPage() {
           {/* Search & Filter */}
           <div className="bg-white p-5 rounded-2xl border border-slate-100 mb-6 flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600" size={18} />
               <input type="text" placeholder="Search patients..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-950 placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10" />
             </div>
             <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} className="px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-950 focus:outline-none focus:border-[#8D153A]">
@@ -315,11 +315,11 @@ export default function PatientOverviewPage() {
 
           {/* Patient List */}
           {loading ? (
-            <div className="flex items-center justify-center py-24 text-slate-400">
+            <div className="flex items-center justify-center py-24 text-slate-600">
               <Loader2 size={32} className="animate-spin mr-3" /> Loading patients...
             </div>
           ) : filtered.length === 0 ? (
-            <div className="text-center py-24 text-slate-400">
+            <div className="text-center py-24 text-slate-600">
               <Users size={48} className="mx-auto mb-4 opacity-30" />
               <p className="font-bold text-lg">No patients found</p>
               <p className="text-sm">Try a different search or add a new patient</p>
@@ -334,7 +334,7 @@ export default function PatientOverviewPage() {
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex items-start gap-5 flex-1 min-w-0">
                         <div className="relative flex-shrink-0">
-                          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#8D153A] to-[#E5AB22] flex items-center justify-center text-white font-black text-xl shadow-lg">{initials}</div>
+                          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#8D153A] to-[#E5AB22] flex items-center justify-center text-slate-900 font-black text-xl shadow-lg">{initials}</div>
                           {patient.riskLevel === 'high' && <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white" />}
                         </div>
                         <div className="flex-1 min-w-0">
@@ -345,9 +345,9 @@ export default function PatientOverviewPage() {
                             <span className={`px-2 py-1 rounded-lg text-xs font-black ${getRiskColor(patient.riskLevel)}`}>{(patient.riskLevel ?? 'low').toUpperCase()} RISK</span>
                           </div>
                           <div className="grid grid-cols-3 gap-4 mb-3 text-sm">
-                            <div><p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Condition</p><p className="font-bold text-slate-800">{patient.condition || '—'}</p></div>
-                            <div><p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Last Visit</p><p className="font-bold text-slate-800">{patient.lastVisit || '—'}</p></div>
-                            <div><p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Next Appt</p><p className="font-bold text-slate-800">{patient.nextAppointment || '—'}</p></div>
+                            <div><p className="text-xs font-black text-slate-600 uppercase tracking-widest mb-1">Condition</p><p className="font-bold text-slate-800">{patient.condition || '—'}</p></div>
+                            <div><p className="text-xs font-black text-slate-600 uppercase tracking-widest mb-1">Last Visit</p><p className="font-bold text-slate-800">{patient.lastVisit || '—'}</p></div>
+                            <div><p className="text-xs font-black text-slate-600 uppercase tracking-widest mb-1">Next Appt</p><p className="font-bold text-slate-800">{patient.nextAppointment || '—'}</p></div>
                           </div>
                           <div className="flex flex-wrap gap-4 text-xs text-slate-500">
                             {patient.contact?.phone && <span className="flex items-center gap-1"><Phone size={12} />{patient.contact.phone}</span>}
@@ -386,7 +386,7 @@ export default function PatientOverviewPage() {
               return (
                 <div className="space-y-5">
                   <div className="flex items-center gap-4">
-                    <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#8D153A] to-[#E5AB22] flex items-center justify-center text-white font-black text-2xl">{name.split(' ').map(n => n[0]).join('')}</div>
+                    <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#8D153A] to-[#E5AB22] flex items-center justify-center text-slate-900 font-black text-2xl">{name.split(' ').map(n => n[0]).join('')}</div>
                     <div>
                       <p className="text-2xl font-black text-slate-950">{name}</p>
                       <p className="text-slate-500 font-bold">{selectedPatient.age}y • {selectedPatient.gender} • {selectedPatient.bloodType}</p>
@@ -402,7 +402,7 @@ export default function PatientOverviewPage() {
                     { label: 'Total Visits', value: String(selectedPatient.totalVisits ?? '—') },
                   ].map(({ label, value }) => value ? (
                     <div key={label}>
-                      <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">{label}</p>
+                      <p className="text-xs font-black text-slate-600 uppercase tracking-widest mb-1">{label}</p>
                       <p className="font-bold text-slate-900">{value}</p>
                     </div>
                   ) : null)}
@@ -423,7 +423,7 @@ export default function PatientOverviewPage() {
             </div>
             <PatientFormFields />
             <div className="flex gap-3 mt-6">
-              <button onClick={handleCreate} disabled={saving} className="flex-1 py-4 bg-[#8D153A] text-white rounded-2xl font-black hover:bg-[#71112D] transition-all flex items-center justify-center gap-2 disabled:opacity-60">
+              <button onClick={handleCreate} disabled={saving} className="flex-1 py-4 bg-[#8D153A] text-slate-900 rounded-2xl font-black hover:bg-[#71112D] transition-all flex items-center justify-center gap-2 disabled:opacity-60">
                 {saving ? <><Loader2 size={18} className="animate-spin" /> Saving...</> : 'Add Patient'}
               </button>
               <button onClick={() => setShowAddModal(false)} className="flex-1 py-4 bg-slate-100 text-slate-700 rounded-2xl font-black hover:bg-slate-200 transition-all">Cancel</button>
@@ -442,7 +442,7 @@ export default function PatientOverviewPage() {
             </div>
             <PatientFormFields />
             <div className="flex gap-3 mt-6">
-              <button onClick={handleUpdate} disabled={saving} className="flex-1 py-4 bg-[#8D153A] text-white rounded-2xl font-black hover:bg-[#71112D] transition-all flex items-center justify-center gap-2 disabled:opacity-60">
+              <button onClick={handleUpdate} disabled={saving} className="flex-1 py-4 bg-[#8D153A] text-slate-900 rounded-2xl font-black hover:bg-[#71112D] transition-all flex items-center justify-center gap-2 disabled:opacity-60">
                 {saving ? <><Loader2 size={18} className="animate-spin" /> Saving...</> : 'Save Changes'}
               </button>
               <button onClick={() => setShowEditModal(false)} className="flex-1 py-4 bg-slate-100 text-slate-700 rounded-2xl font-black hover:bg-slate-200 transition-all">Cancel</button>
@@ -460,7 +460,7 @@ export default function PatientOverviewPage() {
               <h3 className="text-2xl font-black mb-2">Delete Patient?</h3>
               <p className="text-slate-500 font-bold mb-6">This will permanently remove <span className="text-slate-950">{deletingPatient.name || `${deletingPatient.firstName} ${deletingPatient.lastName}`}</span> from the system.</p>
               <div className="flex gap-3">
-                <button onClick={handleDelete} disabled={saving} className="flex-1 py-4 bg-red-600 text-white rounded-2xl font-black hover:bg-red-700 transition-all flex items-center justify-center gap-2 disabled:opacity-60">
+                <button onClick={handleDelete} disabled={saving} className="flex-1 py-4 bg-red-600 text-slate-900 rounded-2xl font-black hover:bg-red-700 transition-all flex items-center justify-center gap-2 disabled:opacity-60">
                   {saving ? <><Loader2 size={18} className="animate-spin" /> Deleting...</> : 'Confirm Delete'}
                 </button>
                 <button onClick={() => setShowDeleteModal(false)} className="flex-1 py-4 bg-slate-100 text-slate-700 rounded-2xl font-black hover:bg-slate-200 transition-all">Cancel</button>

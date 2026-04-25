@@ -138,7 +138,7 @@ const ErrorFallback: React.FC<ErrorFallbackProps> = ({ error, onReload, onGoHome
           <div className="flex gap-3 justify-center">
             <button
               onClick={onReload}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2"
+              className="px-6 py-3 bg-blue-600 text-slate-900 rounded-lg hover:bg-blue-700 transition flex items-center gap-2"
             >
               <RefreshCw size={18} />
               Reload Page

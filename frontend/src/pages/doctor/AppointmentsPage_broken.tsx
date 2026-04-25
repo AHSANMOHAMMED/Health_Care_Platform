@@ -319,7 +319,7 @@ export default function AppointmentsPage() {
                 to={item.path}
                 className={`flex items-center gap-4 px-6 py-4 rounded-2xl font-bold transition-all ${
                   location.pathname === item.path
-                    ? 'bg-[#8D153A] text-white shadow-lg shadow-[#8D153A]/20'
+                    ? 'bg-[#8D153A] text-slate-900 shadow-lg shadow-[#8D153A]/20'
                     : 'text-slate-500 hover:bg-[#8D153A]/5 hover:text-[#8D153A]'
                 }`}
               >
@@ -344,7 +344,7 @@ export default function AppointmentsPage() {
               <div className="flex items-center gap-3">
                 <button
                   onClick={handleQuickAddAppointment}
-                  className="px-6 py-3 bg-gradient-to-r from-[#8D153A] to-[#E5AB22] text-white rounded-2xl font-black hover:shadow-lg transition-all flex items-center gap-2"
+                  className="px-6 py-3 bg-gradient-to-r from-[#8D153A] to-[#E5AB22] text-slate-900 rounded-2xl font-black hover:shadow-lg transition-all flex items-center gap-2"
                 >
                   <PlusCircle size={20} />
                   Quick Appointment
@@ -365,7 +365,7 @@ export default function AppointmentsPage() {
                   onClick={() => setViewMode(mode as any)}
                   className={`px-6 py-3 rounded-xl font-black transition-all flex items-center gap-2 ${
                     viewMode === mode
-                      ? 'bg-[#8D153A] text-white shadow-lg'
+                      ? 'bg-[#8D153A] text-slate-900 shadow-lg'
                       : 'text-slate-600 hover:bg-slate-100'
                   }`}
                 >
@@ -445,28 +445,28 @@ export default function AppointmentsPage() {
                 <Calendar className="text-[#8D153A]" size={24} />
                 <span className="text-2xl font-black text-slate-950">12</span>
               </div>
-              <p className="text-sm font-black text-slate-400 uppercase tracking-widest">Today</p>
+              <p className="text-sm font-black text-slate-600 uppercase tracking-widest">Today</p>
             </div>
             <div className="bg-white p-6 rounded-2xl border border-slate-100">
               <div className="flex items-center justify-between mb-4">
                 <CheckCircle className="text-emerald-600" size={24} />
                 <span className="text-2xl font-black text-slate-950">8</span>
               </div>
-              <p className="text-sm font-black text-slate-400 uppercase tracking-widest">Confirmed</p>
+              <p className="text-sm font-black text-slate-600 uppercase tracking-widest">Confirmed</p>
             </div>
             <div className="bg-white p-6 rounded-2xl border border-slate-100">
               <div className="flex items-center justify-between mb-4">
                 <AlertTriangle className="text-orange-600" size={24} />
                 <span className="text-2xl font-black text-slate-950">2</span>
               </div>
-              <p className="text-sm font-black text-slate-400 uppercase tracking-widest">Waiting</p>
+              <p className="text-sm font-black text-slate-600 uppercase tracking-widest">Waiting</p>
             </div>
             <div className="bg-white p-6 rounded-2xl border border-slate-100">
               <div className="flex items-center justify-between mb-4">
                 <XCircle className="text-red-600" size={24} />
                 <span className="text-2xl font-black text-slate-950">1</span>
               </div>
-              <p className="text-sm font-black text-slate-400 uppercase tracking-widest">Cancelled</p>
+              <p className="text-sm font-black text-slate-600 uppercase tracking-widest">Cancelled</p>
             </div>
           </div>
 
@@ -474,7 +474,7 @@ export default function AppointmentsPage() {
           <div className="bg-white p-6 rounded-2xl border border-slate-100 mb-6">
             <div className="flex flex-col md:flex-row gap-4">
               <div className="flex-1 relative">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} />
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-600" size={20} />
                 <input
                   type="text"
                   placeholder="Search patients..."
@@ -495,7 +495,7 @@ export default function AppointmentsPage() {
                   <option value="completed">Completed</option>
                   <option value="cancelled">Cancelled</option>
                 </select>
-                <button className="px-6 py-3 bg-[#8D153A] text-white rounded-xl font-black hover:bg-[#8D153A]/80 transition-all flex items-center gap-2">
+                <button className="px-6 py-3 bg-[#8D153A] text-slate-900 rounded-xl font-black hover:bg-[#8D153A]/80 transition-all flex items-center gap-2">
                   <PlusCircle size={20} />
                   New Appointment
                 </button>
@@ -517,7 +517,7 @@ export default function AppointmentsPage() {
                   <div className="flex items-start justify-between">
                     <div className="flex items-start gap-6">
                       <div className="relative">
-                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#8D153A] to-[#E5AB22] flex items-center justify-center text-white font-black text-xl shadow-lg">
+                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#8D153A] to-[#E5AB22] flex items-center justify-center text-slate-900 font-black text-xl shadow-lg">
                           {appointment.patientName.split(' ').map(n => n[0]).join('')}
                         </div>
                         {appointment.priority === 'urgent' && (
@@ -733,7 +733,7 @@ export default function AppointmentsPage() {
                           className="bg-white p-3 rounded-xl border border-slate-200 cursor-pointer hover:shadow-md transition-all"
                         >
                           <div className="flex items-center gap-2 mb-2">
-                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#8D153A] to-[#E5AB22] flex items-center justify-center text-white font-black text-xs">
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#8D153A] to-[#E5AB22] flex items-center justify-center text-slate-900 font-black text-xs">
                               {apt.patientName.split(' ').map(n => n[0]).join('')}
                             </div>
                             <div className="flex-1 min-w-0">
@@ -772,7 +772,7 @@ export default function AppointmentsPage() {
             
             <div className="space-y-6">
               <div>
-                <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Patient Name *</label>
+                <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-3">Patient Name *</label>
                 <input
                   type="text"
                   value={quickAppointmentForm.patientName}
@@ -784,7 +784,7 @@ export default function AppointmentsPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Age</label>
+                  <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-3">Age</label>
                   <input
                     type="number"
                     value={quickAppointmentForm.age}
@@ -794,7 +794,7 @@ export default function AppointmentsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Gender</label>
+                  <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-3">Gender</label>
                   <select
                     value={quickAppointmentForm.gender}
                     onChange={(e) => setQuickAppointmentForm({...quickAppointmentForm, gender: e.target.value})}
@@ -809,7 +809,7 @@ export default function AppointmentsPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Date *</label>
+                  <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-3">Date *</label>
                   <input
                     type="date"
                     value={quickAppointmentForm.date}
@@ -818,7 +818,7 @@ export default function AppointmentsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Time *</label>
+                  <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-3">Time *</label>
                   <input
                     type="time"
                     value={quickAppointmentForm.time}
@@ -830,7 +830,7 @@ export default function AppointmentsPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Type</label>
+                  <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-3">Type</label>
                   <select
                     value={quickAppointmentForm.type}
                     onChange={(e) => setQuickAppointmentForm({...quickAppointmentForm, type: e.target.value})}
@@ -842,7 +842,7 @@ export default function AppointmentsPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Duration</label>
+                  <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-3">Duration</label>
                   <select
                     value={quickAppointmentForm.duration}
                     onChange={(e) => setQuickAppointmentForm({...quickAppointmentForm, duration: e.target.value})}
@@ -857,7 +857,7 @@ export default function AppointmentsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Priority</label>
+                <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-3">Priority</label>
                 <select
                   value={quickAppointmentForm.priority}
                   onChange={(e) => setQuickAppointmentForm({...quickAppointmentForm, priority: e.target.value as any})}
@@ -870,7 +870,7 @@ export default function AppointmentsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Reason for Visit</label>
+                <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-3">Reason for Visit</label>
                 <input
                   type="text"
                   value={quickAppointmentForm.reason}
@@ -881,7 +881,7 @@ export default function AppointmentsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Contact Number</label>
+                <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-3">Contact Number</label>
                 <input
                   type="tel"
                   value={quickAppointmentForm.contact}
@@ -892,7 +892,7 @@ export default function AppointmentsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Additional Notes</label>
+                <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-3">Additional Notes</label>
                 <textarea
                   value={quickAppointmentForm.notes}
                   onChange={(e) => setQuickAppointmentForm({...quickAppointmentForm, notes: e.target.value})}
@@ -905,7 +905,7 @@ export default function AppointmentsPage() {
               <div className="flex gap-3">
                 <button
                   onClick={handleQuickSaveAppointment}
-                  className="flex-1 py-4 bg-gradient-to-r from-[#8D153A] to-[#E5AB22] text-white rounded-2xl font-black hover:shadow-lg transition-all"
+                  className="flex-1 py-4 bg-gradient-to-r from-[#8D153A] to-[#E5AB22] text-slate-900 rounded-2xl font-black hover:shadow-lg transition-all"
                 >
                   Create Appointment
                 </button>
@@ -1011,11 +1011,11 @@ export default function AppointmentsPage() {
             </div>
 
             <div className="flex gap-3 mt-8">
-              <button className="flex-1 py-4 bg-emerald-600 text-white rounded-2xl font-black hover:bg-emerald-700 transition-all flex items-center justify-center gap-2">
+              <button className="flex-1 py-4 bg-emerald-600 text-slate-900 rounded-2xl font-black hover:bg-emerald-700 transition-all flex items-center justify-center gap-2">
                 <Video size={20} />
                 Start Consultation
               </button>
-              <button className="flex-1 py-4 bg-blue-600 text-white rounded-2xl font-black hover:bg-blue-700 transition-all flex items-center justify-center gap-2">
+              <button className="flex-1 py-4 bg-blue-600 text-slate-900 rounded-2xl font-black hover:bg-blue-700 transition-all flex items-center justify-center gap-2">
                 <MessageCircle size={20} />
                 Message Patient
               </button>

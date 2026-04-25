@@ -77,7 +77,7 @@ export default function NotificationCenter() {
                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 shadow-sm border ${
                  note.type === 'appointment' ? 'bg-indigo-50 text-indigo-600 border-indigo-100' :
                  note.type === 'alert' ? 'bg-amber-50 text-amber-600 border-amber-100' :
-                 note.type === 'security' ? 'bg-slate-900 text-white border-slate-800' :
+                 note.type === 'security' ? 'bg-slate-900 text-slate-900 border-slate-800' :
                  'bg-emerald-50 text-emerald-600 border-emerald-100'
                }`}>
                   {note.type === 'appointment' && <Calendar size={28} />}
@@ -92,14 +92,14 @@ export default function NotificationCenter() {
                   </div>
                   <p className="text-slate-500 font-medium leading-relaxed mb-4">{note.message}</p>
                   <div className="flex justify-between items-center">
-                     <div className="flex items-center gap-4 text-xs font-black uppercase tracking-widest text-slate-400">
+                     <div className="flex items-center gap-4 text-xs font-black uppercase tracking-widest text-slate-600">
                         <span className="flex items-center gap-1.5"><Clock size={14}/> {note.date}</span>
                         <span className="w-1.5 h-1.5 bg-slate-200 rounded-full"></span>
-                        <span className={`flex items-center gap-1.5 ${note.priority === 'high' ? 'text-red-500' : 'text-slate-400'}`}>Priority: {note.priority}</span>
+                        <span className={`flex items-center gap-1.5 ${note.priority === 'high' ? 'text-red-500' : 'text-slate-600'}`}>Priority: {note.priority}</span>
                      </div>
                      <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button className="px-4 py-1.5 bg-white border border-slate-200 text-slate-400 hover:text-indigo-600 hover:border-indigo-200 rounded-lg font-bold text-[10px] uppercase tracking-widest transition-all">Mark Read</button>
-                        <button className="p-2 bg-slate-50 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"><Trash2 size={14} /></button>
+                        <button className="px-4 py-1.5 bg-white border border-slate-200 text-slate-600 hover:text-indigo-600 hover:border-indigo-200 rounded-lg font-bold text-[10px] uppercase tracking-widest transition-all">Mark Read</button>
+                        <button className="p-2 bg-slate-50 text-slate-600 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"><Trash2 size={14} /></button>
                      </div>
                   </div>
                </div>
@@ -109,7 +109,7 @@ export default function NotificationCenter() {
 
       {/* Footer Info */}
       <div className="mt-16 flex flex-col items-center justify-center text-center py-12 border-t border-slate-100">
-         <div className="w-12 h-12 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mb-6">
+         <div className="w-12 h-12 bg-slate-100 text-slate-600 rounded-full flex items-center justify-center mb-6">
             <ShieldCheck size={24} />
          </div>
          <h4 className="text-lg font-black text-slate-900 mb-2">Smart Alert Optimization</h4>

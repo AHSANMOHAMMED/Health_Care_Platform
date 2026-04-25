@@ -63,14 +63,14 @@ export default function DoctorReviews() {
   }));
 
   return (
-    <div className="min-h-screen bg-[#0C1220] text-slate-200">
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#0C1220]/90 backdrop-blur-md border-b border-[#1E3A5F]/30">
+    <div className="min-h-screen bg-slate-50 text-slate-800">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-slate-50/90 backdrop-blur-md border-b border-slate-300/30">
         <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
-          <Link to="/doctor-search" className="flex items-center gap-2 text-slate-400 hover:text-white">
+          <Link to="/doctor-search" className="flex items-center gap-2 text-slate-600 hover:text-slate-900">
             <ChevronLeft size={20} />
             <span>Back</span>
           </Link>
-          <h1 className="text-lg font-semibold text-white">Doctor Reviews</h1>
+          <h1 className="text-lg font-semibold text-slate-900">Doctor Reviews</h1>
           <div className="w-20" />
         </div>
       </header>
@@ -78,11 +78,11 @@ export default function DoctorReviews() {
       <main className="pt-24 pb-8 px-4">
         <div className="max-w-4xl mx-auto">
           {/* Rating Summary */}
-          <div className="bg-[#111B2E] border border-[#1E3A5F]/50 rounded-2xl p-6 mb-6">
+          <div className="bg-white border border-slate-300/50 rounded-2xl p-6 mb-6">
             <div className="flex flex-col md:flex-row items-center gap-8">
               {/* Overall Rating */}
               <div className="text-center">
-                <div className="text-5xl font-bold text-white">{averageRating}</div>
+                <div className="text-[#0284C7]xl font-bold text-slate-900">{averageRating}</div>
                 <div className="flex items-center gap-1 justify-center mt-2">
                   {[1, 2, 3, 4, 5].map(s => (
                     <Star
@@ -92,21 +92,21 @@ export default function DoctorReviews() {
                     />
                   ))}
                 </div>
-                <p className="text-sm text-slate-400 mt-1">{reviews.length} reviews</p>
+                <p className="text-sm text-slate-600 mt-1">{reviews.length} reviews</p>
               </div>
 
               {/* Rating Breakdown */}
               <div className="flex-1 w-full space-y-2">
                 {ratingCounts.map(({ stars, count, percentage }) => (
                   <div key={stars} className="flex items-center gap-3">
-                    <span className="text-sm text-slate-400 w-8">{stars} ★</span>
-                    <div className="flex-1 h-2 bg-[#0C1220] rounded-full overflow-hidden">
+                    <span className="text-sm text-slate-600 w-8">{stars} ★</span>
+                    <div className="flex-1 h-2 bg-slate-50 rounded-full overflow-hidden">
                       <div
                         className="h-full bg-yellow-400 rounded-full"
                         style={{ width: `${percentage}%` }}
                       />
                     </div>
-                    <span className="text-sm text-slate-400 w-10">{count}</span>
+                    <span className="text-sm text-slate-600 w-10">{count}</span>
                   </div>
                 ))}
               </div>
@@ -118,7 +118,7 @@ export default function DoctorReviews() {
             <select
               value={filterRating}
               onChange={(e) => setFilterRating(e.target.value === 'all' ? 'all' : Number(e.target.value))}
-              className="bg-[#111B2E] border border-[#1E3A5F]/50 rounded-lg px-3 py-2 text-sm text-white"
+              className="bg-white border border-slate-300/50 rounded-lg px-3 py-2 text-sm text-slate-900"
             >
               <option value="all">All Ratings</option>
               <option value={5}>5 Stars</option>
@@ -131,7 +131,7 @@ export default function DoctorReviews() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
-              className="bg-[#111B2E] border border-[#1E3A5F]/50 rounded-lg px-3 py-2 text-sm text-white"
+              className="bg-white border border-slate-300/50 rounded-lg px-3 py-2 text-sm text-slate-900"
             >
               <option value="recent">Most Recent</option>
               <option value="helpful">Most Helpful</option>
@@ -142,14 +142,14 @@ export default function DoctorReviews() {
           {/* Reviews List */}
           <div className="space-y-4">
             {filteredReviews.map(review => (
-              <div key={review.id} className="bg-[#111B2E] border border-[#1E3A5F]/50 rounded-2xl p-5">
+              <div key={review.id} className="bg-white border border-slate-300/50 rounded-2xl p-5">
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-[#0EA5E9]/20 flex items-center justify-center">
                       <User className="text-[#0EA5E9]" size={18} />
                     </div>
                     <div>
-                      <p className="font-medium text-white">{review.patientName}</p>
+                      <p className="font-medium text-slate-900">{review.patientName}</p>
                       <div className="flex items-center gap-2">
                         <div className="flex">
                           {[1, 2, 3, 4, 5].map(s => (
@@ -169,21 +169,21 @@ export default function DoctorReviews() {
                   <span className="text-sm text-slate-500">{review.date}</span>
                 </div>
 
-                <p className="text-slate-300 mb-3">{review.comment}</p>
+                <p className="text-slate-700 mb-3">{review.comment}</p>
 
                 {review.doctorReply && (
-                  <div className="bg-[#0C1220] rounded-xl p-4 mb-3">
+                  <div className="bg-slate-50 rounded-xl p-4 mb-3">
                     <p className="text-xs text-[#0EA5E9] font-medium mb-1">Doctor's Response</p>
-                    <p className="text-sm text-slate-400">{review.doctorReply}</p>
+                    <p className="text-sm text-slate-600">{review.doctorReply}</p>
                   </div>
                 )}
 
                 <div className="flex items-center gap-4">
-                  <button className="flex items-center gap-1 text-sm text-slate-400 hover:text-white">
+                  <button className="flex items-center gap-1 text-sm text-slate-600 hover:text-slate-900">
                     <ThumbsUp size={14} />
                     Helpful ({review.helpful})
                   </button>
-                  <button className="flex items-center gap-1 text-sm text-slate-400 hover:text-white">
+                  <button className="flex items-center gap-1 text-sm text-slate-600 hover:text-slate-900">
                     <MessageSquare size={14} />
                     Reply
                   </button>

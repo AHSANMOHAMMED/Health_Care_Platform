@@ -405,7 +405,7 @@ export default function ConsultationsPage() {
       <Star
         key={i}
         size={14}
-        className={i < rating ? 'text-yellow-400 fill-yellow-400' : 'text-slate-300'}
+        className={i < rating ? 'text-yellow-400 fill-yellow-400' : 'text-slate-700'}
       />
     ));
   };
@@ -438,7 +438,7 @@ export default function ConsultationsPage() {
                 to={item.path}
                 className={`flex items-center gap-4 px-6 py-4 rounded-2xl font-bold transition-all ${
                   location.pathname === item.path
-                    ? 'bg-[#8D153A] text-white shadow-lg shadow-[#8D153A]/20'
+                    ? 'bg-[#8D153A] text-slate-900 shadow-lg shadow-[#8D153A]/20'
                     : 'text-slate-500 hover:bg-[#8D153A]/5 hover:text-[#8D153A]'
                 }`}
               >
@@ -465,7 +465,7 @@ export default function ConsultationsPage() {
               onClick={() => setActiveTab('consultations')}
               className={`px-6 py-3 rounded-xl font-black transition-all ${
                 activeTab === 'consultations'
-                  ? 'bg-[#8D153A] text-white'
+                  ? 'bg-[#8D153A] text-slate-900'
                   : 'text-slate-600 hover:bg-slate-100'
               }`}
             >
@@ -475,7 +475,7 @@ export default function ConsultationsPage() {
               onClick={() => setActiveTab('messages')}
               className={`px-6 py-3 rounded-xl font-black transition-all ${
                 activeTab === 'messages'
-                  ? 'bg-[#8D153A] text-white'
+                  ? 'bg-[#8D153A] text-slate-900'
                   : 'text-slate-600 hover:bg-slate-100'
               }`}
             >
@@ -485,7 +485,7 @@ export default function ConsultationsPage() {
               onClick={() => setActiveTab('history')}
               className={`px-6 py-3 rounded-xl font-black transition-all ${
                 activeTab === 'history'
-                  ? 'bg-[#8D153A] text-white'
+                  ? 'bg-[#8D153A] text-slate-900'
                   : 'text-slate-600 hover:bg-slate-100'
               }`}
             >
@@ -495,7 +495,7 @@ export default function ConsultationsPage() {
               onClick={() => setActiveTab('schedule')}
               className={`px-6 py-3 rounded-xl font-black transition-all ${
                 activeTab === 'schedule'
-                  ? 'bg-[#8D153A] text-white'
+                  ? 'bg-[#8D153A] text-slate-900'
                   : 'text-slate-600 hover:bg-slate-100'
               }`}
             >
@@ -512,28 +512,28 @@ export default function ConsultationsPage() {
                     <MessageSquare className="text-[#8D153A]" size={24} />
                     <span className="text-2xl font-black text-slate-950">24</span>
                   </div>
-                  <p className="text-sm font-black text-slate-400 uppercase tracking-widest">This Week</p>
+                  <p className="text-sm font-black text-slate-600 uppercase tracking-widest">This Week</p>
                 </div>
                 <div className="bg-white p-6 rounded-2xl border border-slate-100">
                   <div className="flex items-center justify-between mb-4">
                     <Video className="text-blue-600" size={24} />
                     <span className="text-2xl font-black text-slate-950">18</span>
                   </div>
-                  <p className="text-sm font-black text-slate-400 uppercase tracking-widest">Video Calls</p>
+                  <p className="text-sm font-black text-slate-600 uppercase tracking-widest">Video Calls</p>
                 </div>
                 <div className="bg-white p-6 rounded-2xl border border-slate-100">
                   <div className="flex items-center justify-between mb-4">
                     <Phone className="text-green-600" size={24} />
                     <span className="text-2xl font-black text-slate-950">6</span>
                   </div>
-                  <p className="text-sm font-black text-slate-400 uppercase tracking-widest">Phone Calls</p>
+                  <p className="text-sm font-black text-slate-600 uppercase tracking-widest">Phone Calls</p>
                 </div>
                 <div className="bg-white p-6 rounded-2xl border border-slate-100">
                   <div className="flex items-center justify-between mb-4">
                     <Star className="text-yellow-500" size={24} />
                     <span className="text-2xl font-black text-slate-950">4.8</span>
                   </div>
-                  <p className="text-sm font-black text-slate-400 uppercase tracking-widest">Avg Rating</p>
+                  <p className="text-sm font-black text-slate-600 uppercase tracking-widest">Avg Rating</p>
                 </div>
               </div>
 
@@ -541,7 +541,7 @@ export default function ConsultationsPage() {
               <div className="bg-white p-6 rounded-2xl border border-slate-100 mb-6">
                 <div className="flex flex-col md:flex-row gap-4">
                   <div className="flex-1 relative">
-                    <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} />
+                    <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-600" size={20} />
                     <input
                       type="text"
                       placeholder="Search consultations..."
@@ -564,7 +564,7 @@ export default function ConsultationsPage() {
                     </select>
                     <button 
                       onClick={handleScheduleConsultation}
-                      className="px-6 py-3 bg-[#8D153A] text-white rounded-xl font-black hover:bg-[#8D153A]/80 transition-all flex items-center gap-2"
+                      className="px-6 py-3 bg-[#8D153A] text-slate-900 rounded-xl font-black hover:bg-[#8D153A]/80 transition-all flex items-center gap-2"
                     >
                       <PlusCircle size={20} />
                       Schedule Consultation
@@ -636,7 +636,7 @@ export default function ConsultationsPage() {
                             {consultation.status === 'scheduled' && (
                               <button 
                                 onClick={() => handleStartVideoCall(consultation)}
-                                className="px-4 py-2 bg-emerald-600 text-white rounded-xl font-black hover:bg-emerald-700 transition-all flex items-center gap-2"
+                                className="px-4 py-2 bg-emerald-600 text-slate-900 rounded-xl font-black hover:bg-emerald-700 transition-all flex items-center gap-2"
                               >
                                 <Video size={16} />
                                 Start
@@ -645,7 +645,7 @@ export default function ConsultationsPage() {
                             {consultation.status === 'in-progress' && (
                               <button 
                                 onClick={() => handleStartVideoCall(consultation)}
-                                className="px-4 py-2 bg-blue-600 text-white rounded-xl font-black hover:bg-blue-700 transition-all flex items-center gap-2"
+                                className="px-4 py-2 bg-blue-600 text-slate-900 rounded-xl font-black hover:bg-blue-700 transition-all flex items-center gap-2"
                               >
                                 <Activity size={16} />
                                 Join
@@ -702,7 +702,7 @@ export default function ConsultationsPage() {
                       className="p-3 rounded-xl hover:bg-slate-50 cursor-pointer transition-all"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-[#8D153A] text-white flex items-center justify-center font-black text-sm">
+                        <div className="w-10 h-10 rounded-full bg-[#8D153A] text-slate-900 flex items-center justify-center font-black text-sm">
                           {name.split(' ').map(n => n[0]).join('')}
                         </div>
                         <div className="flex-1">
@@ -719,7 +719,7 @@ export default function ConsultationsPage() {
               <div className="flex-1 flex flex-col">
                 <div className="p-4 border-b border-slate-100">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-[#8D153A] text-white flex items-center justify-center font-black text-sm">
+                    <div className="w-10 h-10 rounded-full bg-[#8D153A] text-slate-900 flex items-center justify-center font-black text-sm">
                       AW
                     </div>
                     <div>
@@ -735,11 +735,11 @@ export default function ConsultationsPage() {
                       <div key={msg.id} className={`flex ${msg.sender === 'doctor' ? 'justify-end' : 'justify-start'}`}>
                         <div className={`max-w-md px-4 py-3 rounded-2xl ${
                           msg.sender === 'doctor' 
-                            ? 'bg-[#8D153A] text-white rounded-tr-none' 
+                            ? 'bg-[#8D153A] text-slate-900 rounded-tr-none' 
                             : 'bg-slate-100 text-slate-900 rounded-tl-none'
                         }`}>
                           <p className="font-medium">{msg.content}</p>
-                          <p className={`text-xs mt-1 ${msg.sender === 'doctor' ? 'text-white/70' : 'text-slate-500'}`}>
+                          <p className={`text-xs mt-1 ${msg.sender === 'doctor' ? 'text-slate-900/70' : 'text-slate-500'}`}>
                             {msg.timestamp}
                           </p>
                         </div>
@@ -789,7 +789,7 @@ export default function ConsultationsPage() {
                     />
                     <button
                       onClick={handleSendMessage}
-                      className="px-6 py-3 bg-[#8D153A] text-white rounded-xl font-black hover:bg-[#8D153A]/80 transition-all flex items-center gap-2"
+                      className="px-6 py-3 bg-[#8D153A] text-slate-900 rounded-xl font-black hover:bg-[#8D153A]/80 transition-all flex items-center gap-2"
                       title="Send"
                       type="button"
                     >
@@ -836,7 +836,7 @@ export default function ConsultationsPage() {
                     <button className="px-4 py-2 bg-slate-100 text-slate-600 rounded-xl font-black hover:bg-slate-200 transition-all">
                       Save Draft
                     </button>
-                    <button className="px-4 py-2 bg-[#8D153A] text-white rounded-xl font-black hover:bg-[#8D153A]/80 transition-all">
+                    <button className="px-4 py-2 bg-[#8D153A] text-slate-900 rounded-xl font-black hover:bg-[#8D153A]/80 transition-all">
                       Book
                     </button>
                   </div>
@@ -852,7 +852,7 @@ export default function ConsultationsPage() {
                   
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Search Patient</label>
+                      <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Search Patient</label>
                       <input
                         type="text"
                         className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
@@ -861,7 +861,7 @@ export default function ConsultationsPage() {
                     </div>
                     
                     <div>
-                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Name</label>
+                      <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Name</label>
                       <input
                         type="text"
                         className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
@@ -870,7 +870,7 @@ export default function ConsultationsPage() {
                     </div>
                     
                     <div>
-                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Patient ID</label>
+                      <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Patient ID</label>
                       <input
                         type="text"
                         className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
@@ -880,7 +880,7 @@ export default function ConsultationsPage() {
                     
                     <div className="grid grid-cols-2 gap-2">
                       <div>
-                        <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Age</label>
+                        <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Age</label>
                         <input
                           type="number"
                           className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
@@ -888,7 +888,7 @@ export default function ConsultationsPage() {
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Gender</label>
+                        <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Gender</label>
                         <select className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10">
                           <option>Male</option>
                           <option>Female</option>
@@ -898,7 +898,7 @@ export default function ConsultationsPage() {
                     </div>
                     
                     <div>
-                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Contact</label>
+                      <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Contact</label>
                       <input
                         type="tel"
                         className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
@@ -906,7 +906,7 @@ export default function ConsultationsPage() {
                       />
                     </div>
                     
-                    <button className="w-full py-2 bg-[#8D153A] text-white rounded-xl font-black hover:bg-[#8D153A]/80 transition-all">
+                    <button className="w-full py-2 bg-[#8D153A] text-slate-900 rounded-xl font-black hover:bg-[#8D153A]/80 transition-all">
                       + Add New Patient
                     </button>
                   </div>
@@ -918,7 +918,7 @@ export default function ConsultationsPage() {
                   
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Free Slots</label>
+                      <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Free Slots</label>
                       <div className="grid grid-cols-3 gap-2">
                         <button className="py-2 bg-emerald-100 text-emerald-700 rounded-lg text-xs font-black hover:bg-emerald-200 transition-all">
                           9:00 AM
@@ -954,17 +954,17 @@ export default function ConsultationsPage() {
                   
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Last Visit</label>
+                      <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Last Visit</label>
                       <p className="text-sm text-slate-600">15 March 2024</p>
                     </div>
                     
                     <div>
-                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Allergies</label>
+                      <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Allergies</label>
                       <p className="text-sm text-slate-600">Penicillin, Peanuts</p>
                     </div>
                     
                     <div>
-                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Current Condition</label>
+                      <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Current Condition</label>
                       <p className="text-sm text-slate-600">Hypertension, Type 2 Diabetes</p>
                     </div>
                   </div>
@@ -978,7 +978,7 @@ export default function ConsultationsPage() {
                   
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Date</label>
+                      <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Date</label>
                       <input
                         type="date"
                         className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
@@ -986,7 +986,7 @@ export default function ConsultationsPage() {
                     </div>
                     
                     <div>
-                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Time</label>
+                      <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Time</label>
                       <input
                         type="time"
                         className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
@@ -994,7 +994,7 @@ export default function ConsultationsPage() {
                     </div>
                     
                     <div>
-                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Duration</label>
+                      <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Duration</label>
                       <select className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10">
                         <option>15 mins</option>
                         <option>30 mins</option>
@@ -1004,7 +1004,7 @@ export default function ConsultationsPage() {
                     </div>
                     
                     <div>
-                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Consultation Type</label>
+                      <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Consultation Type</label>
                       <select className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10">
                         <option>Video Consult</option>
                         <option>Phone Consult</option>
@@ -1013,7 +1013,7 @@ export default function ConsultationsPage() {
                     </div>
                     
                     <div>
-                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Appointment Type</label>
+                      <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Appointment Type</label>
                       <select className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10">
                         <option>New Patient</option>
                         <option>Follow-up</option>
@@ -1030,7 +1030,7 @@ export default function ConsultationsPage() {
                   
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Reason for Visit</label>
+                      <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Reason for Visit</label>
                       <textarea
                         className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
                         rows={3}
@@ -1039,7 +1039,7 @@ export default function ConsultationsPage() {
                     </div>
                     
                     <div>
-                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Symptoms</label>
+                      <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Symptoms</label>
                       <textarea
                         className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
                         rows={3}
@@ -1048,7 +1048,7 @@ export default function ConsultationsPage() {
                     </div>
                     
                     <div>
-                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Priority</label>
+                      <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Priority</label>
                       <select className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10">
                         <option>Normal</option>
                         <option>High</option>
@@ -1064,7 +1064,7 @@ export default function ConsultationsPage() {
                   
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Preliminary Notes</label>
+                      <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Preliminary Notes</label>
                       <textarea
                         className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
                         rows={3}
@@ -1073,7 +1073,7 @@ export default function ConsultationsPage() {
                     </div>
                     
                     <div>
-                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Special Instructions</label>
+                      <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Special Instructions</label>
                       <textarea
                         className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
                         rows={3}
@@ -1082,7 +1082,7 @@ export default function ConsultationsPage() {
                     </div>
                     
                     <div>
-                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Required Tests</label>
+                      <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Required Tests</label>
                       <textarea
                         className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-950 font-bold placeholder-slate-400 focus:outline-none focus:border-[#8D153A] focus:ring-2 focus:ring-[#8D153A]/10"
                         rows={3}
@@ -1098,19 +1098,19 @@ export default function ConsultationsPage() {
                 <h4 className="font-black text-slate-950 mb-4">Appointment Summary</h4>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div>
-                    <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Patient</p>
+                    <p className="text-xs font-black text-slate-600 uppercase tracking-widest mb-1">Patient</p>
                     <p className="font-black text-slate-950">--</p>
                   </div>
                   <div>
-                    <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Date</p>
+                    <p className="text-xs font-black text-slate-600 uppercase tracking-widest mb-1">Date</p>
                     <p className="font-black text-slate-950">--</p>
                   </div>
                   <div>
-                    <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Time</p>
+                    <p className="text-xs font-black text-slate-600 uppercase tracking-widest mb-1">Time</p>
                     <p className="font-black text-slate-950">--</p>
                   </div>
                   <div>
-                    <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Type</p>
+                    <p className="text-xs font-black text-slate-600 uppercase tracking-widest mb-1">Type</p>
                     <p className="font-black text-slate-950">--</p>
                   </div>
                 </div>
@@ -1121,7 +1121,7 @@ export default function ConsultationsPage() {
                 <button className="px-6 py-3 bg-slate-100 text-slate-600 rounded-xl font-black hover:bg-slate-200 transition-all">
                   Cancel
                 </button>
-                <button className="px-8 py-3 bg-gradient-to-r from-[#8D153A] to-[#E5AB22] text-white rounded-xl font-black hover:shadow-lg transition-all">
+                <button className="px-8 py-3 bg-gradient-to-r from-[#8D153A] to-[#E5AB22] text-slate-900 rounded-xl font-black hover:shadow-lg transition-all">
                   Confirm Booking
                 </button>
               </div>
@@ -1146,7 +1146,7 @@ export default function ConsultationsPage() {
                 
                 <div className="flex-1 overflow-y-auto p-6 space-y-6">
                   <div>
-                    <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Patient Name *</label>
+                    <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-3">Patient Name *</label>
                     <input
                       type="text"
                       value={scheduleForm.patientName}
@@ -1157,7 +1157,7 @@ export default function ConsultationsPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Consultation Type *</label>
+                    <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-3">Consultation Type *</label>
                     <select
                       value={scheduleForm.type}
                       onChange={(e) => handlePriceChange(e.target.value)}
@@ -1171,7 +1171,7 @@ export default function ConsultationsPage() {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Date *</label>
+                      <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-3">Date *</label>
                       <input
                         type="date"
                         value={scheduleForm.date}
@@ -1180,7 +1180,7 @@ export default function ConsultationsPage() {
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Time *</label>
+                      <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-3">Time *</label>
                       <input
                         type="time"
                         value={scheduleForm.time}
@@ -1192,7 +1192,7 @@ export default function ConsultationsPage() {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Duration</label>
+                      <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-3">Duration</label>
                       <select
                         value={scheduleForm.duration}
                         onChange={(e) => setScheduleForm({...scheduleForm, duration: e.target.value})}
@@ -1205,7 +1205,7 @@ export default function ConsultationsPage() {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Price (LKR) *</label>
+                      <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-3">Price (LKR) *</label>
                       <input
                         type="number"
                         value={scheduleForm.price}
@@ -1217,7 +1217,7 @@ export default function ConsultationsPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Reason for Consultation *</label>
+                    <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-3">Reason for Consultation *</label>
                     <input
                       type="text"
                       value={scheduleForm.reason}
@@ -1228,7 +1228,7 @@ export default function ConsultationsPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Additional Notes</label>
+                    <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-3">Additional Notes</label>
                     <textarea
                       value={scheduleForm.notes}
                       onChange={(e) => setScheduleForm({...scheduleForm, notes: e.target.value})}
@@ -1250,7 +1250,7 @@ export default function ConsultationsPage() {
                   <div className="flex gap-3">
                     <button
                       onClick={handleSaveSchedule}
-                      className="flex-1 py-4 bg-gradient-to-r from-[#8D153A] to-[#E5AB22] text-white rounded-2xl font-black hover:shadow-lg transition-all"
+                      className="flex-1 py-4 bg-gradient-to-r from-[#8D153A] to-[#E5AB22] text-slate-900 rounded-2xl font-black hover:shadow-lg transition-all"
                     >
                       Schedule Consultation
                     </button>
@@ -1271,11 +1271,11 @@ export default function ConsultationsPage() {
             <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
               <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
                 {/* Modal Header */}
-                <div className="bg-gradient-to-r from-[#8D153A] to-[#C9204A] p-6 text-white">
+                <div className="bg-gradient-to-r from-[#8D153A] to-[#C9204A] p-6 text-slate-900">
                   <div className="flex items-center justify-between">
                     <div>
                       <h3 className="text-2xl font-black mb-2">Consultation Details</h3>
-                      <p className="text-white/90 font-medium">{selectedConsultation.patientName}</p>
+                      <p className="text-slate-900/90 font-medium">{selectedConsultation.patientName}</p>
                     </div>
                     <button 
                       onClick={() => setSelectedConsultation(null)}
@@ -1290,51 +1290,51 @@ export default function ConsultationsPage() {
                 <div className="p-6 overflow-y-auto max-h-[60vh]">
                   <div className="grid grid-cols-2 gap-6 mb-6">
                     <div className="bg-slate-50 p-4 rounded-2xl">
-                      <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Date</p>
+                      <p className="text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Date</p>
                       <p className="font-black text-slate-950">{selectedConsultation.date}</p>
                     </div>
                     <div className="bg-slate-50 p-4 rounded-2xl">
-                      <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Time</p>
+                      <p className="text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Time</p>
                       <p className="font-black text-slate-950">{selectedConsultation.time}</p>
                     </div>
                     <div className="bg-slate-50 p-4 rounded-2xl">
-                      <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Duration</p>
+                      <p className="text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Duration</p>
                       <p className="font-black text-slate-950">{selectedConsultation.duration}</p>
                     </div>
                     <div className="bg-slate-50 p-4 rounded-2xl">
-                      <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Type</p>
+                      <p className="text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Type</p>
                       <p className="font-black text-slate-950 capitalize">{selectedConsultation.type}</p>
                     </div>
                   </div>
 
                   <div className="mb-6">
-                    <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Reason for Consultation</p>
+                    <p className="text-xs font-black text-slate-600 uppercase tracking-widest mb-3">Reason for Consultation</p>
                     <p className="font-black text-slate-950 bg-slate-50 p-4 rounded-2xl">{selectedConsultation.reason}</p>
                   </div>
 
                   {selectedConsultation.notes && (
                     <div className="mb-6">
-                      <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Notes</p>
+                      <p className="text-xs font-black text-slate-600 uppercase tracking-widest mb-3">Notes</p>
                       <p className="font-black text-slate-950 bg-slate-50 p-4 rounded-2xl">{selectedConsultation.notes}</p>
                     </div>
                   )}
 
                   <div className="grid grid-cols-2 gap-6 mb-6">
                     <div className="bg-slate-50 p-4 rounded-2xl">
-                      <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Status</p>
+                      <p className="text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Status</p>
                       <span className={`inline-block px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest ${getStatusColor(selectedConsultation.status)}`}>
                         {selectedConsultation.status.replace('-', ' ')}
                       </span>
                     </div>
                     <div className="bg-slate-50 p-4 rounded-2xl">
-                      <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Consultation Fee</p>
+                      <p className="text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Consultation Fee</p>
                       <p className="font-black text-slate-950">LKR {selectedConsultation.price.toLocaleString()}</p>
                     </div>
                   </div>
 
                   {selectedConsultation.rating && (
                     <div className="mb-6">
-                      <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Patient Rating</p>
+                      <p className="text-xs font-black text-slate-600 uppercase tracking-widest mb-3">Patient Rating</p>
                       <div className="flex items-center gap-2">
                         <div className="flex gap-1">
                           {renderStars(selectedConsultation.rating)}
@@ -1352,7 +1352,7 @@ export default function ConsultationsPage() {
                           handleStartVideoCall(selectedConsultation);
                           setSelectedConsultation(null);
                         }}
-                        className="flex-1 py-3 bg-emerald-600 text-white rounded-xl font-black hover:bg-emerald-700 transition-all flex items-center justify-center gap-2"
+                        className="flex-1 py-3 bg-emerald-600 text-slate-900 rounded-xl font-black hover:bg-emerald-700 transition-all flex items-center justify-center gap-2"
                       >
                         <Video size={16} />
                         Start Consultation
@@ -1363,7 +1363,7 @@ export default function ConsultationsPage() {
                         handleOpenChat(selectedConsultation.patientName);
                         setSelectedConsultation(null);
                       }}
-                      className="flex-1 py-3 bg-blue-600 text-white rounded-xl font-black hover:bg-blue-700 transition-all flex items-center justify-center gap-2"
+                      className="flex-1 py-3 bg-blue-600 text-slate-900 rounded-xl font-black hover:bg-blue-700 transition-all flex items-center justify-center gap-2"
                     >
                       <MessageSquare size={16} />
                       Message Patient

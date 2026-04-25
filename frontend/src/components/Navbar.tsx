@@ -25,14 +25,14 @@ export default function Navbar() {
         {/* Left: Brand Identity */}
         <Link to="/" className="flex items-center gap-3 group">
           <div className="w-11 h-11 rounded-[1.25rem] bg-slate-950 flex items-center justify-center transform group-hover:scale-110 transition-all shadow-xl shadow-indigo-500/10 relative overflow-hidden group-hover:rotate-6">
-            <HeartPulse className="text-white w-6 h-6 relative z-10 animate-pulse" />
+            <HeartPulse className="text-slate-900 w-6 h-6 relative z-10 animate-pulse" />
             <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 to-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
           </div>
           <div className="flex flex-col">
              <span className="text-2xl font-black tracking-tighter text-slate-950 leading-tight">
                Med<span className="text-indigo-600">Care</span>
              </span>
-             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Lanka Elite</span>
+             <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest leading-none">Lanka Elite</span>
           </div>
         </Link>
         
@@ -86,7 +86,7 @@ export default function Navbar() {
                  {/* Logout Button */}
                  <button 
                   onClick={handleLogout}
-                  className="w-11 h-11 rounded-2xl bg-slate-900 text-white flex items-center justify-center hover:bg-red-600 transition-all shadow-xl active:scale-95 ml-2">
+                  className="w-11 h-11 rounded-2xl bg-slate-900 text-slate-900 flex items-center justify-center hover:bg-red-600 transition-all shadow-xl active:scale-95 ml-2">
                     <LogOut size={18} />
                  </button>
               </div>

@@ -23,7 +23,7 @@ export default function MentalHealthSupport() {
   const meditations = [
     { title: 'Morning Mindfulness', duration: '10 min', category: 'Focus', color: 'bg-amber-50 text-amber-600', icon: Sun },
     { title: 'Anxiety Relief', duration: '15 min', category: 'Calm', color: 'bg-indigo-50 text-indigo-600', icon: Wind },
-    { title: 'Deep Sleep', duration: '20 min', category: 'Sleep', color: 'bg-slate-900 text-slate-300', icon: Moon }
+    { title: 'Deep Sleep', duration: '20 min', category: 'Sleep', color: 'bg-slate-900 text-slate-700', icon: Moon }
   ];
 
   return (
@@ -97,7 +97,7 @@ export default function MentalHealthSupport() {
                       </div>
                    </div>
                    <div className="px-6 pt-6">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1 block">{med.category} • {med.duration}</span>
+                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-600 mb-1 block">{med.category} • {med.duration}</span>
                       <h3 className="text-lg font-black text-slate-900 leading-tight">{med.title}</h3>
                    </div>
                 </div>
@@ -105,7 +105,7 @@ export default function MentalHealthSupport() {
            </div>
 
            {/* Emergency Support Bar */}
-           <div className="premium-glass p-8 bg-red-600 text-white border-none flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden">
+           <div className="premium-glass p-8 bg-red-600 text-slate-900 border-none flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl"></div>
               <div className="flex gap-6 items-center">
                  <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center shrink-0 border border-white/20 shadow-xl">
@@ -124,9 +124,9 @@ export default function MentalHealthSupport() {
 
         {/* Sidebar */}
         <div className="space-y-8">
-           <div className="premium-glass p-8 bg-slate-900 text-white">
+           <div className="premium-glass p-8 bg-slate-900 text-slate-900">
               <Quote className="text-slate-700 h-10 w-10 mb-4" />
-              <p className="text-xl font-bold font-serif leading-relaxed italic text-slate-200">
+              <p className="text-xl font-bold font-serif leading-relaxed italic text-slate-800">
                 "What lies behind us and what lies before us are tiny matters compared to what lies within us."
               </p>
               <p className="mt-4 text-sm font-black uppercase tracking-widest text-indigo-400">— Ralph Waldo Emerson</p>
@@ -149,7 +149,7 @@ export default function MentalHealthSupport() {
                       <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
                          <div className={`h-full ${stat.color}`} style={{ width: stat.val }}></div>
                       </div>
-                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1.5">{stat.sub}</p>
+                      <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest mt-1.5">{stat.sub}</p>
                    </div>
                  ))}
               </div>

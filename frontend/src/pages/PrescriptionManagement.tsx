@@ -107,7 +107,7 @@ export default function PrescriptionManagement() {
           {/* Controls */}
           <div className="flex gap-4">
             <div className="relative flex-1">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600" size={18} />
               <input type="text" placeholder={`Search ${activeTab === 'prescriptions' ? 'medications' : 'tests'}...`} className="w-full pl-12 pr-4 py-4 bg-white border border-slate-200 rounded-2xl font-medium focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 outline-none transition-all shadow-sm" />
             </div>
             <button className="h-14 w-14 bg-white border border-slate-200 rounded-2xl flex items-center justify-center text-slate-600 hover:bg-slate-50 shadow-sm transition-all">
@@ -121,7 +121,7 @@ export default function PrescriptionManagement() {
                    </div>
                 ) : prescriptions.length === 0 ? (
                    <div className="text-center p-12 bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200">
-                      <FileText size={48} className="mx-auto text-slate-300 mb-4" />
+                      <FileText size={48} className="mx-auto text-slate-700 mb-4" />
                       <h3 className="text-xl font-bold text-slate-900">No prescriptions found</h3>
                       <p className="text-slate-500">You don't have any prescription records yet.</p>
                    </div>
@@ -130,7 +130,7 @@ export default function PrescriptionManagement() {
                     <div className="absolute top-0 right-0 w-1.5 h-full bg-indigo-500 group-hover:w-2 transition-all"></div>
                     <div className="flex justify-between items-start mb-6">
                       <div className="flex gap-5">
-                         <div className="w-16 h-16 bg-slate-900 rounded-2xl flex items-center justify-center text-white shrink-0 shadow-lg group-hover:scale-105 transition-transform duration-500">
+                         <div className="w-16 h-16 bg-slate-900 rounded-2xl flex items-center justify-center text-slate-900 shrink-0 shadow-lg group-hover:scale-105 transition-transform duration-500">
                             <Stethoscope size={32} />
                          </div>
                          <div>
@@ -145,7 +145,7 @@ export default function PrescriptionManagement() {
                                </span>
                             </div>
                             <p className="text-slate-500 font-bold flex items-center gap-2">
-                               <FileText size={16} className="text-slate-400" /> #{px.prescriptionId} • {px.doctorName || 'Unknown Doctor'}
+                               <FileText size={16} className="text-slate-600" /> #{px.prescriptionId} • {px.doctorName || 'Unknown Doctor'}
                             </p>
                          </div>
                       </div>
@@ -161,15 +161,15 @@ export default function PrescriptionManagement() {
 
                     <div className="grid md:grid-cols-3 gap-6 bg-slate-50 rounded-2xl p-6 border border-slate-100 mb-6">
                        <div className="space-y-1">
-                          <p className="text-xs font-black uppercase tracking-widest text-slate-400">Dosage</p>
+                          <p className="text-xs font-black uppercase tracking-widest text-slate-600">Dosage</p>
                           <p className="text-lg font-bold text-slate-900">{px.medicines?.[0]?.dosage || 'N/A'}</p>
                        </div>
                        <div className="space-y-1">
-                          <p className="text-xs font-black uppercase tracking-widest text-slate-400">Frequency</p>
+                          <p className="text-xs font-black uppercase tracking-widest text-slate-600">Frequency</p>
                           <p className="text-lg font-bold text-slate-900">{px.medicines?.[0]?.frequency || 'N/A'}</p>
                        </div>
                        <div className="space-y-1">
-                          <p className="text-xs font-black uppercase tracking-widest text-slate-400">Issued Date</p>
+                          <p className="text-xs font-black uppercase tracking-widest text-slate-600">Issued Date</p>
                           <p className="text-lg font-bold text-slate-900">{new Date(px.issuedAt).toLocaleDateString()}</p>
                        </div>
                     </div>
@@ -196,17 +196,17 @@ export default function PrescriptionManagement() {
                         <div className="text-right">
                            <div className="flex items-center gap-2 justify-end mb-1">
                               <span className="text-2xl font-black text-slate-900">{lab.value}</span>
-                              <span className="text-sm font-bold text-slate-400">{lab.unit}</span>
+                              <span className="text-sm font-bold text-slate-600">{lab.unit}</span>
                            </div>
-                           <p className="text-xs font-bold text-slate-400">Range: {lab.range}</p>
+                           <p className="text-xs font-bold text-slate-600">Range: {lab.range}</p>
                         </div>
                         <div className="hidden md:flex flex-col items-end gap-2 px-8">
                            {lab.trend === 'down' && <TrendingDown className="text-emerald-500" size={24}/>}
                            {lab.trend === 'up' && <TrendingUp className="text-red-500" size={24}/>}
-                           {lab.trend === 'stable' && <Clock className="text-slate-300" size={24}/>}
-                           <span className="text-xs font-black uppercase tracking-tighter text-slate-400">Last 6 Months</span>
+                           {lab.trend === 'stable' && <Clock className="text-slate-700" size={24}/>}
+                           <span className="text-xs font-black uppercase tracking-tighter text-slate-600">Last 6 Months</span>
                         </div>
-                        <button className="h-12 w-12 bg-slate-900 text-white rounded-2xl flex items-center justify-center hover:bg-indigo-600 transition-colors shadow-lg active:scale-90">
+                        <button className="h-12 w-12 bg-slate-900 text-slate-900 rounded-2xl flex items-center justify-center hover:bg-indigo-600 transition-colors shadow-lg active:scale-90">
                            <ChevronRight size={20} />
                         </button>
                      </div>
@@ -218,7 +218,7 @@ export default function PrescriptionManagement() {
 
         {/* Sidebar */}
         <div className="space-y-6">
-           <div className="premium-glass p-8 bg-indigo-600 text-white border-transparent relative overflow-hidden">
+           <div className="premium-glass p-8 bg-indigo-600 text-slate-900 border-transparent relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-white/20 rounded-full blur-3xl -translate-y-16 translate-x-16"></div>
               <Activity className="h-12 w-12 mb-6" />
               <h2 className="text-2xl font-black mb-4">Request New Lab Report</h2>
@@ -244,7 +244,7 @@ export default function PrescriptionManagement() {
                       </div>
                       <div>
                          <p className="text-sm font-bold text-slate-900 leading-tight">{act.title}</p>
-                         <p className="text-xs font-medium text-slate-400 mt-0.5">{act.date}</p>
+                         <p className="text-xs font-medium text-slate-600 mt-0.5">{act.date}</p>
                       </div>
                    </div>
                  ))}
@@ -254,10 +254,10 @@ export default function PrescriptionManagement() {
               </button>
            </div>
 
-           <div className="premium-glass p-8 bg-slate-900 text-white flex flex-col items-center text-center">
+           <div className="premium-glass p-8 bg-slate-900 text-slate-900 flex flex-col items-center text-center">
               <Calendar size={40} className="text-emerald-400 mb-4" />
               <h3 className="text-lg font-black mb-2 tracking-tight">Verified Records</h3>
-              <p className="text-sm text-slate-400 font-medium leading-relaxed">Your medical records are cryptographically verified by Sri Lanka Ministry of Health.</p>
+              <p className="text-sm text-slate-600 font-medium leading-relaxed">Your medical records are cryptographically verified by Sri Lanka Ministry of Health.</p>
            </div>
         </div>
       </div>

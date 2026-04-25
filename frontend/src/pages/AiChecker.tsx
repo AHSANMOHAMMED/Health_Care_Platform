@@ -248,16 +248,16 @@ export default function AiChecker() {
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center shadow-lg">
-              <Brain size={24} className="text-white" />
+              <Brain size={24} className="text-slate-900" />
             </div>
             <div>
-              <p className="font-black text-white text-lg leading-none">{labels.title}</p>
+              <p className="font-black text-slate-900 text-lg leading-none">{labels.title}</p>
               <p className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">{labels.online}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <Languages size={16} className="text-indigo-400" />
-            <select value={language} onChange={e => setLanguage(e.target.value as Language)} className="bg-transparent text-white text-xs font-bold outline-none cursor-pointer">
+            <select value={language} onChange={e => setLanguage(e.target.value as Language)} className="bg-transparent text-slate-900 text-xs font-bold outline-none cursor-pointer">
               {Object.entries(LANG_DISPLAY_LABELS).map(([k, v]) => <option key={k} value={k} className="bg-slate-900">{v}</option>)}
             </select>
           </div>
@@ -270,8 +270,8 @@ export default function AiChecker() {
             <div className="w-24 h-24 rounded-3xl bg-indigo-600/20 flex items-center justify-center border border-indigo-500/30 shadow-2xl">
               <Bot size={44} className="text-indigo-400" />
             </div>
-            <h1 className="text-4xl font-black text-white tracking-tighter">{labels.title}</h1>
-            <p className="text-slate-400 max-w-lg">{labels.disclaimer}</p>
+            <h1 className="text-4xl font-black text-slate-900 tracking-tighter">{labels.title}</h1>
+            <p className="text-slate-600 max-w-lg">{labels.disclaimer}</p>
           </div>
         )}
 
@@ -279,14 +279,14 @@ export default function AiChecker() {
           {messages.map(msg => (
             <div key={msg.id} className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
               <div className={`w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0 ${msg.role === 'user' ? 'bg-indigo-900' : 'bg-indigo-600'}`}>
-                {msg.role === 'user' ? <Users size={18} className="text-white" /> : <Bot size={18} className="text-white" />}
+                {msg.role === 'user' ? <Users size={18} className="text-slate-900" /> : <Bot size={18} className="text-slate-900" />}
               </div>
               <div className={`max-w-[85%] px-5 py-4 rounded-3xl ${msg.role === 'user' ? 'bg-white/5 border border-white/10' : msg.severity ? severityConfig[msg.severity].color : 'bg-white/5'}`}>
                 {msg.imageUrl && <img src={msg.imageUrl} className="w-48 rounded-xl mb-3" alt="clinical" />}
-                {msg.loading ? <Loader2 className="animate-spin text-indigo-400" /> : <p className="text-slate-200 text-sm whitespace-pre-wrap">{msg.content}</p>}
+                {msg.loading ? <Loader2 className="animate-spin text-indigo-400" /> : <p className="text-slate-800 text-sm whitespace-pre-wrap">{msg.content}</p>}
                 {msg.specialty && <div className="mt-4 p-3 bg-white/5 rounded-xl border border-white/10 flex items-center gap-3">
                   <span className="text-2xl">{msg.specialty.icon}</span>
-                  <div><p className="text-[10px] text-slate-500 font-bold uppercase">{labels.specialty}</p><p className="text-white font-bold">{msg.specialty.specialty}</p></div>
+                  <div><p className="text-[10px] text-slate-500 font-bold uppercase">{labels.specialty}</p><p className="text-slate-900 font-bold">{msg.specialty.specialty}</p></div>
                 </div>}
               </div>
             </div>
@@ -297,8 +297,8 @@ export default function AiChecker() {
         {hasCritical && (
           <div className="p-4 bg-red-950 border border-red-500/50 rounded-2xl flex items-center gap-4">
             <AlertTriangle className="text-red-500 animate-pulse" />
-            <div className="flex-1"><p className="text-white font-bold">{labels.emergencyDetected}</p><p className="text-xs text-red-300">{labels.call1990}</p></div>
-            <a href="tel:1990" className="px-4 py-2 bg-red-600 text-white rounded-xl font-bold">Call 1990</a>
+            <div className="flex-1"><p className="text-slate-900 font-bold">{labels.emergencyDetected}</p><p className="text-xs text-red-300">{labels.call1990}</p></div>
+            <a href="tel:1990" className="px-4 py-2 bg-red-600 text-slate-900 rounded-xl font-bold">Call 1990</a>
           </div>
         )}
 
@@ -308,18 +308,18 @@ export default function AiChecker() {
               const modeConfig = { text: [TypeIcon, 'Text'], voice: [Mic, 'Voice'], image: [ImageIcon, 'Image'] } as const;
               const [I, l] = modeConfig[m] as [React.ElementType, string];
               return (
-              <button key={m} onClick={() => setInputMode(m as any)} className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${inputMode === m ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:bg-white/5'}`}>
+              <button key={m} onClick={() => setInputMode(m as any)} className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${inputMode === m ? 'bg-indigo-600 text-slate-900' : 'text-slate-500 hover:bg-white/5'}`}>
                 <I size={14} />{l}
               </button>
               );
             })}
           </div>
 
-          {inputMode === 'text' && <textarea rows={2} className="w-full bg-transparent text-white outline-none placeholder-slate-600" placeholder={labels.inputPlaceholder} value={inputText} onChange={e => setInputText(e.target.value)} />}
+          {inputMode === 'text' && <textarea rows={2} className="w-full bg-transparent text-slate-900 outline-none placeholder-slate-600" placeholder={labels.inputPlaceholder} value={inputText} onChange={e => setInputText(e.target.value)} />}
           
           {inputMode === 'voice' && (
             <div className="flex flex-col items-center py-6 gap-3">
-              <button onClick={isRecording ? stopRecording : startRecording} className={`w-16 h-16 rounded-full flex items-center justify-center text-white ${isRecording ? 'bg-red-600 animate-pulse' : 'bg-indigo-600'}`}>
+              <button onClick={isRecording ? stopRecording : startRecording} className={`w-16 h-16 rounded-full flex items-center justify-center text-slate-900 ${isRecording ? 'bg-red-600 animate-pulse' : 'bg-indigo-600'}`}>
                 {isRecording ? <MicOff /> : <Mic />}
               </button>
               <p className="text-xs text-slate-500">{isRecording ? 'Listening...' : 'Tap to speak'}</p>
@@ -336,12 +336,12 @@ export default function AiChecker() {
 
           <div className="mt-4 flex justify-between items-center border-t border-white/5 pt-4">
             <div className="flex gap-2">
-              <input type="number" className="bg-white/5 text-white text-xs p-2 rounded-lg w-12" placeholder="Age" value={age} onChange={e => setAge(e.target.value)} />
-              <select className="bg-white/5 text-white text-xs p-2 rounded-lg" value={gender} onChange={e => setGender(e.target.value)}>
+              <input type="number" className="bg-white/5 text-slate-900 text-xs p-2 rounded-lg w-12" placeholder="Age" value={age} onChange={e => setAge(e.target.value)} />
+              <select className="bg-white/5 text-slate-900 text-xs p-2 rounded-lg" value={gender} onChange={e => setGender(e.target.value)}>
                 <option>Male</option><option>Female</option>
               </select>
             </div>
-            <button onClick={sendMessage} className="px-6 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-black text-sm flex items-center gap-2 shadow-lg shadow-indigo-900/40">
+            <button onClick={sendMessage} className="px-6 py-2 bg-indigo-600 hover:bg-indigo-500 text-slate-900 rounded-xl font-black text-sm flex items-center gap-2 shadow-lg shadow-indigo-900/40">
               {loading ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
               {labels.send}
             </button>

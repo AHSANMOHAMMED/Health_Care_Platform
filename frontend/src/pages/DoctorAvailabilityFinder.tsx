@@ -58,14 +58,14 @@ export default function DoctorAvailabilityFinder() {
   });
 
   return (
-    <div className="min-h-screen bg-[#0C1220] text-slate-200">
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#0C1220]/90 backdrop-blur-md border-b border-[#1E3A5F]/30">
+    <div className="min-h-screen bg-slate-50 text-slate-800">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-slate-50/90 backdrop-blur-md border-b border-slate-300/30">
         <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-          <Link to="/patient" className="flex items-center gap-2 text-slate-400 hover:text-white">
+          <Link to="/patient" className="flex items-center gap-2 text-slate-600 hover:text-slate-900">
             <ChevronLeft size={20} />
             <span>Back</span>
           </Link>
-          <h1 className="text-lg font-semibold text-white">Find a Doctor</h1>
+          <h1 className="text-lg font-semibold text-slate-900">Find a Doctor</h1>
           <div className="w-20" />
         </div>
       </header>
@@ -73,7 +73,7 @@ export default function DoctorAvailabilityFinder() {
       <main className="pt-24 pb-8 px-4">
         <div className="max-w-5xl mx-auto">
           {/* Search & Filters */}
-          <div className="bg-[#111B2E] border border-[#1E3A5F]/50 rounded-2xl p-4 mb-6">
+          <div className="bg-white border border-slate-300/50 rounded-2xl p-4 mb-6">
             <div className="relative mb-4">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={20} />
               <input
@@ -81,7 +81,7 @@ export default function DoctorAvailabilityFinder() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search by doctor name or specialty..."
-                className="w-full bg-[#0C1220] border border-[#1E3A5F]/50 rounded-xl py-3 pl-12 pr-4 text-white placeholder-slate-500 focus:outline-none focus:border-[#0EA5E9]/50"
+                className="w-full bg-slate-50 border border-slate-300/50 rounded-xl py-3 pl-12 pr-4 text-slate-900 placeholder-slate-500 focus:outline-none focus:border-[#0EA5E9]/50"
               />
             </div>
 
@@ -89,7 +89,7 @@ export default function DoctorAvailabilityFinder() {
               <select
                 value={specialty}
                 onChange={(e) => setSpecialty(e.target.value)}
-                className="bg-[#0C1220] border border-[#1E3A5F]/50 rounded-lg px-3 py-2 text-sm text-white"
+                className="bg-slate-50 border border-slate-300/50 rounded-lg px-3 py-2 text-sm text-slate-900"
               >
                 <option value="all">All Specialties</option>
                 {specialties.slice(1).map(s => <option key={s} value={s}>{s}</option>)}
@@ -98,7 +98,7 @@ export default function DoctorAvailabilityFinder() {
               <select
                 value={availability}
                 onChange={(e) => setAvailability(e.target.value)}
-                className="bg-[#0C1220] border border-[#1E3A5F]/50 rounded-lg px-3 py-2 text-sm text-white"
+                className="bg-slate-50 border border-slate-300/50 rounded-lg px-3 py-2 text-sm text-slate-900"
               >
                 <option value="all">Any Availability</option>
                 <option value="today">Available Today</option>
@@ -115,12 +115,12 @@ export default function DoctorAvailabilityFinder() {
           ) : filteredDoctors.length === 0 ? (
             <div className="text-center py-12">
               <Stethoscope className="mx-auto text-slate-500 mb-4" size={48} />
-              <p className="text-slate-400">No doctors found matching your criteria</p>
+              <p className="text-slate-600">No doctors found matching your criteria</p>
             </div>
           ) : (
             <div className="space-y-4">
               {filteredDoctors.map(doctor => (
-                <div key={doctor.id} className="bg-[#111B2E] border border-[#1E3A5F]/50 rounded-2xl p-5">
+                <div key={doctor.id} className="bg-white border border-slate-300/50 rounded-2xl p-5">
                   <div className="flex flex-col md:flex-row md:items-start gap-4">
                     {/* Avatar */}
                     <div className="w-16 h-16 rounded-xl bg-[#0EA5E9]/20 flex items-center justify-center flex-shrink-0">
@@ -131,17 +131,17 @@ export default function DoctorAvailabilityFinder() {
                     <div className="flex-1">
                       <div className="flex flex-col md:flex-row md:items-start justify-between gap-2">
                         <div>
-                          <h3 className="font-semibold text-white text-lg">{doctor.name}</h3>
+                          <h3 className="font-semibold text-slate-900 text-lg">{doctor.name}</h3>
                           <p className="text-[#0EA5E9]">{doctor.specialty}</p>
                         </div>
                         <div className="flex items-center gap-2">
                           <Star className="text-yellow-400 fill-yellow-400" size={16} />
-                          <span className="text-white font-medium">{doctor.rating}</span>
+                          <span className="text-slate-900 font-medium">{doctor.rating}</span>
                           <span className="text-slate-500">({doctor.reviews} reviews)</span>
                         </div>
                       </div>
 
-                      <div className="flex flex-wrap items-center gap-4 mt-3 text-sm text-slate-400">
+                      <div className="flex flex-wrap items-center gap-4 mt-3 text-sm text-slate-600">
                         <span className="flex items-center gap-1">
                           <MapPin size={14} />
                           {doctor.location}
@@ -158,7 +158,7 @@ export default function DoctorAvailabilityFinder() {
 
                       <div className="flex flex-wrap gap-2 mt-3">
                         {doctor.languages.map(lang => (
-                          <span key={lang} className="px-2 py-1 bg-[#0C1220] rounded text-xs text-slate-400">
+                          <span key={lang} className="px-2 py-1 bg-slate-50 rounded text-xs text-slate-600">
                             {lang}
                           </span>
                         ))}
@@ -173,7 +173,7 @@ export default function DoctorAvailabilityFinder() {
                     {/* Action */}
                     <Link
                       to={`/booking?doctor=${doctor.id}`}
-                      className="flex-shrink-0 bg-[#0EA5E9] hover:bg-[#0284C7] text-white font-medium px-6 py-3 rounded-xl text-center transition-all"
+                      className="flex-shrink-0 bg-[#0EA5E9] hover:bg-[#0284C7] text-slate-900 font-medium px-6 py-3 rounded-xl text-center transition-all"
                     >
                       Book Appointment
                     </Link>

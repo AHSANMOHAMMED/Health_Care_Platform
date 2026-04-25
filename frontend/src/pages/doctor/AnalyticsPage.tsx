@@ -64,7 +64,7 @@ export default function AnalyticsPage() {
           </div>
           <nav className="space-y-2">
             {navItems.map(item => (
-              <Link key={item.name} to={item.path} className={`flex items-center gap-4 px-6 py-4 rounded-2xl font-bold transition-all ${location.pathname === item.path ? 'bg-[#8D153A] text-white shadow-lg' : 'text-slate-500 hover:bg-[#8D153A]/5 hover:text-[#8D153A]'}`}>
+              <Link key={item.name} to={item.path} className={`flex items-center gap-4 px-6 py-4 rounded-2xl font-bold transition-all ${location.pathname === item.path ? 'bg-[#8D153A] text-slate-900 shadow-lg' : 'text-slate-500 hover:bg-[#8D153A]/5 hover:text-[#8D153A]'}`}>
                 <item.icon size={22} /><span>{item.name}</span>
               </Link>
             ))}
@@ -88,7 +88,7 @@ export default function AnalyticsPage() {
           </div>
 
           {loading ? (
-            <div className="flex items-center justify-center py-24 text-slate-400"><Loader2 size={32} className="animate-spin mr-3" />Loading analytics...</div>
+            <div className="flex items-center justify-center py-24 text-slate-600"><Loader2 size={32} className="animate-spin mr-3" />Loading analytics...</div>
           ) : stats ? (
             <>
               {/* Primary KPI Cards */}
@@ -101,7 +101,7 @@ export default function AnalyticsPage() {
                 ].map((kpi, i) => (
                   <div key={i} className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm">
                     <div className={`w-12 h-12 rounded-2xl ${kpi.bg} flex items-center justify-center ${kpi.color} mb-5`}><kpi.icon size={24} /></div>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">{kpi.label}</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-600 mb-2">{kpi.label}</p>
                     <p className="text-2xl font-black text-slate-950 mb-2 leading-none">{kpi.value}</p>
                     <p className="text-xs font-bold text-slate-500">{kpi.trend}</p>
                   </div>
@@ -124,7 +124,7 @@ export default function AnalyticsPage() {
                         <div key={label}>
                           <div className="flex justify-between items-center mb-2">
                             <span className={`text-sm font-black ${textColor}`}>{label}</span>
-                            <span className="text-sm font-black text-slate-950">{count.toLocaleString()} <span className="text-slate-400">({pct}%)</span></span>
+                            <span className="text-sm font-black text-slate-950">{count.toLocaleString()} <span className="text-slate-600">({pct}%)</span></span>
                           </div>
                           <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
                             <div className={`h-full ${color} rounded-full transition-all duration-1000`} style={{ width: `${pct}%` }} />
@@ -147,7 +147,7 @@ export default function AnalyticsPage() {
                 <div className="bg-white p-8 rounded-2xl border border-slate-100">
                   <h3 className="text-xl font-black text-slate-950 tracking-tighter mb-6">Consultation Types</h3>
                   {Object.keys(typeBreakdown).length === 0 ? (
-                    <p className="text-slate-400 font-bold text-center py-8">No data available</p>
+                    <p className="text-slate-600 font-bold text-center py-8">No data available</p>
                   ) : (
                     <div className="space-y-4">
                       {Object.entries(typeBreakdown).map(([type, count]) => {
@@ -158,7 +158,7 @@ export default function AnalyticsPage() {
                           <div key={type}>
                             <div className="flex justify-between items-center mb-2">
                               <span className="text-sm font-black text-slate-700">{type}</span>
-                              <span className="text-sm font-black text-slate-950">{count} <span className="text-slate-400">({pct}%)</span></span>
+                              <span className="text-sm font-black text-slate-950">{count} <span className="text-slate-600">({pct}%)</span></span>
                             </div>
                             <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
                               <div className={`h-full ${colors[idx]} rounded-full`} style={{ width: `${pct}%` }} />
@@ -172,7 +172,7 @@ export default function AnalyticsPage() {
               </div>
 
               {/* Revenue Insights */}
-              <div className="bg-slate-900 text-white p-8 rounded-3xl relative overflow-hidden">
+              <div className="bg-slate-900 text-slate-900 p-8 rounded-3xl relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-80 h-80 bg-[#8D153A]/20 rounded-full blur-[100px] -mr-40 -mt-40" />
                 <div className="relative z-10">
                   <div className="flex justify-between items-start mb-8">
@@ -190,7 +190,7 @@ export default function AnalyticsPage() {
                       { label: 'Completion Rate', value: `${stats.totalAppointments > 0 ? Math.round((stats.completedAppointments / stats.totalAppointments) * 100) : 0}%` },
                     ].map(({ label, value }) => (
                       <div key={label}>
-                        <p className="text-slate-400 font-bold text-xs mb-1">{label}</p>
+                        <p className="text-slate-600 font-bold text-xs mb-1">{label}</p>
                         <p className="text-xl font-black">{value}</p>
                       </div>
                     ))}
@@ -199,7 +199,7 @@ export default function AnalyticsPage() {
               </div>
             </>
           ) : (
-            <div className="text-center py-24 text-slate-400"><TrendingUp size={48} className="mx-auto mb-4 opacity-30" /><p className="font-bold">Could not load analytics</p></div>
+            <div className="text-center py-24 text-slate-600"><TrendingUp size={48} className="mx-auto mb-4 opacity-30" /><p className="font-bold">Could not load analytics</p></div>
           )}
         </div>
       </main>

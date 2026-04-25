@@ -108,11 +108,11 @@ export default function BookingFlow() {
                <React.Fragment key={s.step}>
                   <div className="flex flex-col items-center relative z-10 w-24">
                      <div className={`w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold shadow-sm transition-colors duration-300 ${
-                        step >= s.step ? 'bg-indigo-600 text-white border-4 border-indigo-100' : 'bg-slate-100 text-slate-400 border-4 border-white'
+                        step >= s.step ? 'bg-indigo-600 text-slate-900 border-4 border-indigo-100' : 'bg-slate-100 text-slate-600 border-4 border-white'
                      }`}>
                         {step > s.step ? <CheckCircle size={20} /> : s.step}
                      </div>
-                     <span className={`text-xs font-bold mt-2 text-center uppercase tracking-wider ${step >= s.step ? 'text-indigo-900' : 'text-slate-400'}`}>{s.label}</span>
+                     <span className={`text-xs font-bold mt-2 text-center uppercase tracking-wider ${step >= s.step ? 'text-indigo-900' : 'text-slate-600'}`}>{s.label}</span>
                   </div>
                   {i < 2 && (
                      <div className={`flex-1 h-1.5 rounded-full mx-2 transition-colors duration-500 ${
@@ -132,16 +132,16 @@ export default function BookingFlow() {
 
       {/* Step 1: Doctor List */}
       <div className={`${step === 1 ? 'block' : 'hidden'} animate-slide-up delay-100`}>
-         <div className="premium-glass p-6 md:p-8 mb-6 flex flex-col md:flex-row gap-4 justify-between items-center bg-indigo-600 text-white rounded-3xl">
+         <div className="premium-glass p-6 md:p-8 mb-6 flex flex-col md:flex-row gap-4 justify-between items-center bg-indigo-600 text-slate-900 rounded-3xl">
             <div className="max-w-sm">
-               <h2 className="text-2xl font-black mb-2 text-white">Find Your Specialist</h2>
+               <h2 className="text-2xl font-black mb-2 text-slate-900">Find Your Specialist</h2>
                <p className="text-indigo-200 text-sm font-medium">Browse our extensive list of verified healthcare professionals.</p>
             </div>
             <div className="relative w-full md:w-96">
-               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20}/>
+               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600" size={20}/>
                <input 
                  type="text" placeholder="Search doctors, specialties..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
-                 className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white text-slate-900 focus:ring-4 focus:ring-white/20 outline-none placeholder:text-slate-400 font-medium shadow-inner" 
+                 className="w-full pl-12 pr-4 py-4 rounded-2xl bg-slate-900 text-white focus:ring-4 focus:ring-white/20 outline-none placeholder:text-slate-600 font-medium shadow-inner" 
                />
             </div>
          </div>
@@ -176,10 +176,10 @@ export default function BookingFlow() {
                      </div>
                      <div className="mt-5 pt-5 border-t border-slate-100 flex items-center justify-between">
                         <div>
-                           <span className="text-slate-400 text-xs font-bold uppercase tracking-wider block mb-0.5">Consultation Fee</span>
+                           <span className="text-slate-600 text-xs font-bold uppercase tracking-wider block mb-0.5">Consultation Fee</span>
                            <span className="text-2xl font-black text-slate-900">LKR {doctor.consultationFee.toLocaleString()}</span>
                         </div>
-                        <button className="h-10 w-10 bg-slate-50 rounded-full flex items-center justify-center text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                        <button className="h-10 w-10 bg-slate-50 rounded-full flex items-center justify-center text-indigo-600 group-hover:bg-indigo-600 group-hover:text-slate-900 transition-colors">
                            <ChevronRight size={20} />
                         </button>
                      </div>
@@ -192,7 +192,7 @@ export default function BookingFlow() {
       {/* Step 2: Time Slots */}
       {step === 2 && selectedDoctor && (
         <div className="animate-in slide-in-from-right-16 duration-500">
-           <button onClick={() => setStep(1)} className="mb-6 text-slate-400 hover:text-slate-900 font-bold flex items-center gap-2 transition-colors"><ChevronRight size={16} className="rotate-180"/> Back to Doctors</button>
+           <button onClick={() => setStep(1)} className="mb-6 text-slate-600 hover:text-slate-900 font-bold flex items-center gap-2 transition-colors"><ChevronRight size={16} className="rotate-180"/> Back to Doctors</button>
            
            <div className="grid md:grid-cols-3 gap-8">
               <div className="md:col-span-1">
@@ -222,7 +222,7 @@ export default function BookingFlow() {
                                 key={dayOffset} onClick={() => setSelectedDate(date.toISOString().split('T')[0])}
                                 className={`shrink-0 w-20 py-3 rounded-2xl border-2 transition-all flex flex-col items-center ${isSelected ? 'border-indigo-600 bg-indigo-50/50 shadow-sm' : 'border-slate-100 hover:border-indigo-200'}`}
                              >
-                                <span className={`text-xs font-bold uppercase ${isSelected ? 'text-indigo-600' : 'text-slate-400'}`}>{date.toLocaleDateString('en-US', { weekday: 'short' })}</span>
+                                <span className={`text-xs font-bold uppercase ${isSelected ? 'text-indigo-600' : 'text-slate-600'}`}>{date.toLocaleDateString('en-US', { weekday: 'short' })}</span>
                                 <span className={`text-xl font-black ${isSelected ? 'text-indigo-900' : 'text-slate-700'}`}>{date.getDate()}</span>
                              </button>
                           );
@@ -237,7 +237,7 @@ export default function BookingFlow() {
                           <button 
                              key={slot.time} disabled={!slot.available} onClick={() => handleTimeSelect(slot.time)}
                              className={`py-3 rounded-xl font-bold text-sm border-2 transition-all ${
-                                !slot.available ? 'bg-slate-50 border-slate-100 text-slate-300 cursor-not-allowed' :
+                                !slot.available ? 'bg-slate-50 border-slate-100 text-slate-700 cursor-not-allowed' :
                                 'bg-white border-slate-200 text-slate-700 hover:border-indigo-600 hover:text-indigo-600 hover:shadow-md'
                              }`}
                           >
@@ -254,13 +254,13 @@ export default function BookingFlow() {
       {/* Step 3: Checkout */}
       {step === 3 && selectedDoctor && selectedTime && (
          <div className="animate-in slide-in-from-right-16 duration-500 max-w-3xl mx-auto">
-            <button onClick={() => setStep(2)} className="mb-6 text-slate-400 hover:text-slate-900 font-bold flex items-center gap-2 transition-colors"><ChevronRight size={16} className="rotate-180"/> Back to Schedule</button>
+            <button onClick={() => setStep(2)} className="mb-6 text-slate-600 hover:text-slate-900 font-bold flex items-center gap-2 transition-colors"><ChevronRight size={16} className="rotate-180"/> Back to Schedule</button>
             
             <div className="premium-glass overflow-hidden shadow-2xl border-0">
-               <div className="bg-slate-900 text-white p-8 md:p-10 text-center relative overflow-hidden">
+               <div className="bg-slate-900 text-slate-900 p-8 md:p-10 text-center relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-48 h-48 bg-indigo-500/30 rounded-full blur-3xl"></div>
                   <h2 className="text-3xl font-black mb-2 relative z-10">Confirm Appointment</h2>
-                  <p className="text-slate-400 text-sm font-medium relative z-10">Review your details and complete secure checkout</p>
+                  <p className="text-slate-600 text-sm font-medium relative z-10">Review your details and complete secure checkout</p>
                </div>
                
                <div className="p-8 md:p-10 bg-white">
@@ -303,7 +303,7 @@ export default function BookingFlow() {
                         <span className="flex items-center justify-center gap-3 relative z-10"><CreditCard /> Confirm & Pay Securely</span>
                      )}
                   </button>
-                  <p className="text-center text-xs font-bold text-slate-400 mt-4 flex items-center justify-center gap-1"><CheckCircle size={12}/> Secure 256-bit SSL Encryption</p>
+                  <p className="text-center text-xs font-bold text-slate-600 mt-4 flex items-center justify-center gap-1"><CheckCircle size={12}/> Secure 256-bit SSL Encryption</p>
                </div>
             </div>
          </div>

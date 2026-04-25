@@ -56,7 +56,7 @@ export default function HealthAnalytics() {
            <button className="h-14 px-6 bg-white border border-slate-200 rounded-2xl flex items-center gap-2 text-slate-600 font-bold hover:bg-slate-50 shadow-sm transition-all">
               <Download size={20} /> Export
            </button>
-           <button className="h-14 px-6 btn-gradient text-white rounded-2xl flex items-center gap-2 font-bold shadow-lg shadow-indigo-500/20 active:scale-95 transition-all">
+           <button className="h-14 px-6 btn-gradient text-slate-900 rounded-2xl flex items-center gap-2 font-bold shadow-lg shadow-indigo-500/20 active:scale-95 transition-all">
               <Share2 size={20} /> Share Report
            </button>
         </div>
@@ -89,7 +89,7 @@ export default function HealthAnalytics() {
                  <p className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-1">{metric.name}</p>
                  <div className="flex items-baseline gap-2">
                     <span className="text-3xl font-black text-slate-900 tracking-tight">{metric.value}</span>
-                    <span className="text-sm font-black text-slate-400 uppercase">{metric.unit}</span>
+                    <span className="text-sm font-black text-slate-600 uppercase">{metric.unit}</span>
                  </div>
               </div>
               
@@ -116,7 +116,7 @@ export default function HealthAnalytics() {
                         <button 
                           key={range}
                           onClick={() => setTimeRange(range)}
-                          className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${timeRange === range ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>
+                          className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${timeRange === range ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-600 hover:text-slate-600'}`}>
                            {range.toUpperCase()}
                         </button>
                      ))}
@@ -144,7 +144,7 @@ export default function HealthAnalytics() {
                   </svg>
                   
                   {/* Floating Value Indicator */}
-                  <div className="absolute top-10 left-[40%] bg-slate-900 text-white px-4 py-2 rounded-xl shadow-2xl animate-bounce delay-1000 flex items-center gap-2 border border-slate-700">
+                  <div className="absolute top-10 left-[40%] bg-slate-900 text-slate-900 px-4 py-2 rounded-xl shadow-2xl animate-bounce delay-1000 flex items-center gap-2 border border-slate-700">
                      <div className="w-2 h-2 bg-indigo-400 rounded-full animate-ping"></div>
                      <span className="font-black text-lg">74 BPM</span>
                   </div>
@@ -152,16 +152,16 @@ export default function HealthAnalytics() {
 
                <div className="mt-16 pt-8 border-t border-slate-100 grid md:grid-cols-3 gap-6">
                   <div className="p-4 bg-slate-50 rounded-2xl">
-                     <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Highest</p>
-                     <p className="text-2xl font-black text-slate-900">88 <span className="text-sm font-medium text-slate-400 uppercase">BPM</span></p>
+                     <p className="text-xs font-black uppercase tracking-widest text-slate-600 mb-1">Highest</p>
+                     <p className="text-2xl font-black text-slate-900">88 <span className="text-sm font-medium text-slate-600 uppercase">BPM</span></p>
                   </div>
                   <div className="p-4 bg-slate-50 rounded-2xl border-l-4 border-indigo-500">
-                     <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Average</p>
-                     <p className="text-2xl font-black text-slate-900">72 <span className="text-sm font-medium text-slate-400 uppercase">BPM</span></p>
+                     <p className="text-xs font-black uppercase tracking-widest text-slate-600 mb-1">Average</p>
+                     <p className="text-2xl font-black text-slate-900">72 <span className="text-sm font-medium text-slate-600 uppercase">BPM</span></p>
                   </div>
                   <div className="p-4 bg-slate-50 rounded-2xl">
-                     <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Lowest</p>
-                     <p className="text-2xl font-black text-slate-900">58 <span className="text-sm font-medium text-slate-400 uppercase">BPM</span></p>
+                     <p className="text-xs font-black uppercase tracking-widest text-slate-600 mb-1">Lowest</p>
+                     <p className="text-2xl font-black text-slate-900">58 <span className="text-sm font-medium text-slate-600 uppercase">BPM</span></p>
                   </div>
                </div>
             </div>
@@ -176,7 +176,7 @@ export default function HealthAnalytics() {
                  <div key={i} className="premium-glass p-6 flex flex-col items-center text-center">
                     <div className="relative mb-6">
                        <svg className="w-24 h-24 -rotate-90">
-                          <circle className="text-slate-100" strokeWidth="8" stroke="currentColor" fill="transparent" r="40" cx="48" cy="48"/>
+                          <circle className="text-slate-900" strokeWidth="8" stroke="currentColor" fill="transparent" r="40" cx="48" cy="48"/>
                           <circle className={ring.color} strokeWidth="8" strokeDasharray="251.2" strokeDashoffset={251.2 - (251.2 * ring.pct) / 100} strokeLinecap="round" stroke="currentColor" fill="transparent" r="40" cx="48" cy="48"/>
                        </svg>
                        <div className="absolute inset-0 flex items-center justify-center">
@@ -185,7 +185,7 @@ export default function HealthAnalytics() {
                     </div>
                     <h4 className="text-lg font-black text-slate-900">{ring.name}</h4>
                     <p className="text-2xl font-black text-slate-900 my-1">{ring.value}</p>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{ring.sub}</p>
+                    <p className="text-xs font-bold text-slate-600 uppercase tracking-widest">{ring.sub}</p>
                  </div>
                ))}
             </div>
@@ -193,7 +193,7 @@ export default function HealthAnalytics() {
 
          {/* Insights Sidebar */}
          <div className="space-y-8">
-            <div className="premium-glass p-8 bg-slate-900 text-white relative overflow-hidden">
+            <div className="premium-glass p-8 bg-slate-900 text-slate-900 relative overflow-hidden">
                <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/30 rounded-full blur-3xl"></div>
                <div className="relative z-10">
                   <div className="flex items-center gap-3 mb-6">
@@ -207,16 +207,16 @@ export default function HealthAnalytics() {
                         <p className="text-sm font-bold text-emerald-400 mb-2 flex items-center gap-2">
                            <CheckCircle2 size={16} /> Positive Trend
                         </p>
-                        <p className="text-sm text-slate-300 font-medium leading-relaxed">Your resting heart rate has decreased by 4 BPM over the last 30 days, indicating improved cardiovascular health.</p>
+                        <p className="text-sm text-slate-700 font-medium leading-relaxed">Your resting heart rate has decreased by 4 BPM over the last 30 days, indicating improved cardiovascular health.</p>
                      </div>
                      <div className="p-4 bg-white/5 rounded-2xl border border-white/10">
                         <p className="text-sm font-bold text-amber-400 mb-2 flex items-center gap-2">
                            <Clock size={16} /> Schedule Alert
                         </p>
-                        <p className="text-sm text-slate-300 font-medium leading-relaxed">Your sleep pattern is irregular during weekends. Consistency will improve your daytime energy levels.</p>
+                        <p className="text-sm text-slate-700 font-medium leading-relaxed">Your sleep pattern is irregular during weekends. Consistency will improve your daytime energy levels.</p>
                      </div>
                   </div>
-                  <button className="w-full mt-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-2xl transition-all shadow-xl text-lg">
+                  <button className="w-full mt-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-slate-900 font-black rounded-2xl transition-all shadow-xl text-lg">
                      View AI Log
                   </button>
                </div>

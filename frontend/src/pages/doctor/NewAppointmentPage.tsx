@@ -120,7 +120,7 @@ export default function NewAppointmentPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-8">
         <div>
-          <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-slate-400">
+          <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-slate-600">
             <Stethoscope size={14} className="text-[#8D153A]" />
             Doctor
             <span className="mx-1">/</span>
@@ -145,7 +145,7 @@ export default function NewAppointmentPage() {
           </button>
           <Link
             to="/doctor/appointments"
-            className="px-4 py-3 rounded-2xl bg-slate-900 text-white font-black hover:bg-slate-800 transition-all"
+            className="px-4 py-3 rounded-2xl bg-slate-900 text-slate-900 font-black hover:bg-slate-800 transition-all"
           >
             Back
           </Link>
@@ -162,7 +162,7 @@ export default function NewAppointmentPage() {
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-black text-slate-950">Patient & appointment details</h2>
             {toast && (
-              <div className="flex items-center gap-2 text-xs font-black px-3 py-2 rounded-full bg-slate-900 text-white">
+              <div className="flex items-center gap-2 text-xs font-black px-3 py-2 rounded-full bg-slate-900 text-slate-900">
                 <span>{toast}</span>
                 <button
                   type="button"
@@ -178,7 +178,7 @@ export default function NewAppointmentPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div className="md:col-span-2">
-              <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">
+              <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">
                 Patient name <span className="text-red-500">*</span>
               </label>
               <div
@@ -187,11 +187,11 @@ export default function NewAppointmentPage() {
                   errors.patientName ? 'border-red-300 ring-2 ring-red-100' : 'border-slate-200 focus-within:border-[#8D153A]'
                 )}
               >
-                <User size={18} className="text-slate-400" />
+                <User size={18} className="text-slate-600" />
                 <input
                   value={form.patientName}
                   onChange={(e) => setForm({ ...form, patientName: e.target.value })}
-                  className="w-full bg-transparent outline-none font-bold text-slate-950 placeholder:text-slate-400"
+                  className="w-full bg-transparent outline-none font-bold text-slate-950 placeholder:text-slate-600"
                   placeholder="e.g., Kasun Perera"
                 />
               </div>
@@ -199,7 +199,7 @@ export default function NewAppointmentPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Age</label>
+              <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Age</label>
               <input
                 type="number"
                 value={form.age}
@@ -214,7 +214,7 @@ export default function NewAppointmentPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Gender</label>
+              <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Gender</label>
               <select
                 value={form.gender}
                 onChange={(e) => setForm({ ...form, gender: e.target.value })}
@@ -227,7 +227,7 @@ export default function NewAppointmentPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">
+              <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">
                 Date <span className="text-red-500">*</span>
               </label>
               <div
@@ -236,7 +236,7 @@ export default function NewAppointmentPage() {
                   errors.date ? 'border-red-300 ring-2 ring-red-100' : 'border-slate-200 focus-within:border-[#8D153A]'
                 )}
               >
-                <Calendar size={18} className="text-slate-400" />
+                <Calendar size={18} className="text-slate-600" />
                 <input
                   type="date"
                   value={form.date}
@@ -248,7 +248,7 @@ export default function NewAppointmentPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">
+              <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">
                 Time <span className="text-red-500">*</span>
               </label>
               <div
@@ -257,7 +257,7 @@ export default function NewAppointmentPage() {
                   errors.time ? 'border-red-300 ring-2 ring-red-100' : 'border-slate-200 focus-within:border-[#8D153A]'
                 )}
               >
-                <Clock size={18} className="text-slate-400" />
+                <Clock size={18} className="text-slate-600" />
                 <input
                   type="time"
                   value={form.time}
@@ -269,7 +269,7 @@ export default function NewAppointmentPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Type</label>
+              <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Type</label>
               <div className="grid grid-cols-3 gap-2">
                 {(
                   [
@@ -287,7 +287,7 @@ export default function NewAppointmentPage() {
                       className={cn(
                         'px-3 py-3 rounded-2xl border font-black text-sm transition-all flex items-center justify-center gap-2',
                         active
-                          ? 'bg-[#8D153A] text-white border-[#8D153A] shadow-lg shadow-[#8D153A]/15'
+                          ? 'bg-[#8D153A] text-slate-900 border-[#8D153A] shadow-lg shadow-[#8D153A]/15'
                           : 'bg-white border-slate-200 text-slate-700 hover:border-[#8D153A]/40'
                       )}
                     >
@@ -300,7 +300,7 @@ export default function NewAppointmentPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Duration</label>
+              <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Duration</label>
               <select
                 value={form.duration}
                 onChange={(e) => setForm({ ...form, duration: e.target.value })}
@@ -314,7 +314,7 @@ export default function NewAppointmentPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Priority</label>
+              <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Priority</label>
               <div className="grid grid-cols-3 gap-2">
                 {(
                   [
@@ -342,18 +342,18 @@ export default function NewAppointmentPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Contact</label>
+              <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Contact</label>
               <div
                 className={cn(
                   'flex items-center gap-3 px-4 py-3 rounded-2xl border bg-slate-50 transition-all',
                   errors.contact ? 'border-red-300 ring-2 ring-red-100' : 'border-slate-200 focus-within:border-[#8D153A]'
                 )}
               >
-                <Phone size={18} className="text-slate-400" />
+                <Phone size={18} className="text-slate-600" />
                 <input
                   value={form.contact}
                   onChange={(e) => setForm({ ...form, contact: e.target.value })}
-                  className="w-full bg-transparent outline-none font-bold text-slate-950 placeholder:text-slate-400"
+                  className="w-full bg-transparent outline-none font-bold text-slate-950 placeholder:text-slate-600"
                   placeholder="+94 77 123 4567"
                 />
               </div>
@@ -361,7 +361,7 @@ export default function NewAppointmentPage() {
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">
+              <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">
                 Reason <span className="text-red-500">*</span>
               </label>
               <input
@@ -377,7 +377,7 @@ export default function NewAppointmentPage() {
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Notes</label>
+              <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Notes</label>
               <textarea
                 value={form.notes}
                 onChange={(e) => setForm({ ...form, notes: e.target.value })}
@@ -390,7 +390,7 @@ export default function NewAppointmentPage() {
             <div className="md:col-span-2">
               <div className="flex items-center justify-between p-4 rounded-2xl border border-slate-200 bg-white">
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-2xl bg-slate-900 text-white flex items-center justify-center">
+                  <div className="w-11 h-11 rounded-2xl bg-slate-900 text-slate-900 flex items-center justify-center">
                     <FileUp size={18} />
                   </div>
                   <div>
@@ -427,7 +427,7 @@ export default function NewAppointmentPage() {
                         reportFiles: e.target.files ? Array.from(e.target.files) : [],
                       }))
                     }
-                    className="block w-full text-sm font-bold text-slate-700 file:mr-4 file:py-3 file:px-4 file:rounded-2xl file:border-0 file:bg-slate-900 file:text-white file:font-black hover:file:bg-slate-800"
+                    className="block w-full text-sm font-bold text-slate-700 file:mr-4 file:py-3 file:px-4 file:rounded-2xl file:border-0 file:bg-slate-900 file:text-slate-900 file:font-black hover:file:bg-slate-800"
                   />
                   {form.reportFiles.length > 0 && (
                     <div className="mt-3 flex flex-wrap gap-2">
@@ -458,8 +458,8 @@ export default function NewAppointmentPage() {
               className={cn(
                 'flex-1 py-4 rounded-2xl font-black transition-all',
                 canSubmit
-                  ? 'bg-gradient-to-r from-[#8D153A] to-[#E5AB22] text-white hover:shadow-lg'
-                  : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                  ? 'bg-gradient-to-r from-[#8D153A] to-[#E5AB22] text-slate-900 hover:shadow-lg'
+                  : 'bg-slate-100 text-slate-600 cursor-not-allowed'
               )}
             >
               {submitting ? 'Creating…' : 'Create appointment'}
@@ -491,51 +491,51 @@ export default function NewAppointmentPage() {
         </form>
 
         {/* Summary */}
-        <aside className="bg-slate-900 text-white rounded-3xl p-6 md:p-8 overflow-hidden relative">
+        <aside className="bg-slate-900 text-slate-900 rounded-3xl p-6 md:p-8 overflow-hidden relative">
           <div className="absolute -top-20 -right-20 w-56 h-56 bg-[#8D153A]/30 blur-3xl rounded-full" />
           <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-[#E5AB22]/25 blur-3xl rounded-full" />
 
           <h3 className="text-lg font-black">Preview</h3>
-          <p className="text-sm text-white/70 font-bold mt-2">
+          <p className="text-sm text-slate-900/70 font-bold mt-2">
             A clean summary you can verify before creating.
           </p>
 
           <div className="mt-6 space-y-3">
             <div className="p-4 rounded-2xl bg-white/10 border border-white/10">
-              <p className="text-xs font-black uppercase tracking-widest text-white/60">Patient</p>
+              <p className="text-xs font-black uppercase tracking-widest text-slate-900/60">Patient</p>
               <p className="mt-1 font-black text-xl">
                 {form.patientName.trim() ? form.patientName : '—'}
               </p>
-              <p className="mt-1 text-sm font-bold text-white/70">
+              <p className="mt-1 text-sm font-bold text-slate-900/70">
                 {form.age ? `${form.age} yrs` : 'Age —'} • {form.gender}
               </p>
             </div>
 
             <div className="p-4 rounded-2xl bg-white/10 border border-white/10">
-              <p className="text-xs font-black uppercase tracking-widest text-white/60">When</p>
+              <p className="text-xs font-black uppercase tracking-widest text-slate-900/60">When</p>
               <p className="mt-1 font-black text-lg">{summary.date}</p>
-              <p className="mt-1 text-sm font-bold text-white/70">{summary.time}</p>
+              <p className="mt-1 text-sm font-bold text-slate-900/70">{summary.time}</p>
             </div>
 
             <div className="p-4 rounded-2xl bg-white/10 border border-white/10">
-              <p className="text-xs font-black uppercase tracking-widest text-white/60">Visit</p>
+              <p className="text-xs font-black uppercase tracking-widest text-slate-900/60">Visit</p>
               <p className="mt-1 font-black text-lg">{summary.type}</p>
-              <p className="mt-1 text-sm font-bold text-white/70">
+              <p className="mt-1 text-sm font-bold text-slate-900/70">
                 {summary.duration} • Priority:{' '}
                 <span className="capitalize">{summary.priority}</span>
               </p>
             </div>
 
             <div className="p-4 rounded-2xl bg-white/10 border border-white/10">
-              <p className="text-xs font-black uppercase tracking-widest text-white/60">Reason</p>
-              <p className="mt-1 text-sm font-bold text-white/80 whitespace-pre-wrap">
+              <p className="text-xs font-black uppercase tracking-widest text-slate-900/60">Reason</p>
+              <p className="mt-1 text-sm font-bold text-slate-900/80 whitespace-pre-wrap">
                 {form.reason.trim() ? form.reason : '—'}
               </p>
             </div>
           </div>
 
           <div className="mt-6">
-            <p className="text-xs font-black uppercase tracking-widest text-white/60 mb-3">
+            <p className="text-xs font-black uppercase tracking-widest text-slate-900/60 mb-3">
               Next actions
             </p>
             <div className="grid grid-cols-1 gap-2">

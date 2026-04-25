@@ -42,14 +42,14 @@ export default function SymptomChecker() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0C1220] text-slate-200">
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#0C1220]/90 backdrop-blur-md border-b border-[#1E3A5F]/30">
+    <div className="min-h-screen bg-slate-50 text-slate-800">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-slate-50/90 backdrop-blur-md border-b border-slate-300/30">
         <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-slate-400 hover:text-white">
+          <Link to="/" className="flex items-center gap-2 text-slate-600 hover:text-slate-900">
             <ChevronLeft size={20} />
             <span>Back</span>
           </Link>
-          <h1 className="text-lg font-semibold text-white">Symptom Checker</h1>
+          <h1 className="text-lg font-semibold text-slate-900">Symptom Checker</h1>
           <Link to="/ai-checker" className="text-sm text-[#0EA5E9] hover:text-[#0284C7]">
             Try AI Version
           </Link>
@@ -62,7 +62,7 @@ export default function SymptomChecker() {
             <>
               {/* Categories */}
               <div className="mb-6">
-                <h2 className="text-xl font-semibold text-white mb-4">Select Body System</h2>
+                <h2 className="text-xl font-semibold text-slate-900 mb-4">Select Body System</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {symptomCategories.map(cat => (
                     <button
@@ -71,11 +71,11 @@ export default function SymptomChecker() {
                       className={`p-4 rounded-xl border text-left transition-all ${
                         selectedCategory === cat.id
                           ? 'border-[#0EA5E9] bg-[#0EA5E9]/10'
-                          : 'border-[#1E3A5F]/50 hover:border-[#1E3A5F]'
+                          : 'border-slate-300/50 hover:border-slate-300'
                       }`}
                     >
-                      <cat.icon className={`mb-2 ${selectedCategory === cat.id ? 'text-[#0EA5E9]' : 'text-slate-400'}`} size={24} />
-                      <p className="font-medium text-white">{cat.name}</p>
+                      <cat.icon className={`mb-2 ${selectedCategory === cat.id ? 'text-[#0EA5E9]' : 'text-slate-600'}`} size={24} />
+                      <p className="font-medium text-slate-900">{cat.name}</p>
                     </button>
                   ))}
                 </div>
@@ -83,8 +83,8 @@ export default function SymptomChecker() {
 
               {/* Symptoms */}
               {selectedCategory && (
-                <div className="bg-[#111B2E] border border-[#1E3A5F]/50 rounded-2xl p-6">
-                  <h3 className="font-semibold text-white mb-4">
+                <div className="bg-white border border-slate-300/50 rounded-2xl p-6">
+                  <h3 className="font-semibold text-slate-900 mb-4">
                     Select Your Symptoms
                   </h3>
                   <div className="flex flex-wrap gap-2 mb-6">
@@ -96,8 +96,8 @@ export default function SymptomChecker() {
                           onClick={() => toggleSymptom(symptom)}
                           className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                             selectedSymptoms.includes(symptom)
-                              ? 'bg-[#0EA5E9] text-white'
-                              : 'bg-[#0C1220] text-slate-400 hover:text-white border border-[#1E3A5F]/50'
+                              ? 'bg-[#0EA5E9] text-slate-900'
+                              : 'bg-slate-50 text-slate-600 hover:text-slate-900 border border-slate-300/50'
                           }`}
                         >
                           {selectedSymptoms.includes(symptom) && <CheckCircle size={14} className="inline mr-1" />}
@@ -107,13 +107,13 @@ export default function SymptomChecker() {
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <p className="text-sm text-slate-400">
+                    <p className="text-sm text-slate-600">
                       {selectedSymptoms.length} symptom{selectedSymptoms.length !== 1 ? 's' : ''} selected
                     </p>
                     <button
                       onClick={analyzeSymptoms}
                       disabled={selectedSymptoms.length === 0}
-                      className="flex items-center gap-2 bg-[#0EA5E9] hover:bg-[#0284C7] disabled:opacity-50 text-white font-medium px-6 py-3 rounded-xl transition-all"
+                      className="flex items-center gap-2 bg-[#0EA5E9] hover:bg-[#0284C7] disabled:opacity-50 text-slate-900 font-medium px-6 py-3 rounded-xl transition-all"
                     >
                       Analyze Symptoms <ArrowRight size={18} />
                     </button>
@@ -124,15 +124,15 @@ export default function SymptomChecker() {
           ) : (
             /* Results */
             <div className="space-y-4">
-              <div className="bg-[#111B2E] border border-[#1E3A5F]/50 rounded-2xl p-6">
-                <h2 className="text-xl font-semibold text-white mb-4">Analysis Results</h2>
-                <p className="text-sm text-slate-400 mb-4">Based on: {selectedSymptoms.join(', ')}</p>
+              <div className="bg-white border border-slate-300/50 rounded-2xl p-6">
+                <h2 className="text-xl font-semibold text-slate-900 mb-4">Analysis Results</h2>
+                <p className="text-sm text-slate-600 mb-4">Based on: {selectedSymptoms.join(', ')}</p>
 
                 <div className="space-y-3">
                   {possibleConditions.map((condition, idx) => (
-                    <div key={idx} className="bg-[#0C1220] rounded-xl p-4">
+                    <div key={idx} className="bg-slate-50 rounded-xl p-4">
                       <div className="flex items-center justify-between mb-2">
-                        <h3 className="font-medium text-white">{condition.name}</h3>
+                        <h3 className="font-medium text-slate-900">{condition.name}</h3>
                         <span className={`px-2 py-1 rounded text-xs ${
                           condition.urgency === 'high' ? 'bg-red-500/20 text-red-400' :
                           condition.urgency === 'medium' ? 'bg-yellow-500/20 text-yellow-400' :
@@ -147,7 +147,7 @@ export default function SymptomChecker() {
                           style={{ width: `${condition.probability}%` }}
                         />
                       </div>
-                      <p className="text-sm text-slate-400">{condition.action}</p>
+                      <p className="text-sm text-slate-600">{condition.action}</p>
                     </div>
                   ))}
                 </div>
@@ -155,13 +155,13 @@ export default function SymptomChecker() {
                 <div className="flex gap-3 mt-6">
                   <button
                     onClick={() => { setShowResults(false); setSelectedSymptoms([]); }}
-                    className="flex-1 py-3 bg-[#1E3A5F] hover:bg-[#2A4A6F] text-white rounded-xl font-medium transition-all"
+                    className="flex-1 py-3 bg-[#1E3A5F] hover:bg-[#2A4A6F] text-slate-900 rounded-xl font-medium transition-all"
                   >
                     Check Again
                   </button>
                   <Link
                     to="/doctor-search"
-                    className="flex-1 py-3 bg-[#0EA5E9] hover:bg-[#0284C7] text-white rounded-xl font-medium text-center transition-all"
+                    className="flex-1 py-3 bg-[#0EA5E9] hover:bg-[#0284C7] text-slate-900 rounded-xl font-medium text-center transition-all"
                   >
                     Find Doctor
                   </Link>

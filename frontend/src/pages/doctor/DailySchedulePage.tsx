@@ -79,7 +79,7 @@ export default function DailySchedulePage() {
           </div>
           <nav className="space-y-2">
             {navItems.map(item => (
-              <Link key={item.name} to={item.path} className={`flex items-center gap-4 px-6 py-4 rounded-2xl font-bold transition-all ${location.pathname === item.path ? 'bg-[#8D153A] text-white shadow-lg' : 'text-slate-500 hover:bg-[#8D153A]/5 hover:text-[#8D153A]'}`}>
+              <Link key={item.name} to={item.path} className={`flex items-center gap-4 px-6 py-4 rounded-2xl font-bold transition-all ${location.pathname === item.path ? 'bg-[#8D153A] text-slate-900 shadow-lg' : 'text-slate-500 hover:bg-[#8D153A]/5 hover:text-[#8D153A]'}`}>
                 <item.icon size={22} /><span>{item.name}</span>
               </Link>
             ))}
@@ -115,7 +115,7 @@ export default function DailySchedulePage() {
                 <button onClick={nextDay} className="p-2 rounded-xl hover:bg-slate-100 transition-all text-slate-600"><ChevronRight size={20} /></button>
               </div>
               {!isToday && (
-                <button onClick={() => setScheduleDate(new Date())} className="px-4 py-3 bg-[#8D153A] text-white rounded-xl font-black text-sm hover:bg-[#71112D] transition-all">Today</button>
+                <button onClick={() => setScheduleDate(new Date())} className="px-4 py-3 bg-[#8D153A] text-slate-900 rounded-xl font-black text-sm hover:bg-[#71112D] transition-all">Today</button>
               )}
             </div>
           </div>
@@ -130,14 +130,14 @@ export default function DailySchedulePage() {
             ].map((s, i) => (
               <div key={i} className={`${s.bg} p-5 rounded-2xl border border-slate-100 text-center`}>
                 <p className={`text-3xl font-black ${s.color}`}>{loading ? '—' : s.value}</p>
-                <p className="text-xs font-black text-slate-400 uppercase tracking-widest mt-1">{s.label}</p>
+                <p className="text-xs font-black text-slate-600 uppercase tracking-widest mt-1">{s.label}</p>
               </div>
             ))}
           </div>
 
           {/* Timeline */}
           {loading ? (
-            <div className="flex items-center justify-center py-24 text-slate-400"><Loader2 size={32} className="animate-spin mr-3" />Loading schedule...</div>
+            <div className="flex items-center justify-center py-24 text-slate-600"><Loader2 size={32} className="animate-spin mr-3" />Loading schedule...</div>
           ) : (
             <div className="bg-white rounded-3xl border border-slate-100 overflow-hidden">
               <div className="p-6 border-b border-slate-100 flex items-center gap-3">
@@ -156,7 +156,7 @@ export default function DailySchedulePage() {
                   return (
                     <div key={hour} className={`flex gap-0 ${appt ? '' : 'opacity-40'}`}>
                       <div className="w-24 p-4 text-right flex-shrink-0">
-                        <span className="text-sm font-black text-slate-400">{hour > 12 ? hour - 12 : hour}:00 {hour >= 12 ? 'PM' : 'AM'}</span>
+                        <span className="text-sm font-black text-slate-600">{hour > 12 ? hour - 12 : hour}:00 {hour >= 12 ? 'PM' : 'AM'}</span>
                       </div>
                       <div className="flex-1 p-3 border-l border-slate-100">
                         {appt ? (
@@ -180,11 +180,11 @@ export default function DailySchedulePage() {
               {/* Unscheduled / all day list */}
               {sorted.length > 0 && (
                 <div className="p-6 border-t border-slate-100">
-                  <h4 className="text-sm font-black text-slate-400 uppercase tracking-widest mb-4">All Appointments ({sorted.length})</h4>
+                  <h4 className="text-sm font-black text-slate-600 uppercase tracking-widest mb-4">All Appointments ({sorted.length})</h4>
                   <div className="space-y-3">
                     {sorted.map(appt => (
                       <div key={appt.id} className="flex items-center gap-4 p-4 rounded-2xl border border-slate-100 hover:shadow-md transition-all">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#8D153A] to-[#E5AB22] flex items-center justify-center text-white font-black text-sm flex-shrink-0">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#8D153A] to-[#E5AB22] flex items-center justify-center text-slate-900 font-black text-sm flex-shrink-0">
                           {(appt.patientName ?? 'P').split(' ').map(n => n[0]).join('')}
                         </div>
                         <div className="flex-1 min-w-0">
@@ -198,7 +198,7 @@ export default function DailySchedulePage() {
                 </div>
               )}
               {sorted.length === 0 && (
-                <div className="p-12 text-center text-slate-400">
+                <div className="p-12 text-center text-slate-600">
                   <Calendar size={40} className="mx-auto mb-3 opacity-30" />
                   <p className="font-bold">No appointments scheduled for this day.</p>
                 </div>

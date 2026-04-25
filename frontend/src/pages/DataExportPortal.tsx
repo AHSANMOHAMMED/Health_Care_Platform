@@ -34,14 +34,14 @@ export default function DataExportPortal() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0C1220] text-slate-200">
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#0C1220]/90 backdrop-blur-md border-b border-[#1E3A5F]/30">
+    <div className="min-h-screen bg-slate-50 text-slate-800">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-slate-50/90 backdrop-blur-md border-b border-slate-300/30">
         <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
-          <Link to={user?.role === 'DOCTOR' ? '/doctor' : '/patient'} className="flex items-center gap-2 text-slate-400 hover:text-white" onClick={(e) => !user && e.preventDefault()}>
+          <Link to={user?.role === 'DOCTOR' ? '/doctor' : '/patient'} className="flex items-center gap-2 text-slate-600 hover:text-slate-900" onClick={(e) => !user && e.preventDefault()}>
             <ChevronLeft size={20} />
             <span>Back</span>
           </Link>
-          <h1 className="text-lg font-semibold text-white">Data Export Portal</h1>
+          <h1 className="text-lg font-semibold text-slate-900">Data Export Portal</h1>
           <div className="w-20" />
         </div>
       </header>
@@ -53,7 +53,7 @@ export default function DataExportPortal() {
             <div className="flex items-start gap-3">
               <Shield className="text-[#0EA5E9] flex-shrink-0 mt-0.5" size={20} />
               <div>
-                <p className="text-sm text-slate-300">
+                <p className="text-sm text-slate-700">
                   Your data is encrypted and securely packaged. Exports include all historical data within your selected timeframe.
                 </p>
               </div>
@@ -62,8 +62,8 @@ export default function DataExportPortal() {
 
           <div className="grid md:grid-cols-2 gap-6">
             {/* Export Type */}
-            <div className="bg-[#111B2E] border border-[#1E3A5F]/50 rounded-2xl p-6">
-              <h2 className="font-semibold text-white mb-4 flex items-center gap-2">
+            <div className="bg-white border border-slate-300/50 rounded-2xl p-6">
+              <h2 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
                 <Filter size={18} />
                 Select Data Type
               </h2>
@@ -75,30 +75,30 @@ export default function DataExportPortal() {
                     className={`w-full p-4 rounded-xl border text-left transition-all ${
                       exportType === opt.id
                         ? 'border-[#0EA5E9] bg-[#0EA5E9]/10'
-                        : 'border-[#1E3A5F]/50 hover:border-[#1E3A5F]'
+                        : 'border-slate-300/50 hover:border-slate-300'
                     }`}
                   >
-                    <p className="font-medium text-white">{opt.label}</p>
-                    <p className="text-xs text-slate-400 mt-1">{opt.desc}</p>
+                    <p className="font-medium text-slate-900">{opt.label}</p>
+                    <p className="text-xs text-slate-600 mt-1">{opt.desc}</p>
                   </button>
                 ))}
               </div>
             </div>
 
             {/* Export Settings */}
-            <div className="bg-[#111B2E] border border-[#1E3A5F]/50 rounded-2xl p-6">
-              <h2 className="font-semibold text-white mb-4 flex items-center gap-2">
+            <div className="bg-white border border-slate-300/50 rounded-2xl p-6">
+              <h2 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
                 <Calendar size={18} />
                 Export Settings
               </h2>
 
               {/* Date Range */}
               <div className="mb-6">
-                <label className="text-sm text-slate-400 mb-2 block">Date Range</label>
+                <label className="text-sm text-slate-600 mb-2 block">Date Range</label>
                 <select
                   value={dateRange}
                   onChange={(e) => setDateRange(e.target.value as any)}
-                  className="w-full bg-[#0C1220] border border-[#1E3A5F]/50 rounded-xl p-3 text-white"
+                  className="w-full bg-slate-50 border border-slate-300/50 rounded-xl p-3 text-slate-900"
                 >
                   <option value="30days">Last 30 Days</option>
                   <option value="6months">Last 6 Months</option>
@@ -109,7 +109,7 @@ export default function DataExportPortal() {
 
               {/* Format */}
               <div>
-                <label className="text-sm text-slate-400 mb-2 block">Export Format</label>
+                <label className="text-sm text-slate-600 mb-2 block">Export Format</label>
                 <div className="grid grid-cols-3 gap-3">
                   {(['json', 'csv', 'pdf'] as const).map(fmt => {
                     const Icon = formatIcons[fmt];
@@ -120,11 +120,11 @@ export default function DataExportPortal() {
                         className={`p-3 rounded-xl border flex flex-col items-center gap-2 transition-all ${
                           format === fmt
                             ? 'border-[#0EA5E9] bg-[#0EA5E9]/10'
-                            : 'border-[#1E3A5F]/50 hover:border-[#1E3A5F]'
+                            : 'border-slate-300/50 hover:border-slate-300'
                         }`}
                       >
-                        <Icon size={24} className={format === fmt ? 'text-[#0EA5E9]' : 'text-slate-400'} />
-                        <span className={`text-xs font-medium uppercase ${format === fmt ? 'text-[#0EA5E9]' : 'text-slate-400'}`}>
+                        <Icon size={24} className={format === fmt ? 'text-[#0EA5E9]' : 'text-slate-600'} />
+                        <span className={`text-xs font-medium uppercase ${format === fmt ? 'text-[#0EA5E9]' : 'text-slate-600'}`}>
                           {fmt}
                         </span>
                       </button>
@@ -136,7 +136,7 @@ export default function DataExportPortal() {
           </div>
 
           {/* Export Button */}
-          <div className="mt-6 bg-[#111B2E] border border-[#1E3A5F]/50 rounded-2xl p-6">
+          <div className="mt-6 bg-white border border-slate-300/50 rounded-2xl p-6">
             {success ? (
               <div className="flex items-center justify-center gap-3 py-4">
                 <CheckCircle className="text-emerald-500" size={24} />
@@ -146,7 +146,7 @@ export default function DataExportPortal() {
               <button
                 onClick={handleExport}
                 disabled={loading}
-                className="w-full flex items-center justify-center gap-3 bg-[#0EA5E9] hover:bg-[#0284C7] disabled:opacity-50 text-white font-semibold py-4 rounded-xl transition-all"
+                className="w-full flex items-center justify-center gap-3 bg-[#0EA5E9] hover:bg-[#0284C7] disabled:opacity-50 text-slate-900 font-semibold py-4 rounded-xl transition-all"
               >
                 {loading ? (
                   <><Loader2 size={20} className="animate-spin" /> Preparing Export...</>

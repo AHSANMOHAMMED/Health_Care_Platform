@@ -175,7 +175,7 @@ export default function AppointmentsPage() {
 
   const FormField = ({ label, required, children }: any) => (
     <div>
-      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">
+      <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">
         {label}{required && <span className="text-red-500 ml-1">*</span>}
       </label>
       {children}
@@ -224,7 +224,7 @@ export default function AppointmentsPage() {
   return (
     <div className="min-h-screen bg-slate-50 flex">
       {toast && (
-        <div className={`fixed top-6 right-6 z-[100] flex items-center gap-3 px-6 py-4 rounded-2xl shadow-2xl text-white font-bold text-sm animate-slide-up ${toast.type === 'success' ? 'bg-emerald-600' : 'bg-red-600'}`}>
+        <div className={`fixed top-6 right-6 z-[100] flex items-center gap-3 px-6 py-4 rounded-2xl shadow-2xl text-slate-900 font-bold text-sm animate-slide-up ${toast.type === 'success' ? 'bg-emerald-600' : 'bg-red-600'}`}>
           {toast.type === 'success' ? <CheckCircle size={18} /> : <AlertCircle size={18} />}{toast.message}
         </div>
       )}
@@ -237,7 +237,7 @@ export default function AppointmentsPage() {
           </div>
           <nav className="space-y-2">
             {navItems.map(item => (
-              <Link key={item.name} to={item.path} className={`flex items-center gap-4 px-6 py-4 rounded-2xl font-bold transition-all ${location.pathname === item.path ? 'bg-[#8D153A] text-white shadow-lg' : 'text-slate-500 hover:bg-[#8D153A]/5 hover:text-[#8D153A]'}`}>
+              <Link key={item.name} to={item.path} className={`flex items-center gap-4 px-6 py-4 rounded-2xl font-bold transition-all ${location.pathname === item.path ? 'bg-[#8D153A] text-slate-900 shadow-lg' : 'text-slate-500 hover:bg-[#8D153A]/5 hover:text-[#8D153A]'}`}>
                 <item.icon size={22} /><span>{item.name}</span>
               </Link>
             ))}
@@ -259,7 +259,7 @@ export default function AppointmentsPage() {
               <button onClick={load} className="p-3 rounded-xl bg-white border border-slate-200 text-slate-500 hover:text-[#8D153A] transition-all">
                 <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
               </button>
-              <button onClick={() => setShowAddModal(true)} className="px-6 py-3 bg-[#8D153A] text-white rounded-xl font-black hover:bg-[#71112D] transition-all flex items-center gap-2 shadow-lg shadow-[#8D153A]/20">
+              <button onClick={() => setShowAddModal(true)} className="px-6 py-3 bg-[#8D153A] text-slate-900 rounded-xl font-black hover:bg-[#71112D] transition-all flex items-center gap-2 shadow-lg shadow-[#8D153A]/20">
                 <PlusCircle size={20} /> New Appointment
               </button>
             </div>
@@ -269,7 +269,7 @@ export default function AppointmentsPage() {
           <div className="flex flex-wrap gap-2 mb-6">
             {(Object.entries(counts) as [string, number][]).map(([status, count]) => (
               <button key={status} onClick={() => setStatusFilter(status)}
-                className={`px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${statusFilter === status ? 'bg-[#8D153A] text-white shadow-lg shadow-[#8D153A]/20' : 'bg-white border border-slate-200 text-slate-600 hover:border-[#8D153A]/30'}`}>
+                className={`px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${statusFilter === status ? 'bg-[#8D153A] text-slate-900 shadow-lg shadow-[#8D153A]/20' : 'bg-white border border-slate-200 text-slate-600 hover:border-[#8D153A]/30'}`}>
                 {status} ({count})
               </button>
             ))}
@@ -278,16 +278,16 @@ export default function AppointmentsPage() {
           {/* Search */}
           <div className="bg-white p-4 rounded-2xl border border-slate-100 mb-6">
             <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600" size={18} />
               <input type="text" placeholder="Search by patient name..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-950 placeholder-slate-400 focus:outline-none focus:border-[#8D153A]" />
             </div>
           </div>
 
           {/* Appointments */}
           {loading ? (
-            <div className="flex items-center justify-center py-24 text-slate-400"><Loader2 size={32} className="animate-spin mr-3" />Loading appointments...</div>
+            <div className="flex items-center justify-center py-24 text-slate-600"><Loader2 size={32} className="animate-spin mr-3" />Loading appointments...</div>
           ) : filtered.length === 0 ? (
-            <div className="text-center py-24 text-slate-400"><Calendar size={48} className="mx-auto mb-4 opacity-30" /><p className="font-bold text-lg">No appointments found</p></div>
+            <div className="text-center py-24 text-slate-600"><Calendar size={48} className="mx-auto mb-4 opacity-30" /><p className="font-bold text-lg">No appointments found</p></div>
           ) : (
             <div className="space-y-4">
               {filtered.map(appt => (
@@ -295,7 +295,7 @@ export default function AppointmentsPage() {
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex items-start gap-5 flex-1">
                       <div className="relative flex-shrink-0">
-                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#8D153A] to-[#E5AB22] flex items-center justify-center text-white font-black text-lg">
+                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#8D153A] to-[#E5AB22] flex items-center justify-center text-slate-900 font-black text-lg">
                           {(appt.patientName ?? 'P').split(' ').map(n => n[0]).join('')}
                         </div>
                         {appt.priority === 'high' && <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-red-500 rounded-full border-2 border-white" />}
@@ -313,13 +313,13 @@ export default function AppointmentsPage() {
                           <div className="flex items-center gap-2 text-slate-600"><Activity size={14} /><span className="font-bold">{appt.duration}</span></div>
                         </div>
                         {appt.reason && <p className="text-sm text-slate-500 mb-2"><span className="font-black">Reason:</span> {appt.reason}</p>}
-                        {appt.notes && <p className="text-sm text-slate-400 italic">{appt.notes}</p>}
+                        {appt.notes && <p className="text-sm text-slate-600 italic">{appt.notes}</p>}
                       </div>
                     </div>
                     <div className="flex flex-col gap-2 flex-shrink-0">
                       <div className="flex gap-2">
-                        {appt.status === 'waiting' && <button onClick={() => handleStatusUpdate(appt.id, 'confirmed')} disabled={saving} className="px-3 py-2 bg-blue-600 text-white rounded-xl text-xs font-black hover:bg-blue-700 transition-all disabled:opacity-60"><CheckCircle size={14} className="inline mr-1" />Confirm</button>}
-                        {(appt.status === 'confirmed' || appt.status === 'waiting') && <button onClick={() => handleStatusUpdate(appt.id, 'completed')} disabled={saving} className="px-3 py-2 bg-emerald-600 text-white rounded-xl text-xs font-black hover:bg-emerald-700 transition-all disabled:opacity-60"><CheckCircle size={14} className="inline mr-1" />Complete</button>}
+                        {appt.status === 'waiting' && <button onClick={() => handleStatusUpdate(appt.id, 'confirmed')} disabled={saving} className="px-3 py-2 bg-blue-600 text-slate-900 rounded-xl text-xs font-black hover:bg-blue-700 transition-all disabled:opacity-60"><CheckCircle size={14} className="inline mr-1" />Confirm</button>}
+                        {(appt.status === 'confirmed' || appt.status === 'waiting') && <button onClick={() => handleStatusUpdate(appt.id, 'completed')} disabled={saving} className="px-3 py-2 bg-emerald-600 text-slate-900 rounded-xl text-xs font-black hover:bg-emerald-700 transition-all disabled:opacity-60"><CheckCircle size={14} className="inline mr-1" />Complete</button>}
                       </div>
                       <div className="flex gap-2">
                         <button onClick={() => openEdit(appt)} className="p-2 rounded-xl bg-blue-100 text-blue-600 hover:bg-blue-200 transition-all" title="Edit"><Edit3 size={16} /></button>
@@ -341,7 +341,7 @@ export default function AppointmentsPage() {
             <div className="flex justify-between items-center mb-6"><h3 className="text-2xl font-black">New Appointment</h3><button onClick={() => setShowAddModal(false)} className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200"><X size={20} /></button></div>
             <AppointmentFormFields />
             <div className="flex gap-3 mt-6">
-              <button onClick={handleCreate} disabled={saving} className="flex-1 py-4 bg-[#8D153A] text-white rounded-2xl font-black hover:bg-[#71112D] disabled:opacity-60 flex items-center justify-center gap-2">
+              <button onClick={handleCreate} disabled={saving} className="flex-1 py-4 bg-[#8D153A] text-slate-900 rounded-2xl font-black hover:bg-[#71112D] disabled:opacity-60 flex items-center justify-center gap-2">
                 {saving ? <><Loader2 size={18} className="animate-spin" />Saving...</> : 'Create Appointment'}
               </button>
               <button onClick={() => setShowAddModal(false)} className="flex-1 py-4 bg-slate-100 text-slate-700 rounded-2xl font-black hover:bg-slate-200">Cancel</button>
@@ -357,7 +357,7 @@ export default function AppointmentsPage() {
             <div className="flex justify-between items-center mb-6"><h3 className="text-2xl font-black">Edit Appointment</h3><button onClick={() => setShowEditModal(false)} className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200"><X size={20} /></button></div>
             <AppointmentFormFields />
             <div className="flex gap-3 mt-6">
-              <button onClick={handleUpdate} disabled={saving} className="flex-1 py-4 bg-[#8D153A] text-white rounded-2xl font-black hover:bg-[#71112D] disabled:opacity-60 flex items-center justify-center gap-2">
+              <button onClick={handleUpdate} disabled={saving} className="flex-1 py-4 bg-[#8D153A] text-slate-900 rounded-2xl font-black hover:bg-[#71112D] disabled:opacity-60 flex items-center justify-center gap-2">
                 {saving ? <><Loader2 size={18} className="animate-spin" />Saving...</> : 'Save Changes'}
               </button>
               <button onClick={() => setShowEditModal(false)} className="flex-1 py-4 bg-slate-100 text-slate-700 rounded-2xl font-black hover:bg-slate-200">Cancel</button>
@@ -374,7 +374,7 @@ export default function AppointmentsPage() {
             <h3 className="text-2xl font-black mb-2">Cancel Appointment?</h3>
             <p className="text-slate-500 font-bold mb-6">Remove appointment with <span className="text-slate-950">{deletingAppt.patientName}</span> on {deletingAppt.date}?</p>
             <div className="flex gap-3">
-              <button onClick={handleDelete} disabled={saving} className="flex-1 py-4 bg-red-600 text-white rounded-2xl font-black hover:bg-red-700 disabled:opacity-60 flex items-center justify-center gap-2">
+              <button onClick={handleDelete} disabled={saving} className="flex-1 py-4 bg-red-600 text-slate-900 rounded-2xl font-black hover:bg-red-700 disabled:opacity-60 flex items-center justify-center gap-2">
                 {saving ? <><Loader2 size={18} className="animate-spin" />...</> : 'Cancel Appointment'}
               </button>
               <button onClick={() => setShowDeleteModal(false)} className="flex-1 py-4 bg-slate-100 text-slate-700 rounded-2xl font-black">Keep</button>

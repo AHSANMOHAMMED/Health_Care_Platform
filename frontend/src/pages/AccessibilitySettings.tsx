@@ -46,7 +46,7 @@ export default function AccessibilitySettings() {
                  <button 
                    key={opt.id}
                    onClick={() => setActiveTab(opt.id as any)}
-                   className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all duration-300 font-bold ${activeTab === opt.id ? 'bg-slate-900 text-white shadow-xl' : 'text-slate-500 hover:bg-slate-50'}`}>
+                   className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all duration-300 font-bold ${activeTab === opt.id ? 'bg-slate-900 text-slate-900 shadow-xl' : 'text-slate-500 hover:bg-slate-50'}`}>
                     <div className="flex items-center gap-3">
                        <opt.icon size={20} />
                        <span>{opt.label}</span>
@@ -87,11 +87,11 @@ export default function AccessibilitySettings() {
                             <span className="text-xs font-black bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full border border-indigo-100">Medium (Default)</span>
                          </div>
                          <div className="flex items-center gap-4">
-                            <span className="text-sm font-bold text-slate-400">A</span>
+                            <span className="text-sm font-bold text-slate-600">A</span>
                             <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden relative">
                                <div className="absolute top-0 left-0 w-1/2 h-full bg-indigo-600"></div>
                             </div>
-                            <span className="text-2xl font-bold text-slate-400">A</span>
+                            <span className="text-2xl font-bold text-slate-600">A</span>
                          </div>
                       </div>
                    </div>
@@ -102,7 +102,7 @@ export default function AccessibilitySettings() {
                    <div className="grid md:grid-cols-3 gap-6">
                       {[ 
                         { id: 'light', label: 'Light', icon: Sun, color: 'text-amber-500 bg-amber-50 border-amber-100' },
-                        { id: 'dark', label: 'Cinematic Dark', icon: Moon, color: 'text-slate-200 bg-slate-900 border-slate-700' },
+                        { id: 'dark', label: 'Cinematic Dark', icon: Moon, color: 'text-slate-800 bg-slate-900 border-slate-700' },
                         { id: 'system', label: 'Match System', icon: Smartphone, color: 'text-indigo-600 bg-indigo-50 border-indigo-100' }
                       ].map((theme, i) => (
                         <button key={i} className={`p-8 rounded-[2rem] border-2 transition-all flex flex-col items-center gap-4 relative overflow-hidden group ${i === 2 ? 'ring-4 ring-indigo-500/20 border-indigo-500' : 'border-slate-100 hover:border-indigo-200'}`}>
@@ -121,24 +121,24 @@ export default function AccessibilitySettings() {
                    <div className="premium-glass p-8 space-y-8">
                       <div className="flex justify-between items-center group cursor-pointer">
                          <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-all">
+                            <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-slate-600 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-all">
                                <Languages size={24} />
                             </div>
                             <div>
                                <p className="text-lg font-black text-slate-900">Primary Language</p>
-                               <p className="text-sm font-bold text-slate-400">Select your preferred system language.</p>
+                               <p className="text-sm font-bold text-slate-600">Select your preferred system language.</p>
                             </div>
                          </div>
                          <button className="flex items-center gap-2 font-bold text-slate-600">English (US) <ChevronRight size={18} /></button>
                       </div>
                       <div className="flex justify-between items-center group cursor-pointer border-t border-slate-50 pt-8">
                          <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-all">
+                            <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-slate-600 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-all">
                                <Volume2 size={24} />
                             </div>
                             <div>
                                <p className="text-lg font-black text-slate-900">Audio Feedback</p>
-                               <p className="text-sm font-bold text-slate-400">Read out system instructions and alerts.</p>
+                               <p className="text-sm font-bold text-slate-600">Read out system instructions and alerts.</p>
                             </div>
                          </div>
                          <button className="w-14 h-8 bg-slate-900 rounded-full relative p-1 transition-colors">

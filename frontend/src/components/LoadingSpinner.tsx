@@ -24,7 +24,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   const colorClasses = {
     primary: 'text-blue-600',
     secondary: 'text-slate-600',
-    white: 'text-white',
+    white: 'text-slate-900',
     current: 'text-current'
   };
 
@@ -35,7 +35,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
           className={`animate-spin ${sizeClasses[size]} ${colorClasses[color]}`}
         />
         {text && (
-          <span className={`text-sm ${color === 'white' ? 'text-white' : 'text-slate-600'}`}>
+          <span className={`text-sm ${color === 'white' ? 'text-slate-900' : 'text-slate-600'}`}>
             {text}
           </span>
         )}

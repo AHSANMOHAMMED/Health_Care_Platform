@@ -67,14 +67,14 @@ export default function WearableIntegration() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0C1220] text-slate-200">
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#0C1220]/90 backdrop-blur-md border-b border-[#1E3A5F]/30">
+    <div className="min-h-screen bg-slate-50 text-slate-800">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-slate-50/90 backdrop-blur-md border-b border-slate-300/30">
         <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
-          <Link to={user?.role === 'DOCTOR' ? '/doctor' : '/patient'} className="flex items-center gap-2 text-slate-400 hover:text-white" onClick={(e) => !user && e.preventDefault()}>
+          <Link to={user?.role === 'DOCTOR' ? '/doctor' : '/patient'} className="flex items-center gap-2 text-slate-600 hover:text-slate-900" onClick={(e) => !user && e.preventDefault()}>
             <ChevronLeft size={20} />
             <span>Back</span>
           </Link>
-          <h1 className="text-lg font-semibold text-white">Wearable Integration</h1>
+          <h1 className="text-lg font-semibold text-slate-900">Wearable Integration</h1>
           <button
             onClick={() => setActiveTab(activeTab === 'devices' ? 'metrics' : 'devices')}
             className="text-sm text-[#0EA5E9] hover:text-[#0284C7]"
@@ -90,20 +90,20 @@ export default function WearableIntegration() {
             <>
               {/* Connected Devices */}
               <div className="mb-6">
-                <h2 className="text-xl font-semibold text-white mb-4">Connected Devices</h2>
+                <h2 className="text-xl font-semibold text-slate-900 mb-4">Connected Devices</h2>
                 <div className="space-y-3">
                   {devices.map(device => {
                     const Icon = getDeviceIcon(device.type);
                     return (
-                      <div key={device.id} className="bg-[#111B2E] border border-[#1E3A5F]/50 rounded-xl p-4">
+                      <div key={device.id} className="bg-white border border-slate-300/50 rounded-xl p-4">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-4">
                             <div className="w-12 h-12 rounded-xl bg-[#0EA5E9]/10 flex items-center justify-center">
                               <Icon className="text-[#0EA5E9]" size={24} />
                             </div>
                             <div>
-                              <h3 className="font-medium text-white">{device.name}</h3>
-                              <div className="flex items-center gap-3 text-sm text-slate-400">
+                              <h3 className="font-medium text-slate-900">{device.name}</h3>
+                              <div className="flex items-center gap-3 text-sm text-slate-600">
                                 <span>{device.brand}</span>
                                 {device.connected && device.battery !== undefined && (
                                   <span className="flex items-center gap-1">
@@ -137,7 +137,7 @@ export default function WearableIntegration() {
                               <button
                                 onClick={() => handleConnect(device.id)}
                                 disabled={connecting === device.id}
-                                className="px-4 py-2 bg-[#0EA5E9] hover:bg-[#0284C7] disabled:opacity-50 text-white rounded-lg text-sm font-medium transition-all"
+                                className="px-4 py-2 bg-[#0EA5E9] hover:bg-[#0284C7] disabled:opacity-50 text-slate-900 rounded-lg text-sm font-medium transition-all"
                               >
                                 {connecting === device.id ? 'Connecting...' : 'Connect'}
                               </button>
@@ -146,9 +146,9 @@ export default function WearableIntegration() {
                         </div>
 
                         {device.connected && (
-                          <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-[#1E3A5F]/30">
+                          <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-slate-300/30">
                             {device.metrics.map(metric => (
-                              <span key={metric} className="px-2 py-1 bg-[#0C1220] rounded text-xs text-slate-400">
+                              <span key={metric} className="px-2 py-1 bg-slate-50 rounded text-xs text-slate-600">
                                 {metric}
                               </span>
                             ))}
@@ -161,8 +161,8 @@ export default function WearableIntegration() {
               </div>
 
               {/* Add New Device */}
-              <div className="bg-[#111B2E] border border-[#1E3A5F]/50 rounded-2xl p-6">
-                <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
+              <div className="bg-white border border-slate-300/50 rounded-2xl p-6">
+                <h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
                   <Plus size={18} />
                   Add New Device
                 </h3>
@@ -170,10 +170,10 @@ export default function WearableIntegration() {
                   {availableDevices.map(device => (
                     <button
                       key={device.name}
-                      className="p-4 bg-[#0C1220] border border-[#1E3A5F]/50 rounded-xl hover:border-[#0EA5E9]/50 transition-all text-left"
+                      className="p-4 bg-slate-50 border border-slate-300/50 rounded-xl hover:border-[#0EA5E9]/50 transition-all text-left"
                     >
-                      <p className="font-medium text-white">{device.name}</p>
-                      <p className="text-sm text-slate-400">{device.brand}</p>
+                      <p className="font-medium text-slate-900">{device.name}</p>
+                      <p className="text-sm text-slate-600">{device.brand}</p>
                     </button>
                   ))}
                 </div>
@@ -186,27 +186,27 @@ export default function WearableIntegration() {
                 {metrics.map(metric => {
                   const Icon = metric.icon;
                   return (
-                    <div key={metric.id} className="bg-[#111B2E] border border-[#1E3A5F]/50 rounded-xl p-5">
+                    <div key={metric.id} className="bg-white border border-slate-300/50 rounded-xl p-5">
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex items-center gap-3">
                           <div className={`w-10 h-10 rounded-xl flex items-center justify-center bg-slate-800`}>
                             <Icon className={metric.color} size={20} />
                           </div>
                           <div>
-                            <p className="font-medium text-white">{metric.name}</p>
-                            <p className="text-xs text-slate-400">Today</p>
+                            <p className="font-medium text-slate-900">{metric.name}</p>
+                            <p className="text-xs text-slate-600">Today</p>
                           </div>
                         </div>
                         <RefreshCw size={16} className="text-slate-500" />
                       </div>
 
                       <div className="flex items-end gap-2 mb-4">
-                        <span className="text-3xl font-bold text-white">{metric.value}</span>
-                        <span className="text-sm text-slate-400 mb-1">{metric.unit}</span>
+                        <span className="text-3xl font-bold text-slate-900">{metric.value}</span>
+                        <span className="text-sm text-slate-600 mb-1">{metric.unit}</span>
                         <span className={`text-xs ml-auto ${
                           metric.trend === 'up' ? 'text-emerald-400' :
                           metric.trend === 'down' ? 'text-red-400' :
-                          'text-slate-400'
+                          'text-slate-600'
                         }`}>
                           {metric.trend === 'up' ? '↑' : metric.trend === 'down' ? '↓' : '→'}
                         </span>

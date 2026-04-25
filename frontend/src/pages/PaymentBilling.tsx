@@ -94,13 +94,13 @@ const CheckoutForm = ({ amount, appointmentId, onExcess }: { amount: number; app
             <CheckCircle className="text-emerald-400" />
           </div>
           <p className="text-emerald-400 font-bold">Payment Successful!</p>
-          <p className="text-xs text-slate-400">Updating your appointment status...</p>
+          <p className="text-xs text-slate-600">Updating your appointment status...</p>
         </div>
       ) : (
         <button
           type="submit"
           disabled={!stripe || processing}
-          className="w-full py-4 bg-gradient-to-r from-indigo-600 to-purple-700 text-white font-black rounded-2xl hover:from-indigo-500 hover:to-purple-600 transition-all shadow-xl shadow-indigo-900/40 disabled:opacity-50 flex items-center justify-center gap-2"
+          className="w-full py-4 bg-gradient-to-r from-indigo-600 to-purple-700 text-slate-900 font-black rounded-2xl hover:from-indigo-500 hover:to-purple-600 transition-all shadow-xl shadow-indigo-900/40 disabled:opacity-50 flex items-center justify-center gap-2"
         >
           {processing ? <Loader2 className="animate-spin" size={20} /> : <ShieldCheck size={20} />}
           {processing ? 'Processing...' : `Pay LKR ${amount.toLocaleString()}`}
@@ -121,23 +121,23 @@ export default function PaymentBilling() {
   const date = queryParams.get('date') || 'TBD';
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F] text-slate-300 font-sans flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#0A0A0F] text-slate-700 font-sans flex items-center justify-center p-4">
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <div className="text-center">
           <div className="w-16 h-16 rounded-2xl bg-indigo-600/20 flex items-center justify-center mx-auto border border-indigo-500/30 mb-4 shadow-2xl">
             <CreditCard size={32} className="text-indigo-400" />
           </div>
-          <h1 className="text-3xl font-black text-white tracking-tight">Secure Checkout</h1>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Secure Checkout</h1>
           <p className="text-slate-500 mt-2">MediConnect Lanka Payment Gateway</p>
         </div>
 
         {/* Summary Card */}
-        <div className="clinical-card p-6 bg-[#111B2E]/50 border-white/5 backdrop-blur-xl">
+        <div className="clinical-card p-6 bg-white/50 border-white/5 backdrop-blur-xl">
           <div className="flex justify-between items-start mb-6 border-b border-white/5 pb-4">
             <div>
               <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Consultation Fee</p>
-              <h2 className="text-3xl font-black text-white mt-1">
+              <h2 className="text-3xl font-black text-slate-900 mt-1">
                 <span className="text-indigo-400 text-sm font-bold mr-1">LKR</span>
                 {amount.toLocaleString()}
               </h2>
@@ -149,30 +149,30 @@ export default function PaymentBilling() {
 
           <div className="space-y-4 mb-8">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-slate-400">
+              <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-slate-600">
                 <User size={16} />
               </div>
               <div className="flex-1">
                 <p className="text-[10px] font-black text-slate-500 uppercase">Doctor</p>
-                <p className="text-sm font-bold text-white">{doctorName}</p>
+                <p className="text-sm font-bold text-slate-900">{doctorName}</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-slate-400">
+              <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-slate-600">
                 <Calendar size={16} />
               </div>
               <div className="flex-1">
                 <p className="text-[10px] font-black text-slate-500 uppercase">Appointment Date</p>
-                <p className="text-sm font-bold text-white">{date}</p>
+                <p className="text-sm font-bold text-slate-900">{date}</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-slate-400">
+              <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-slate-600">
                 <Clock size={16} />
               </div>
               <div className="flex-1">
                 <p className="text-[10px] font-black text-slate-500 uppercase">Ref ID</p>
-                <p className="text-sm font-bold text-white truncate">#{appointmentId}</p>
+                <p className="text-sm font-bold text-slate-900 truncate">#{appointmentId}</p>
               </div>
             </div>
           </div>
@@ -200,7 +200,7 @@ export default function PaymentBilling() {
         {/* Footer / Back */}
         <button 
           onClick={() => navigate(-1)}
-          className="w-full flex items-center justify-center gap-2 text-slate-500 hover:text-white transition-colors py-2"
+          className="w-full flex items-center justify-center gap-2 text-slate-500 hover:text-slate-900 transition-colors py-2"
         >
           <ArrowLeft size={16} /> Go back to dashboard
         </button>

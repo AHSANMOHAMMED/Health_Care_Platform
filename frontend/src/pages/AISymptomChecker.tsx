@@ -107,24 +107,24 @@ export default function AISymptomChecker() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0C1220] text-slate-200">
+    <div className="min-h-screen bg-slate-50 text-slate-800">
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#0C1220]/90 backdrop-blur-md border-b border-[#1E3A5F]/30">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-slate-50/90 backdrop-blur-md border-b border-slate-300/30">
         <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-white font-semibold">
+          <Link to="/" className="flex items-center gap-2 text-slate-900 font-semibold">
             <ArrowLeft size={20} />
             <span>Back</span>
           </Link>
           <div className="flex items-center gap-2">
             <Bot className="text-[#0EA5E9]" size={24} />
-            <span className="font-semibold text-white">{t.title}</span>
+            <span className="font-semibold text-slate-900">{t.title}</span>
           </div>
           <div className="flex items-center gap-2">
-            <Languages size={18} className="text-slate-400" />
+            <Languages size={18} className="text-slate-600" />
             <select
               value={language}
               onChange={(e) => setLanguage(e.target.value as any)}
-              className="bg-[#111B2E] border border-[#1E3A5F]/50 rounded-lg px-2 py-1 text-sm text-white"
+              className="bg-white border border-slate-300/50 rounded-lg px-2 py-1 text-sm text-slate-900"
             >
               <option value="English">English</option>
               <option value="Sinhala">Sinhala</option>
@@ -138,14 +138,14 @@ export default function AISymptomChecker() {
       <main className="pt-20 pb-32 px-4">
         <div className="max-w-3xl mx-auto">
           {/* Input Section */}
-          <div className="bg-[#111B2E] border border-[#1E3A5F]/50 rounded-2xl p-6 mb-6">
+          <div className="bg-white border border-slate-300/50 rounded-2xl p-6 mb-6">
             <div className="flex items-start gap-4 mb-4">
               <div className="w-10 h-10 rounded-xl bg-[#0EA5E9]/20 flex items-center justify-center flex-shrink-0">
                 <Sparkles className="text-[#0EA5E9]" size={20} />
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-white mb-1">{t.title}</h2>
-                <p className="text-sm text-slate-400">Describe your symptoms and our AI will analyze them</p>
+                <h2 className="text-lg font-semibold text-slate-900 mb-1">{t.title}</h2>
+                <p className="text-sm text-slate-600">Describe your symptoms and our AI will analyze them</p>
               </div>
             </div>
 
@@ -153,14 +153,14 @@ export default function AISymptomChecker() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder={t.placeholder}
-              className="w-full h-32 bg-[#0C1220] border border-[#1E3A5F]/50 rounded-xl p-4 text-white placeholder-slate-500 focus:outline-none focus:border-[#0EA5E9]/50 resize-none mb-4"
+              className="w-full h-32 bg-slate-50 border border-slate-300/50 rounded-xl p-4 text-slate-900 placeholder-slate-500 focus:outline-none focus:border-[#0EA5E9]/50 resize-none mb-4"
             />
 
             <div className="flex gap-3">
               <button
                 onClick={() => setIsRecording(!isRecording)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-all ${
-                  isRecording ? 'border-red-500/50 text-red-400' : 'border-[#1E3A5F]/50 text-slate-400 hover:text-white'
+                  isRecording ? 'border-red-500/50 text-red-400' : 'border-slate-300/50 text-slate-600 hover:text-slate-900'
                 }`}
               >
                 {isRecording ? <MicOff size={18} /> : <Mic size={18} />}
@@ -170,7 +170,7 @@ export default function AISymptomChecker() {
               <button
                 onClick={handleAnalyze}
                 disabled={loading || !input.trim()}
-                className="flex-1 flex items-center justify-center gap-2 bg-[#0EA5E9] hover:bg-[#0284C7] disabled:opacity-50 text-white font-medium py-2 rounded-lg transition-all"
+                className="flex-1 flex items-center justify-center gap-2 bg-[#0EA5E9] hover:bg-[#0284C7] disabled:opacity-50 text-slate-900 font-medium py-2 rounded-lg transition-all"
               >
                 {loading ? (
                   <><Loader2 size={18} className="animate-spin" /> {t.analyzing}</>
@@ -198,14 +198,14 @@ export default function AISymptomChecker() {
           {analysis && (
             <div className="space-y-4">
               {/* Urgency */}
-              <div className="bg-[#111B2E] border border-[#1E3A5F]/50 rounded-xl p-4">
+              <div className="bg-white border border-slate-300/50 rounded-xl p-4">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-slate-400">{t.urgency}</span>
+                  <span className="text-sm text-slate-600">{t.urgency}</span>
                   <span className={`px-3 py-1 rounded-full text-sm font-medium ${getUrgencyColor(analysis.urgency)}`}>
                     {t[analysis.urgency as keyof typeof t] || analysis.urgency}
                   </span>
                 </div>
-                <div className="h-2 bg-[#0C1220] rounded-full overflow-hidden">
+                <div className="h-2 bg-slate-50 rounded-full overflow-hidden">
                   <div
                     className={`h-full rounded-full ${
                       analysis.urgency === 'critical' ? 'bg-red-500' :
@@ -218,12 +218,12 @@ export default function AISymptomChecker() {
               </div>
 
               {/* Conditions */}
-              <div className="bg-[#111B2E] border border-[#1E3A5F]/50 rounded-xl p-4">
-                <h3 className="font-semibold text-white mb-3">{t.conditions}</h3>
+              <div className="bg-white border border-slate-300/50 rounded-xl p-4">
+                <h3 className="font-semibold text-slate-900 mb-3">{t.conditions}</h3>
                 <div className="space-y-2">
                   {analysis.conditions?.map((condition: any, idx: number) => (
-                    <div key={idx} className="flex items-center justify-between p-3 bg-[#0C1220] rounded-lg">
-                      <span className="text-sm text-slate-300">{condition.name}</span>
+                    <div key={idx} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                      <span className="text-sm text-slate-700">{condition.name}</span>
                       <div className="flex items-center gap-2">
                         <div className="w-20 h-2 bg-[#1E3A5F]/50 rounded-full overflow-hidden">
                           <div
@@ -231,7 +231,7 @@ export default function AISymptomChecker() {
                             style={{ width: `${condition.probability}%` }}
                           />
                         </div>
-                        <span className="text-xs text-slate-400 w-8">{condition.probability}%</span>
+                        <span className="text-xs text-slate-600 w-8">{condition.probability}%</span>
                       </div>
                     </div>
                   ))}
@@ -239,11 +239,11 @@ export default function AISymptomChecker() {
               </div>
 
               {/* Actions */}
-              <div className="bg-[#111B2E] border border-[#1E3A5F]/50 rounded-xl p-4">
-                <h3 className="font-semibold text-white mb-3">{t.actions}</h3>
+              <div className="bg-white border border-slate-300/50 rounded-xl p-4">
+                <h3 className="font-semibold text-slate-900 mb-3">{t.actions}</h3>
                 <ul className="space-y-2">
                   {analysis.actions?.map((action: string, idx: number) => (
-                    <li key={idx} className="flex items-start gap-2 text-sm text-slate-300">
+                    <li key={idx} className="flex items-start gap-2 text-sm text-slate-700">
                       <ChevronRight className="text-[#0EA5E9] flex-shrink-0 mt-0.5" size={16} />
                       <span>{action}</span>
                     </li>

@@ -59,7 +59,7 @@ function CircularProgress({ value, color, stroke, suffix = '%' }: { value: numbe
   return (
     <div className="relative w-20 h-20 flex items-center justify-center shrink-0">
       <svg className="transform -rotate-90 w-20 h-20" viewBox="0 0 64 64">
-        <circle cx="32" cy="32" r={radius} stroke="currentColor" strokeWidth="5" fill="transparent" className="text-slate-200/50" />
+        <circle cx="32" cy="32" r={radius} stroke="currentColor" strokeWidth="5" fill="transparent" className="text-slate-800/50" />
         <circle cx="32" cy="32" r={radius} stroke="currentColor" strokeWidth="5" fill="transparent" strokeDasharray={circumference} strokeDashoffset={offset} strokeLinecap="round" className={stroke} />
       </svg>
       <span className={`absolute text-base font-bold ${color}`}>{value}{suffix}</span>
@@ -252,7 +252,7 @@ export default function AdminDashboard() {
 
   if (loading) return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex items-center justify-center">
-      <Loader2 className="w-8 h-8 text-slate-400 animate-spin" />
+      <Loader2 className="w-8 h-8 text-slate-600 animate-spin" />
     </div>
   );
 
@@ -265,7 +265,7 @@ export default function AdminDashboard() {
           <div className="p-8">
             <Link to="/" className="flex items-center gap-4 group">
               <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-600 via-blue-700 to-slate-800 flex items-center justify-center shadow-lg shadow-indigo-300/50 group-hover:shadow-indigo-300/70 transition-all duration-300">
-                <ShieldCheck size={24} className="text-white" />
+                <ShieldCheck size={24} className="text-slate-900" />
               </div>
               <div>
                 <p className="text-lg font-bold bg-gradient-to-r from-slate-800 to-indigo-700 bg-clip-text text-transparent leading-none tracking-tight">MediConnect</p>
@@ -288,7 +288,7 @@ export default function AdminDashboard() {
                       : 'text-slate-500 hover:bg-white/50 hover:text-slate-700'
                   }`}
                 >
-                  <t.icon size={20} className={isActive ? 'text-slate-700' : 'text-slate-400'} /> 
+                  <t.icon size={20} className={isActive ? 'text-slate-700' : 'text-slate-600'} /> 
                   <span className="tracking-wide">{t.label}</span>
                   {isActive && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-slate-700" />}
                 </button>
@@ -304,12 +304,12 @@ export default function AdminDashboard() {
               <div className="relative">
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 via-orange-400 to-amber-500 flex items-center justify-center shadow-lg shadow-amber-300/50">
-                    <Crown size={18} className="text-white" />
+                    <Crown size={18} className="text-slate-900" />
                   </div>
                   <span className="text-lg font-bold bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">Upgrade to Pro</span>
                 </div>
                 <p className="text-base text-amber-700/70 mb-4 leading-relaxed">Unlock advanced features and premium customization options.</p>
-                <button className="w-full py-3 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-white text-base font-bold rounded-xl shadow-lg shadow-amber-400/40 hover:shadow-amber-400/60 hover:scale-[1.02] transition-all duration-300">
+                <button className="w-full py-3 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-slate-900 text-base font-bold rounded-xl shadow-lg shadow-amber-400/40 hover:shadow-amber-400/60 hover:scale-[1.02] transition-all duration-300">
                   <Sparkles size={18} className="inline mr-2" /> Upgrade Now
                 </button>
               </div>
@@ -330,18 +330,18 @@ export default function AdminDashboard() {
         {/* Premium Glass Header */}
         <header className="h-20 bg-gradient-to-r from-white/70 via-blue-50/40 to-indigo-50/50 backdrop-blur-2xl border-b border-white/70 flex items-center justify-between px-8 sticky top-0 z-30 shadow-sm shadow-slate-200/30">
           <div className="flex items-center gap-6 flex-1">
-            <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-3 text-slate-400 hover:bg-white/50 rounded-xl transition-colors">
+            <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-3 text-slate-600 hover:bg-white/50 rounded-xl transition-colors">
               <Menu size={22} />
             </button>
             {/* Glass Search */}
             <div className="relative max-w-lg flex-1">
-              <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600" />
               <input 
                 type="text" 
                 placeholder="Search anything..." 
-                className="w-full pl-12 pr-14 py-3.5 bg-white/70 backdrop-blur border border-white/80 rounded-2xl text-lg text-slate-600 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200/50 shadow-sm shadow-slate-200/30"
+                className="w-full pl-12 pr-14 py-3.5 bg-white/70 backdrop-blur border border-white/80 rounded-2xl text-lg text-slate-600 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-200/50 shadow-sm shadow-slate-200/30"
               />
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-base text-slate-400 font-medium bg-slate-100/80 px-2 py-1 rounded-lg border border-white/60">Ctrl K</span>
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-base text-slate-600 font-medium bg-slate-100/80 px-2 py-1 rounded-lg border border-white/60">Ctrl K</span>
             </div>
           </div>
 
@@ -349,7 +349,7 @@ export default function AdminDashboard() {
             {/* Premium Notifications */}
             <button className="relative p-3 text-slate-500 hover:bg-gradient-to-br hover:from-amber-100/60 hover:to-orange-100/40 rounded-2xl transition-all duration-300 border border-white/60 shadow-sm shadow-slate-200/20 hover:border-amber-200/50 hover:shadow-amber-200/30 group">
               <Bell size={20} className="group-hover:text-amber-600 transition-colors" />
-              <span className="absolute -top-1 -right-1 w-6 h-6 bg-gradient-to-br from-rose-500 to-red-600 text-white text-xs font-bold rounded-full flex items-center justify-center shadow-md shadow-rose-300/50 animate-pulse">3</span>
+              <span className="absolute -top-1 -right-1 w-6 h-6 bg-gradient-to-br from-rose-500 to-red-600 text-slate-900 text-xs font-bold rounded-full flex items-center justify-center shadow-md shadow-rose-300/50 animate-pulse">3</span>
             </button>
             {/* Premium Theme Toggle */}
             <button className="p-3 text-slate-500 hover:bg-gradient-to-br hover:from-indigo-100/60 hover:to-blue-100/40 rounded-2xl transition-all duration-300 border border-white/60 shadow-sm shadow-slate-200/20 hover:border-indigo-200/50 hover:shadow-indigo-200/30 group">
@@ -360,14 +360,14 @@ export default function AdminDashboard() {
               onClick={() => setIsProfileModalOpen(true)}
               className="flex items-center gap-4 pl-5 border-l border-slate-200/50 hover:bg-white/40 rounded-2xl p-2 -ml-2 transition-all cursor-pointer"
             >
-              <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-slate-600 to-slate-800 flex items-center justify-center text-white font-semibold text-sm shadow-lg shadow-slate-300/50">
+              <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-slate-600 to-slate-800 flex items-center justify-center text-slate-900 font-semibold text-sm shadow-lg shadow-slate-300/50">
                 AD
               </div>
               <div className="hidden md:block text-left">
                 <p className="text-lg font-semibold text-slate-800">{adminProfile.name}</p>
-                <p className="text-base text-slate-400">{adminProfile.role}</p>
+                <p className="text-base text-slate-600">{adminProfile.role}</p>
               </div>
-              <ChevronDown size={18} className="text-slate-400" />
+              <ChevronDown size={18} className="text-slate-600" />
             </button>
           </div>
         </header>
@@ -379,7 +379,7 @@ export default function AdminDashboard() {
               {/* Premium Welcome Header */}
               <div className="flex items-start justify-between">
                 <div>
-                  <h1 className="text-5xl font-light bg-gradient-to-r from-slate-800 via-indigo-800 to-slate-800 bg-clip-text text-transparent flex items-center gap-4">
+                  <h1 className="text-[#0284C7]xl font-light bg-gradient-to-r from-slate-800 via-indigo-800 to-slate-800 bg-clip-text text-transparent flex items-center gap-4">
                     Welcome back, <span className="font-semibold">{adminProfile.name.split(' ')[0]}</span>
                     <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-amber-300 via-orange-300 to-amber-400 text-3xl shadow-lg shadow-amber-300/40">👋</span>
                   </h1>
@@ -410,10 +410,10 @@ export default function AdminDashboard() {
                           <div className="flex items-start justify-between mb-5">
                             <div>
                               <p className="text-base font-bold text-slate-500 uppercase tracking-[0.15em]">{s.label}</p>
-                              <p className={`text-5xl font-bold ${c.text} mt-3 tracking-tight bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text`}>{s.val}</p>
+                              <p className={`text-[#0284C7]xl font-bold ${c.text} mt-3 tracking-tight bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text`}>{s.val}</p>
                             </div>
                             <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${c.icon} backdrop-blur flex items-center justify-center shadow-lg ${c.glow} border ${c.border}`}>
-                              <s.icon size={26} className="text-white" />
+                              <s.icon size={26} className="text-slate-900" />
                             </div>
                           </div>
                           <div className="flex items-center gap-3">
@@ -421,7 +421,7 @@ export default function AdminDashboard() {
                               {s.trendUp ? <TrendingUp size={18} className="text-emerald-600" /> : <TrendingDown size={18} className="text-rose-600" />}
                               <span className="text-base font-bold">{s.trend}</span>
                             </div>
-                            <span className="text-base text-slate-400 font-medium">vs last month</span>
+                            <span className="text-base text-slate-600 font-medium">vs last month</span>
                           </div>
                         </div>
                       </div>
@@ -457,12 +457,12 @@ export default function AdminDashboard() {
                             </div>
                             <div>
                               <p className="text-lg font-medium text-slate-700">{s.name}</p>
-                              <p className="text-base text-slate-400">{s.desc}</p>
+                              <p className="text-base text-slate-600">{s.desc}</p>
                             </div>
                           </div>
                           <div className="flex items-center gap-3">
                             <span className="px-5 py-2.5 bg-emerald-50/80 backdrop-blur text-emerald-600 text-base font-medium rounded-full border border-emerald-200/50">{s.status}</span>
-                            <ChevronDown size={20} className="text-slate-300 -rotate-90" />
+                            <ChevronDown size={20} className="text-slate-700 -rotate-90" />
                           </div>
                         </div>
                       ))}
@@ -490,7 +490,7 @@ export default function AdminDashboard() {
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-3 mb-1">
                               <span className={`text-base font-bold ${log.color}`}>[{log.type}]</span>
-                              <span className="text-base text-slate-400 font-mono">{log.time}</span>
+                              <span className="text-base text-slate-600 font-mono">{log.time}</span>
                             </div>
                             <p className="text-lg text-slate-600 truncate">{log.message}</p>
                           </div>
@@ -509,10 +509,10 @@ export default function AdminDashboard() {
                   <div className="relative p-6 rounded-3xl flex items-center justify-between">
                     <div className="flex items-center gap-5">
                       <div className="w-14 h-14 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center border border-white/30">
-                        <CheckCircle2 size={26} className="text-white" />
+                        <CheckCircle2 size={26} className="text-slate-900" />
                       </div>
                       <div>
-                        <p className="text-white font-medium text-2xl">All systems are running smoothly</p>
+                        <p className="text-slate-900 font-medium text-2xl">All systems are running smoothly</p>
                         <p className="text-emerald-100/80 text-base mt-2">Last checked: 14:32:45</p>
                       </div>
                     </div>
@@ -539,7 +539,7 @@ export default function AdminDashboard() {
                         </div>
                         <div>
                           <h3 className="text-xl font-semibold text-slate-700">System Overview</h3>
-                          <p className="text-sm text-slate-400">Real-time performance metrics</p>
+                          <p className="text-sm text-slate-600">Real-time performance metrics</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2 text-sm bg-emerald-50/80 backdrop-blur px-3 py-1.5 rounded-full border border-emerald-200/50">
@@ -556,7 +556,7 @@ export default function AdminDashboard() {
                             <CircularProgress value={m.value} color={m.color} stroke={m.stroke} suffix={m.suffix} />
                             <div>
                               <p className="text-base font-semibold text-slate-700">{m.label}</p>
-                              <p className="text-sm text-slate-400 mt-0.5">
+                              <p className="text-sm text-slate-600 mt-0.5">
                                 {i === 0 && "CPU Usage"}
                                 {i === 1 && "Memory Load"}
                                 {i === 2 && "Disk Space"}
@@ -585,7 +585,7 @@ export default function AdminDashboard() {
                             <span className="text-sm text-slate-500">Excellent</span>
                           </div>
                         </div>
-                        <button className="flex items-center gap-1 text-sm text-slate-400 hover:text-slate-600 bg-white/50 px-3 py-1.5 rounded-lg border border-white/60 transition-all">
+                        <button className="flex items-center gap-1 text-sm text-slate-600 hover:text-slate-600 bg-white/50 px-3 py-1.5 rounded-lg border border-white/60 transition-all">
                           View Details <ChevronDown size={14} className="-rotate-90" />
                         </button>
                       </div>
@@ -596,7 +596,7 @@ export default function AdminDashboard() {
 
               {/* Elegant Footer */}
               <footer className="pt-8 border-t border-slate-200/50">
-                <div className="flex items-center justify-between text-base text-slate-400">
+                <div className="flex items-center justify-between text-base text-slate-600">
                   <p className="font-light tracking-wide">© 2024 MediConnect Lanka. All rights reserved.</p>
                   <div className="flex items-center gap-3">
                     <span className="font-medium">v2.0.0</span>
@@ -610,7 +610,7 @@ export default function AdminDashboard() {
 
           {activeTab === 'approvals' && (
             <div className="space-y-4">
-              <h2 className="text-xl font-bold text-white mb-4">Pending Doctor Approvals</h2>
+              <h2 className="text-xl font-bold text-slate-900 mb-4">Pending Doctor Approvals</h2>
               <div className="clinical-card overflow-hidden">
                 <table className="clinical-table">
                   <thead>
@@ -624,8 +624,8 @@ export default function AdminDashboard() {
                   <tbody>
                     {users.filter(u => u.role === 'DOCTOR' && u.status === 'PENDING').map(u => (
                       <tr key={u.id}>
-                        <td className="font-bold text-white">{u.firstName} {u.lastName}</td>
-                        <td className="text-slate-400">{u.email}</td>
+                        <td className="font-bold text-slate-900">{u.firstName} {u.lastName}</td>
+                        <td className="text-slate-600">{u.email}</td>
                         <td><span className="badge-warning">PENDING</span></td>
                         <td className="flex gap-2">
                           <button onClick={() => handleStatusUpdate(u.id, 'APPROVED')} className="px-3 py-1 bg-emerald-500/10 text-emerald-500 rounded-lg text-xs font-bold hover:bg-emerald-500/20 transition-colors">Approve</button>
@@ -646,10 +646,10 @@ export default function AdminDashboard() {
             <div className="space-y-8 max-w-7xl mx-auto">
               <div className="flex items-center justify-between">
                 <div>
-                  <h1 className="text-5xl font-light text-slate-800">User <span className="font-semibold">Management</span></h1>
+                  <h1 className="text-[#0284C7]xl font-light text-slate-800">User <span className="font-semibold">Management</span></h1>
                   <p className="text-lg text-slate-500 mt-4 font-light tracking-wide">Manage and monitor all platform users</p>
                 </div>
-                <button onClick={openCreateModal} className="flex items-center gap-3 px-7 py-5 bg-gradient-to-r from-slate-700 to-slate-800 text-white rounded-2xl text-lg font-medium shadow-lg shadow-slate-300/50 hover:shadow-xl transition-all duration-300">
+                <button onClick={openCreateModal} className="flex items-center gap-3 px-7 py-5 bg-gradient-to-r from-slate-700 to-slate-800 text-slate-900 rounded-2xl text-lg font-medium shadow-lg shadow-slate-300/50 hover:shadow-xl transition-all duration-300">
                   <UserPlus size={22} /> Add User
                 </button>
               </div>
@@ -661,17 +661,17 @@ export default function AdminDashboard() {
                   {/* Search and Filter Bar */}
                   <div className="p-6 border-b border-slate-100/50 flex items-center gap-4">
                     <div className="relative flex-1 max-w-md">
-                      <Search size={22} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                      <Search size={22} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600" />
                       <input
                         type="text"
                         placeholder="Search users by name or email..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-12 pr-4 py-5 bg-white/60 backdrop-blur border border-white/80 rounded-xl text-lg text-slate-600 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200/50"
+                        className="w-full pl-12 pr-4 py-5 bg-white/60 backdrop-blur border border-white/80 rounded-xl text-lg text-slate-600 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-200/50"
                       />
                     </div>
                     <div className="relative">
-                      <Filter size={22} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                      <Filter size={22} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600" />
                       <select
                         value={roleFilter}
                         onChange={(e) => setRoleFilter(e.target.value)}
@@ -682,7 +682,7 @@ export default function AdminDashboard() {
                         <option value="DOCTOR">Doctor</option>
                         <option value="ADMIN">Admin</option>
                       </select>
-                      <ChevronDown size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                      <ChevronDown size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-600 pointer-events-none" />
                     </div>
                     <div className="px-5 py-2.5 bg-slate-100/50 rounded-lg">
                       <span className="text-base text-slate-500">Total: <span className="font-semibold text-slate-700">{filteredUsers.length}</span></span>
@@ -720,15 +720,15 @@ export default function AdminDashboard() {
                             <div className="flex items-center justify-end gap-2">
                               <button 
                                 onClick={() => handleToggleUserStatus(u.id)} 
-                                className={`p-4 rounded-xl transition-all ${u.status === 'Active' ? 'hover:bg-amber-50 text-slate-400 hover:text-amber-500' : 'hover:bg-emerald-50 text-slate-400 hover:text-emerald-500'}`} 
+                                className={`p-4 rounded-xl transition-all ${u.status === 'Active' ? 'hover:bg-amber-50 text-slate-600 hover:text-amber-500' : 'hover:bg-emerald-50 text-slate-600 hover:text-emerald-500'}`} 
                                 title={u.status === 'Active' ? 'Deactivate User' : 'Activate User'}
                               >
                                 {u.status === 'Active' ? <XCircle size={24} /> : <CheckCircle2 size={24} />}
                               </button>
-                              <button onClick={() => openEditModal(u)} className="p-4 hover:bg-white rounded-xl text-slate-400 hover:text-blue-500 transition-all" title="Edit User">
+                              <button onClick={() => openEditModal(u)} className="p-4 hover:bg-white rounded-xl text-slate-600 hover:text-blue-500 transition-all" title="Edit User">
                                 <Edit2 size={24} />
                               </button>
-                              <button onClick={() => handleDeleteUser(u.id)} className="p-4 hover:bg-rose-50 rounded-xl text-slate-400 hover:text-rose-500 transition-all" title="Delete User">
+                              <button onClick={() => handleDeleteUser(u.id)} className="p-4 hover:bg-rose-50 rounded-xl text-slate-600 hover:text-rose-500 transition-all" title="Delete User">
                                 <Trash2 size={24} />
                               </button>
                             </div>
@@ -740,10 +740,10 @@ export default function AdminDashboard() {
                   {filteredUsers.length === 0 && (
                     <div className="p-12 text-center">
                       <div className="w-24 h-24 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                        <Search size={44} className="text-slate-400" />
+                        <Search size={44} className="text-slate-600" />
                       </div>
                       <p className="text-2xl text-slate-500 font-medium">No users found</p>
-                      <p className="text-lg text-slate-400 mt-3">Try adjusting your search or filter</p>
+                      <p className="text-lg text-slate-600 mt-3">Try adjusting your search or filter</p>
                     </div>
                   )}
                 </div>
@@ -754,7 +754,7 @@ export default function AdminDashboard() {
           {activeTab === 'appointments' && (
             <div className="space-y-8 max-w-7xl mx-auto">
               <div>
-                <h1 className="text-5xl font-light text-slate-800">All <span className="font-semibold">Appointments</span></h1>
+                <h1 className="text-[#0284C7]xl font-light text-slate-800">All <span className="font-semibold">Appointments</span></h1>
                 <p className="text-lg text-slate-500 mt-4 font-light tracking-wide">View and manage all platform appointments</p>
               </div>
               {/* Glass Appointments Table */}
@@ -777,7 +777,7 @@ export default function AdminDashboard() {
                           <td className="px-6 py-6">
                             <div className="flex flex-col">
                               <span className="text-lg font-medium text-slate-700">{a.date}</span>
-                              <span className="text-base text-slate-400 font-mono">{a.time}</span>
+                              <span className="text-base text-slate-600 font-mono">{a.time}</span>
                             </div>
                           </td>
                           <td className="px-6 py-6 text-lg text-slate-600">{a.patientId}</td>
@@ -802,7 +802,7 @@ export default function AdminDashboard() {
               {/* Header with Stats */}
               <div className="flex items-center justify-between">
                 <div>
-                  <h1 className="text-5xl font-light text-slate-800">Doctor <span className="font-semibold">Verifications</span></h1>
+                  <h1 className="text-[#0284C7]xl font-light text-slate-800">Doctor <span className="font-semibold">Verifications</span></h1>
                   <p className="text-lg text-slate-500 mt-4 font-light tracking-wide">Review and approve pending doctor registrations</p>
                 </div>
                 <div className="flex items-center gap-4">
@@ -837,7 +837,7 @@ export default function AdminDashboard() {
                         <CheckCircle size={44} className="text-emerald-500" />
                       </div>
                       <p className="text-2xl text-slate-500 font-medium">All caught up!</p>
-                      <p className="text-lg text-slate-400 mt-2">No pending doctor verifications</p>
+                      <p className="text-lg text-slate-600 mt-2">No pending doctor verifications</p>
                     </div>
                   ) : (
                     <div className="divide-y divide-slate-100/50">
@@ -851,7 +851,7 @@ export default function AdminDashboard() {
                               <div>
                                 <h3 className="text-xl font-semibold text-slate-800">{doctor.name}</h3>
                                 <p className="text-base text-slate-500 mt-1">{doctor.specialization}</p>
-                                <div className="flex items-center gap-4 mt-3 text-sm text-slate-400">
+                                <div className="flex items-center gap-4 mt-3 text-sm text-slate-600">
                                   <span className="flex items-center gap-1.5"><Mail size={14} /> {doctor.email}</span>
                                   <span className="flex items-center gap-1.5"><Phone size={14} /> {doctor.phone}</span>
                                   <span className="flex items-center gap-1.5"><Award size={14} /> License: {doctor.licenseNumber}</span>
@@ -887,7 +887,7 @@ export default function AdminDashboard() {
                             </div>
                           </div>
                           <div className="mt-4 pt-4 border-t border-slate-100/50 flex items-center justify-between">
-                            <span className="text-sm text-slate-400">Submitted on {doctor.submittedDate}</span>
+                            <span className="text-sm text-slate-600">Submitted on {doctor.submittedDate}</span>
                             <span className="px-4 py-2 bg-amber-50/80 text-amber-600 text-sm font-medium rounded-full border border-amber-200/50">
                               Pending Review
                             </span>
@@ -906,7 +906,7 @@ export default function AdminDashboard() {
               {/* Header with Stats */}
               <div className="flex items-center justify-between">
                 <div>
-                  <h1 className="text-5xl font-light text-slate-800">Doctor <span className="font-semibold">Directory</span></h1>
+                  <h1 className="text-[#0284C7]xl font-light text-slate-800">Doctor <span className="font-semibold">Directory</span></h1>
                   <p className="text-lg text-slate-500 mt-4 font-light tracking-wide">View and manage all approved doctors</p>
                 </div>
                 <div className="flex items-center gap-4">
@@ -934,15 +934,15 @@ export default function AdminDashboard() {
               {/* Search and Filter */}
               <div className="flex items-center gap-4">
                 <div className="relative flex-1 max-w-md">
-                  <Search size={22} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <Search size={22} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600" />
                   <input
                     type="text"
                     placeholder="Search doctors by name or specialization..."
-                    className="w-full pl-12 pr-4 py-4 bg-white/60 backdrop-blur border border-white/80 rounded-xl text-lg text-slate-600 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200/50"
+                    className="w-full pl-12 pr-4 py-4 bg-white/60 backdrop-blur border border-white/80 rounded-xl text-lg text-slate-600 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-200/50"
                   />
                 </div>
                 <div className="relative">
-                  <Filter size={22} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <Filter size={22} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600" />
                   <select className="pl-12 pr-8 py-4 bg-white/60 backdrop-blur border border-white/80 rounded-xl text-lg text-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-200/50 appearance-none cursor-pointer">
                     <option value="ALL">All Specializations</option>
                     <option value="Cardiology">Cardiology</option>
@@ -950,7 +950,7 @@ export default function AdminDashboard() {
                     <option value="Dermatology">Dermatology</option>
                     <option value="General">General</option>
                   </select>
-                  <ChevronDown size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                  <ChevronDown size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-600 pointer-events-none" />
                 </div>
               </div>
 
@@ -979,17 +979,17 @@ export default function AdminDashboard() {
                       {/* Doctor Info */}
                       <div className="space-y-3 mb-5">
                         <div className="flex items-center gap-3 text-base text-slate-500">
-                          <Mail size={16} className="text-slate-400" />
+                          <Mail size={16} className="text-slate-600" />
                           <span className="truncate">{doctor.email}</span>
                         </div>
                         {doctor.licenseNumber && (
                           <div className="flex items-center gap-3 text-base text-slate-500">
-                            <Award size={16} className="text-slate-400" />
+                            <Award size={16} className="text-slate-600" />
                             <span>License: {doctor.licenseNumber}</span>
                           </div>
                         )}
                         <div className="flex items-center gap-3 text-base text-slate-500">
-                          <Clock size={16} className="text-slate-400" />
+                          <Clock size={16} className="text-slate-600" />
                           <span>Joined: {doctor.joinDate || '2024-01-01'}</span>
                         </div>
                       </div>
@@ -998,15 +998,15 @@ export default function AdminDashboard() {
                       <div className="grid grid-cols-3 gap-3 mb-5 pt-4 border-t border-slate-100/50">
                         <div className="text-center">
                           <p className="text-xl font-bold text-slate-700">{doctor.patients || '24'}</p>
-                          <p className="text-xs text-slate-400">Patients</p>
+                          <p className="text-xs text-slate-600">Patients</p>
                         </div>
                         <div className="text-center">
                           <p className="text-xl font-bold text-slate-700">{doctor.appointments || '156'}</p>
-                          <p className="text-xs text-slate-400">Appointments</p>
+                          <p className="text-xs text-slate-600">Appointments</p>
                         </div>
                         <div className="text-center">
                           <p className="text-xl font-bold text-slate-700">{doctor.rating || '4.8'}</p>
-                          <p className="text-xs text-slate-400">Rating</p>
+                          <p className="text-xs text-slate-600">Rating</p>
                         </div>
                       </div>
 
@@ -1041,10 +1041,10 @@ export default function AdminDashboard() {
                   <div className="absolute inset-0 bg-gradient-to-br from-white/50 to-white/30 backdrop-blur-xl rounded-3xl border border-white/70 shadow-xl shadow-slate-200/20" />
                   <div className="relative p-16 text-center">
                     <div className="w-24 h-24 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                      <Stethoscope size={44} className="text-slate-400" />
+                      <Stethoscope size={44} className="text-slate-600" />
                     </div>
                     <p className="text-2xl text-slate-500 font-medium">No approved doctors</p>
-                    <p className="text-lg text-slate-400 mt-2">Approve pending doctor registrations to see them here</p>
+                    <p className="text-lg text-slate-600 mt-2">Approve pending doctor registrations to see them here</p>
                   </div>
                 </div>
               )}
@@ -1057,10 +1057,10 @@ export default function AdminDashboard() {
                 <div className="absolute inset-0 bg-gradient-to-br from-white/50 to-white/30 backdrop-blur-xl rounded-3xl border border-white/70 shadow-xl shadow-slate-200/20" />
                 <div className="relative p-12 flex flex-col items-center">
                   <div className="w-20 h-20 bg-gradient-to-br from-slate-100 to-white border border-slate-200/50 rounded-2xl flex items-center justify-center mb-6 shadow-lg">
-                    <Settings size={32} className="text-slate-400" />
+                    <Settings size={32} className="text-slate-600" />
                   </div>
                   <h3 className="text-3xl font-medium text-slate-700 mb-4">Module under maintenance</h3>
-                  <p className="text-lg text-slate-400">This feature will be available soon</p>
+                  <p className="text-lg text-slate-600">This feature will be available soon</p>
                 </div>
               </div>
             </div>
@@ -1085,7 +1085,7 @@ export default function AdminDashboard() {
                   {modalMode === 'create' ? 'Create a new user account' : 'Update user information'}
                 </p>
               </div>
-              <button onClick={closeModal} className="p-5 hover:bg-slate-100 rounded-xl text-slate-400 hover:text-slate-600 transition-all">
+              <button onClick={closeModal} className="p-5 hover:bg-slate-100 rounded-xl text-slate-600 hover:text-slate-600 transition-all">
                 <X size={32} />
               </button>
             </div>
@@ -1101,7 +1101,7 @@ export default function AdminDashboard() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="Enter full name"
-                  className="w-full px-6 py-6 bg-white/60 backdrop-blur border border-slate-200/70 rounded-xl text-xl text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-300/50"
+                  className="w-full px-6 py-6 bg-white/60 backdrop-blur border border-slate-200/70 rounded-xl text-xl text-slate-700 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-300/50"
                 />
               </div>
 
@@ -1114,7 +1114,7 @@ export default function AdminDashboard() {
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   placeholder="Enter email address"
-                  className="w-full px-6 py-6 bg-white/60 backdrop-blur border border-slate-200/70 rounded-xl text-xl text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-300/50"
+                  className="w-full px-6 py-6 bg-white/60 backdrop-blur border border-slate-200/70 rounded-xl text-xl text-slate-700 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-300/50"
                 />
               </div>
 
@@ -1131,7 +1131,7 @@ export default function AdminDashboard() {
                     <option value="DOCTOR">Doctor</option>
                     <option value="ADMIN">Admin</option>
                   </select>
-                  <ChevronDown size={24} className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                  <ChevronDown size={24} className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-600 pointer-events-none" />
                 </div>
               </div>
 
@@ -1146,7 +1146,7 @@ export default function AdminDashboard() {
                       onClick={() => setFormData({ ...formData, status })}
                       className={`flex-1 py-6 px-7 rounded-xl text-xl font-medium transition-all ${
                         formData.status === status
-                          ? 'bg-slate-800 text-white shadow-lg'
+                          ? 'bg-slate-800 text-slate-900 shadow-lg'
                           : 'bg-white/60 text-slate-600 border border-slate-200/70 hover:bg-white'
                       }`}
                     >
@@ -1167,7 +1167,7 @@ export default function AdminDashboard() {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-6 px-7 bg-gradient-to-r from-slate-700 to-slate-800 text-white rounded-xl text-xl font-medium shadow-lg hover:shadow-xl transition-all"
+                  className="flex-1 py-6 px-7 bg-gradient-to-r from-slate-700 to-slate-800 text-slate-900 rounded-xl text-xl font-medium shadow-lg hover:shadow-xl transition-all"
                 >
                   {modalMode === 'create' ? 'Create User' : 'Save Changes'}
                 </button>
@@ -1193,7 +1193,7 @@ export default function AdminDashboard() {
                   <p className="text-lg text-slate-500 mt-1">{selectedDoctor.specialization}</p>
                 </div>
               </div>
-              <button onClick={closeDoctorModal} className="p-5 hover:bg-slate-100 rounded-xl text-slate-400 hover:text-slate-600 transition-all">
+              <button onClick={closeDoctorModal} className="p-5 hover:bg-slate-100 rounded-xl text-slate-600 hover:text-slate-600 transition-all">
                 <X size={32} />
               </button>
             </div>
@@ -1202,27 +1202,27 @@ export default function AdminDashboard() {
             <div className="space-y-6">
               <div className="grid grid-cols-2 gap-6">
                 <div className="p-5 bg-white/60 backdrop-blur rounded-2xl border border-slate-200/50">
-                  <p className="text-sm text-slate-400 mb-1">Email Address</p>
+                  <p className="text-sm text-slate-600 mb-1">Email Address</p>
                   <p className="text-lg font-medium text-slate-700 flex items-center gap-2">
-                    <Mail size={18} className="text-slate-400" /> {selectedDoctor.email}
+                    <Mail size={18} className="text-slate-600" /> {selectedDoctor.email}
                   </p>
                 </div>
                 <div className="p-5 bg-white/60 backdrop-blur rounded-2xl border border-slate-200/50">
-                  <p className="text-sm text-slate-400 mb-1">Phone Number</p>
+                  <p className="text-sm text-slate-600 mb-1">Phone Number</p>
                   <p className="text-lg font-medium text-slate-700 flex items-center gap-2">
-                    <Phone size={18} className="text-slate-400" /> {selectedDoctor.phone}
+                    <Phone size={18} className="text-slate-600" /> {selectedDoctor.phone}
                   </p>
                 </div>
                 <div className="p-5 bg-white/60 backdrop-blur rounded-2xl border border-slate-200/50">
-                  <p className="text-sm text-slate-400 mb-1">License Number</p>
+                  <p className="text-sm text-slate-600 mb-1">License Number</p>
                   <p className="text-lg font-medium text-slate-700 flex items-center gap-2">
-                    <Award size={18} className="text-slate-400" /> {selectedDoctor.licenseNumber}
+                    <Award size={18} className="text-slate-600" /> {selectedDoctor.licenseNumber}
                   </p>
                 </div>
                 <div className="p-5 bg-white/60 backdrop-blur rounded-2xl border border-slate-200/50">
-                  <p className="text-sm text-slate-400 mb-1">Submitted Date</p>
+                  <p className="text-sm text-slate-600 mb-1">Submitted Date</p>
                   <p className="text-lg font-medium text-slate-700 flex items-center gap-2">
-                    <Clock size={18} className="text-slate-400" /> {selectedDoctor.submittedDate}
+                    <Clock size={18} className="text-slate-600" /> {selectedDoctor.submittedDate}
                   </p>
                 </div>
               </div>
@@ -1268,7 +1268,7 @@ export default function AdminDashboard() {
                 </button>
                 <button
                   onClick={() => { handleApproveDoctor(selectedDoctor.id); closeDoctorModal(); }}
-                  className="flex-1 py-5 px-6 bg-emerald-500 text-white rounded-xl text-xl font-medium hover:bg-emerald-600 transition-all"
+                  className="flex-1 py-5 px-6 bg-emerald-500 text-slate-900 rounded-xl text-xl font-medium hover:bg-emerald-600 transition-all"
                 >
                   <CheckCircle size={24} className="inline mr-2" /> Approve
                 </button>
@@ -1289,7 +1289,7 @@ export default function AdminDashboard() {
                 <h2 className="text-4xl font-semibold text-slate-800">Admin Profile</h2>
                 <p className="text-xl text-slate-500 mt-3">Manage your profile information</p>
               </div>
-              <button onClick={() => setIsProfileModalOpen(false)} className="p-5 hover:bg-slate-100 rounded-xl text-slate-400 hover:text-slate-600 transition-all">
+              <button onClick={() => setIsProfileModalOpen(false)} className="p-5 hover:bg-slate-100 rounded-xl text-slate-600 hover:text-slate-600 transition-all">
                 <X size={32} />
               </button>
             </div>
@@ -1297,13 +1297,13 @@ export default function AdminDashboard() {
             {/* Profile Form */}
             <form className="space-y-6">
               <div className="flex items-center gap-6 mb-8">
-                <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center text-white font-bold text-3xl shadow-lg">
+                <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center text-slate-900 font-bold text-3xl shadow-lg">
                   {adminProfile.name.split(' ').map(n => n[0]).join('')}
                 </div>
                 <div>
                   <p className="text-2xl font-semibold text-slate-800">{adminProfile.name}</p>
                   <p className="text-lg text-slate-500">{adminProfile.role}</p>
-                  <p className="text-sm text-slate-400 mt-1">Member since {adminProfile.joinDate}</p>
+                  <p className="text-sm text-slate-600 mt-1">Member since {adminProfile.joinDate}</p>
                 </div>
               </div>
 
@@ -1369,7 +1369,7 @@ export default function AdminDashboard() {
                 <button
                   type="button"
                   onClick={() => { alert('Profile updated successfully!'); setIsProfileModalOpen(false); }}
-                  className="flex-1 py-5 px-6 bg-gradient-to-r from-slate-700 to-slate-800 text-white rounded-xl text-xl font-medium shadow-lg hover:shadow-xl transition-all"
+                  className="flex-1 py-5 px-6 bg-gradient-to-r from-slate-700 to-slate-800 text-slate-900 rounded-xl text-xl font-medium shadow-lg hover:shadow-xl transition-all"
                 >
                   Save Changes
                 </button>

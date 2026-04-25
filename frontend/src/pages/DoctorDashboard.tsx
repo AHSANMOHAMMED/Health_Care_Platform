@@ -80,13 +80,13 @@ export default function DoctorDashboard() {
     }
   };
 
-  if (loading) return <div className="min-h-screen bg-[#0C1220] flex items-center justify-center"><Loader2 className="w-8 h-8 text-[#06B6D4] animate-spin" /></div>;
+  if (loading) return <div className="min-h-screen bg-slate-50 flex items-center justify-center"><Loader2 className="w-8 h-8 text-[#06B6D4] animate-spin" /></div>;
 
   return (
-    <div className="min-h-screen bg-[#0C1220] flex font-sans text-slate-300">
+    <div className="min-h-screen bg-slate-50 flex font-sans text-slate-700">
       
       {/* ── Sidebar ── */}
-      <aside className={`fixed inset-y-0 left-0 z-40 w-64 bg-[#111B2E] border-r border-[#1E3A5F]/50 transform transition-transform duration-300 lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+      <aside className={`fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-slate-300/50 transform transition-transform duration-300 lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="h-full flex flex-col">
           <div className="p-6">
             <Link to="/" className="flex items-center gap-3">
@@ -94,7 +94,7 @@ export default function DoctorDashboard() {
                 <ShieldCheck size={18} className="text-[#06B6D4]" />
               </div>
               <div>
-                <p className="text-sm font-bold text-white leading-none">MediConnect</p>
+                <p className="text-sm font-bold text-slate-900 leading-none">MediConnect</p>
                 <p className="text-[9px] text-slate-500 uppercase tracking-widest font-medium mt-0.5">Doctor Portal</p>
               </div>
             </Link>
@@ -106,8 +106,8 @@ export default function DoctorDashboard() {
                 Dr
               </div>
               <div>
-                <p className="text-sm font-bold text-white">Dr. {(user as any)?.lastName || 'Perera'}</p>
-                <p className="text-[10px] text-slate-400">Cardiology</p>
+                <p className="text-sm font-bold text-slate-900">Dr. {(user as any)?.lastName || 'Perera'}</p>
+                <p className="text-[10px] text-slate-600">Cardiology</p>
               </div>
             </div>
 
@@ -133,13 +133,13 @@ export default function DoctorDashboard() {
       <main className="flex-1 lg:ml-64 flex flex-col min-h-screen">
         
         {/* Header */}
-        <header className="h-16 bg-[#111B2E]/80 backdrop-blur border-b border-[#1E3A5F]/50 flex items-center justify-between px-4 lg:px-8 sticky top-0 z-30">
+        <header className="h-16 bg-white/80 backdrop-blur border-b border-slate-300/50 flex items-center justify-between px-4 lg:px-8 sticky top-0 z-30">
           <div className="flex items-center gap-3">
-            <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2 text-slate-400 hover:text-white"><Menu size={20} /></button>
-            <h1 className="text-lg font-bold text-white capitalize">{activeTab}</h1>
+            <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2 text-slate-600 hover:text-slate-900"><Menu size={20} /></button>
+            <h1 className="text-lg font-bold text-slate-900 capitalize">{activeTab}</h1>
           </div>
           <div className="flex items-center gap-4">
-            <button className="relative p-2 text-slate-400 hover:text-white">
+            <button className="relative p-2 text-slate-600 hover:text-slate-900">
               <Bell size={20} /><span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#06B6D4] rounded-full border-2 border-[#111B2E]"></span>
             </button>
           </div>
@@ -152,18 +152,18 @@ export default function DoctorDashboard() {
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div className="clinical-card p-5">
-                  <p className="text-sm text-slate-400">Upcoming Today</p>
-                  <p className="text-3xl font-bold text-white mt-1">{appointments.filter(a => a.status === 'confirmed' || a.status === 'waiting').length}</p>
+                  <p className="text-sm text-slate-600">Upcoming Today</p>
+                  <p className="text-3xl font-bold text-slate-900 mt-1">{appointments.filter(a => a.status === 'confirmed' || a.status === 'waiting').length}</p>
                 </div>
                 <div className="clinical-card p-5">
-                  <p className="text-sm text-slate-400">Completed</p>
+                  <p className="text-sm text-slate-600">Completed</p>
                   <p className="text-3xl font-bold text-[#10B981] mt-1">{appointments.filter(a => a.status === 'completed').length}</p>
                 </div>
               </div>
 
               <div className="clinical-card overflow-hidden">
-                <div className="p-4 border-b border-[#1E3A5F]/50 bg-[#132040]/50">
-                  <h3 className="font-bold text-white">Upcoming Consultations</h3>
+                <div className="p-4 border-b border-slate-300/50 bg-slate-100/50">
+                  <h3 className="font-bold text-slate-900">Upcoming Consultations</h3>
                 </div>
                 <table className="clinical-table">
                   <thead>
@@ -179,7 +179,7 @@ export default function DoctorDashboard() {
                   <tbody>
                     {appointments.filter(a => a.status === 'confirmed' || a.status === 'waiting' || a.status === 'pending').map(appt => (
                       <tr key={appt.id}>
-                        <td className="font-medium text-white">{appt.time || appt.appointmentTime} <span className="text-xs text-slate-500 block">{appt.date || appt.appointmentDate}</span></td>
+                        <td className="font-medium text-slate-900">{appt.time || appt.appointmentTime} <span className="text-xs text-slate-500 block">{appt.date || appt.appointmentDate}</span></td>
                         <td>Patient ID: {appt.patientId}</td>
                         <td>{appt.reason || '-'}</td>
                         <td>
@@ -207,7 +207,7 @@ export default function DoctorDashboard() {
           )}
 
           {activeTab === 'patients' && (
-            <div className="clinical-card p-8 text-center text-slate-400">
+            <div className="clinical-card p-8 text-center text-slate-600">
               <Users size={48} className="mx-auto mb-4 opacity-20 text-[#06B6D4]" />
               <p>Patient directory module coming soon.</p>
             </div>
@@ -216,7 +216,7 @@ export default function DoctorDashboard() {
           {activeTab === 'prescriptions' && (
             <div className="space-y-6">
               <div className="flex justify-between items-center">
-                <h2 className="text-lg font-bold text-white">Issued Prescriptions</h2>
+                <h2 className="text-lg font-bold text-slate-900">Issued Prescriptions</h2>
                 <button onClick={() => setShowRxModal(true)} className="btn-primary !bg-[#06B6D4] hover:!bg-[#0891B2]"><Plus size={16} /> Write Prescription</button>
               </div>
               
@@ -224,13 +224,13 @@ export default function DoctorDashboard() {
                 {prescriptions.map(rx => (
                   <div key={rx.id} className="clinical-card p-5 border-l-4 border-l-[#06B6D4]">
                     <div className="flex justify-between items-start mb-3">
-                      <h3 className="font-bold text-white">{rx.medicineName}</h3>
+                      <h3 className="font-bold text-slate-900">{rx.medicineName}</h3>
                       <span className="text-xs text-slate-500">Patient ID: {rx.patientId}</span>
                     </div>
-                    <div className="text-sm space-y-1 text-slate-400">
+                    <div className="text-sm space-y-1 text-slate-600">
                       <p><span className="text-slate-500">Dosage:</span> {rx.dosage}</p>
                       <p><span className="text-slate-500">Duration:</span> {rx.duration}</p>
-                      <p className="pt-2 mt-2 border-t border-[#1E3A5F]/30 italic">{rx.instructions}</p>
+                      <p className="pt-2 mt-2 border-t border-slate-300/30 italic">{rx.instructions}</p>
                     </div>
                   </div>
                 ))}
@@ -242,7 +242,7 @@ export default function DoctorDashboard() {
           {activeTab === 'patients' && (
             <div className="space-y-6">
               <div className="flex justify-between items-center">
-                <h2 className="text-lg font-bold text-white">Clinical Patient Records</h2>
+                <h2 className="text-lg font-bold text-slate-900">Clinical Patient Records</h2>
                 <div className="relative max-w-xs">
                   <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
                   <input type="text" className="clinical-input pl-10" placeholder="Search by name or ID..." />
@@ -260,21 +260,21 @@ export default function DoctorDashboard() {
                         {p.name[0]}
                       </div>
                       <div>
-                        <h4 className="font-bold text-white group-hover:text-[#06B6D4] transition-colors">{p.name}</h4>
+                        <h4 className="font-bold text-slate-900 group-hover:text-[#06B6D4] transition-colors">{p.name}</h4>
                         <p className="text-[10px] text-slate-500">ID: {p.id} • {p.age} Yrs</p>
                       </div>
                     </div>
                     <div className="space-y-2 mb-4">
                       <div className="flex justify-between text-xs">
                         <span className="text-slate-500">Primary Condition:</span>
-                        <span className="text-slate-300">{p.condition}</span>
+                        <span className="text-slate-700">{p.condition}</span>
                       </div>
                       <div className="flex justify-between text-xs">
                         <span className="text-slate-500">Last Consultation:</span>
-                        <span className="text-slate-300">{p.lastVisit}</span>
+                        <span className="text-slate-700">{p.lastVisit}</span>
                       </div>
                     </div>
-                    <button className="w-full py-2 bg-[#111B2E] border border-[#1E3A5F] rounded-lg text-xs font-bold hover:bg-[#06B6D4]/10 hover:border-[#06B6D4]/50 transition-all">Open Full Record</button>
+                    <button className="w-full py-2 bg-white border border-slate-300 rounded-lg text-xs font-bold hover:bg-[#06B6D4]/10 hover:border-[#06B6D4]/50 transition-all">Open Full Record</button>
                   </div>
                 ))}
               </div>
@@ -283,8 +283,8 @@ export default function DoctorDashboard() {
 
           {activeTab === 'history' && (
             <div className="clinical-card overflow-hidden">
-              <div className="p-4 border-b border-[#1E3A5F]/50 bg-[#132040]/50">
-                <h3 className="font-bold text-white">Past Consultations</h3>
+              <div className="p-4 border-b border-slate-300/50 bg-slate-100/50">
+                <h3 className="font-bold text-slate-900">Past Consultations</h3>
               </div>
               <table className="clinical-table">
                 <thead>
@@ -303,9 +303,9 @@ export default function DoctorDashboard() {
                   ].map((h, i) => (
                     <tr key={i}>
                       <td>{h.date}</td>
-                      <td className="font-bold text-white">{h.patient}</td>
+                      <td className="font-bold text-slate-900">{h.patient}</td>
                       <td>{h.diagnosis}</td>
-                      <td><span className="text-xs text-slate-400">{h.outcome}</span></td>
+                      <td><span className="text-xs text-slate-600">{h.outcome}</span></td>
                       <td><button className="text-[#06B6D4] hover:underline font-bold text-xs">Download</button></td>
                     </tr>
                   ))}
@@ -322,8 +322,8 @@ export default function DoctorDashboard() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <div className="clinical-card p-6 w-full max-w-md">
             <div className="flex justify-between items-center mb-5">
-              <h3 className="text-lg font-bold text-white">Write Prescription</h3>
-              <button onClick={() => setShowRxModal(false)} className="text-slate-400 hover:text-white"><X size={20} /></button>
+              <h3 className="text-lg font-bold text-slate-900">Write Prescription</h3>
+              <button onClick={() => setShowRxModal(false)} className="text-slate-600 hover:text-slate-900"><X size={20} /></button>
             </div>
             <form onSubmit={handleCreatePrescription} className="space-y-4">
               <div>

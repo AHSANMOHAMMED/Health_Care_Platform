@@ -143,26 +143,26 @@ export default function MedicalReportsPage() {
           { label: 'Dosage *', key: 'dosage', placeholder: 'e.g., 1 tablet daily' },
         ].map(({ label, key, placeholder }) => (
           <div key={key}>
-            <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">{label}</label>
+            <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">{label}</label>
             <input type="text" className={inputClass} placeholder={placeholder}
               value={(form as any)[key]} onChange={e => setForm({ ...form, [key]: e.target.value })} />
           </div>
         ))}
         <div>
-          <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Duration</label>
+          <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Duration</label>
           <select className={inputClass} value={form.duration} onChange={e => setForm({ ...form, duration: e.target.value })}>
             {['7 days', '14 days', '30 days', '60 days', '90 days', 'Ongoing'].map(d => <option key={d}>{d}</option>)}
           </select>
         </div>
         <div>
-          <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Status</label>
+          <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Status</label>
           <select className={inputClass} value={form.status} onChange={e => setForm({ ...form, status: e.target.value as any })}>
             {['active', 'completed', 'cancelled'].map(s => <option key={s}>{s}</option>)}
           </select>
         </div>
       </div>
       <div>
-        <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Instructions</label>
+        <label className="block text-xs font-black text-slate-600 uppercase tracking-widest mb-2">Instructions</label>
         <textarea className={inputClass + ' resize-none'} rows={3} placeholder="Special instructions for the patient..."
           value={form.instructions} onChange={e => setForm({ ...form, instructions: e.target.value })} />
       </div>
@@ -172,7 +172,7 @@ export default function MedicalReportsPage() {
   return (
     <div className="min-h-screen bg-slate-50 flex">
       {toast && (
-        <div className={`fixed top-6 right-6 z-[100] flex items-center gap-3 px-6 py-4 rounded-2xl shadow-2xl text-white font-bold text-sm animate-slide-up ${toast.type === 'success' ? 'bg-emerald-600' : 'bg-red-600'}`}>
+        <div className={`fixed top-6 right-6 z-[100] flex items-center gap-3 px-6 py-4 rounded-2xl shadow-2xl text-slate-900 font-bold text-sm animate-slide-up ${toast.type === 'success' ? 'bg-emerald-600' : 'bg-red-600'}`}>
           {toast.type === 'success' ? <CheckCircle size={18} /> : <AlertCircle size={18} />}{toast.message}
         </div>
       )}
@@ -185,7 +185,7 @@ export default function MedicalReportsPage() {
           </div>
           <nav className="space-y-2">
             {navItems.map(item => (
-              <Link key={item.name} to={item.path} className={`flex items-center gap-4 px-6 py-4 rounded-2xl font-bold transition-all ${location.pathname === item.path ? 'bg-[#8D153A] text-white shadow-lg' : 'text-slate-500 hover:bg-[#8D153A]/5 hover:text-[#8D153A]'}`}>
+              <Link key={item.name} to={item.path} className={`flex items-center gap-4 px-6 py-4 rounded-2xl font-bold transition-all ${location.pathname === item.path ? 'bg-[#8D153A] text-slate-900 shadow-lg' : 'text-slate-500 hover:bg-[#8D153A]/5 hover:text-[#8D153A]'}`}>
                 <item.icon size={22} /><span>{item.name}</span>
               </Link>
             ))}
@@ -205,7 +205,7 @@ export default function MedicalReportsPage() {
             </div>
             <div className="flex gap-3">
               <button onClick={load} className="p-3 rounded-xl bg-white border border-slate-200 text-slate-500 hover:text-[#8D153A] transition-all"><RefreshCw size={20} className={loading ? 'animate-spin' : ''} /></button>
-              <button onClick={() => { resetForm(); setShowAddModal(true); }} className="px-6 py-3 bg-[#8D153A] text-white rounded-xl font-black hover:bg-[#71112D] transition-all flex items-center gap-2 shadow-lg shadow-[#8D153A]/20">
+              <button onClick={() => { resetForm(); setShowAddModal(true); }} className="px-6 py-3 bg-[#8D153A] text-slate-900 rounded-xl font-black hover:bg-[#71112D] transition-all flex items-center gap-2 shadow-lg shadow-[#8D153A]/20">
                 <PlusCircle size={20} /> New Prescription
               </button>
             </div>
@@ -220,7 +220,7 @@ export default function MedicalReportsPage() {
             ].map((s, i) => (
               <div key={i} className="bg-white p-5 rounded-2xl border border-slate-100 text-center">
                 <p className={`text-3xl font-black ${s.color}`}>{loading ? '—' : s.value}</p>
-                <p className="text-xs font-black text-slate-400 uppercase tracking-widest mt-1">{s.label}</p>
+                <p className="text-xs font-black text-slate-600 uppercase tracking-widest mt-1">{s.label}</p>
               </div>
             ))}
           </div>
@@ -228,7 +228,7 @@ export default function MedicalReportsPage() {
           {/* Filters */}
           <div className="bg-white p-4 rounded-2xl border border-slate-100 mb-6 flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600" size={18} />
               <input type="text" placeholder="Search by patient name or medicine..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-950 placeholder-slate-400 focus:outline-none focus:border-[#8D153A]" />
             </div>
             <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} className="px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-950 focus:outline-none focus:border-[#8D153A]">
@@ -241,16 +241,16 @@ export default function MedicalReportsPage() {
 
           {/* Reports List */}
           {loading ? (
-            <div className="flex items-center justify-center py-24 text-slate-400"><Loader2 size={32} className="animate-spin mr-3" />Loading prescriptions...</div>
+            <div className="flex items-center justify-center py-24 text-slate-600"><Loader2 size={32} className="animate-spin mr-3" />Loading prescriptions...</div>
           ) : filtered.length === 0 ? (
-            <div className="text-center py-24 text-slate-400"><FileText size={48} className="mx-auto mb-4 opacity-30" /><p className="font-bold text-lg">No prescriptions found</p></div>
+            <div className="text-center py-24 text-slate-600"><FileText size={48} className="mx-auto mb-4 opacity-30" /><p className="font-bold text-lg">No prescriptions found</p></div>
           ) : (
             <div className="space-y-4">
               {filtered.map(report => (
                 <div key={report.id} className="bg-white p-6 rounded-2xl border border-slate-100 hover:shadow-lg transition-all">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex items-start gap-5 flex-1">
-                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#8D153A] to-[#E5AB22] flex items-center justify-center text-white font-black text-xl flex-shrink-0">
+                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#8D153A] to-[#E5AB22] flex items-center justify-center text-slate-900 font-black text-xl flex-shrink-0">
                         <Pill size={28} />
                       </div>
                       <div className="flex-1">
@@ -260,12 +260,12 @@ export default function MedicalReportsPage() {
                         </div>
                         {report.diagnosis && <p className="text-sm text-slate-500 font-bold mb-2">Diagnosis: <span className="text-slate-950">{report.diagnosis}</span></p>}
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm mb-3">
-                          <div><p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Medicine</p><p className="font-bold text-slate-900">{report.medicineName}</p></div>
-                          <div><p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Dosage</p><p className="font-bold text-slate-900">{report.dosage}</p></div>
-                          <div><p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Duration</p><p className="font-bold text-slate-900">{report.duration}</p></div>
-                          <div><p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Date Issued</p><p className="font-bold text-slate-900">{report.createdAt ?? '—'}</p></div>
+                          <div><p className="text-xs font-black text-slate-600 uppercase tracking-widest mb-1">Medicine</p><p className="font-bold text-slate-900">{report.medicineName}</p></div>
+                          <div><p className="text-xs font-black text-slate-600 uppercase tracking-widest mb-1">Dosage</p><p className="font-bold text-slate-900">{report.dosage}</p></div>
+                          <div><p className="text-xs font-black text-slate-600 uppercase tracking-widest mb-1">Duration</p><p className="font-bold text-slate-900">{report.duration}</p></div>
+                          <div><p className="text-xs font-black text-slate-600 uppercase tracking-widest mb-1">Date Issued</p><p className="font-bold text-slate-900">{report.createdAt ?? '—'}</p></div>
                         </div>
-                        {report.instructions && <p className="text-sm text-slate-400 italic bg-slate-50 px-4 py-2 rounded-xl">{report.instructions}</p>}
+                        {report.instructions && <p className="text-sm text-slate-600 italic bg-slate-50 px-4 py-2 rounded-xl">{report.instructions}</p>}
                       </div>
                     </div>
                     <div className="flex flex-col gap-2 flex-shrink-0">
@@ -287,7 +287,7 @@ export default function MedicalReportsPage() {
             <div className="flex justify-between items-center mb-6"><h3 className="text-2xl font-black">New Prescription</h3><button onClick={() => setShowAddModal(false)} className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200"><X size={20} /></button></div>
             <FormFields />
             <div className="flex gap-3 mt-6">
-              <button onClick={handleCreate} disabled={saving} className="flex-1 py-4 bg-[#8D153A] text-white rounded-2xl font-black hover:bg-[#71112D] disabled:opacity-60 flex items-center justify-center gap-2">
+              <button onClick={handleCreate} disabled={saving} className="flex-1 py-4 bg-[#8D153A] text-slate-900 rounded-2xl font-black hover:bg-[#71112D] disabled:opacity-60 flex items-center justify-center gap-2">
                 {saving ? <><Loader2 size={18} className="animate-spin" />Saving...</> : 'Create Prescription'}
               </button>
               <button onClick={() => setShowAddModal(false)} className="flex-1 py-4 bg-slate-100 text-slate-700 rounded-2xl font-black">Cancel</button>
@@ -303,7 +303,7 @@ export default function MedicalReportsPage() {
             <div className="flex justify-between items-center mb-6"><h3 className="text-2xl font-black">Edit Prescription</h3><button onClick={() => setShowEditModal(false)} className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200"><X size={20} /></button></div>
             <FormFields />
             <div className="flex gap-3 mt-6">
-              <button onClick={handleUpdate} disabled={saving} className="flex-1 py-4 bg-[#8D153A] text-white rounded-2xl font-black hover:bg-[#71112D] disabled:opacity-60 flex items-center justify-center gap-2">
+              <button onClick={handleUpdate} disabled={saving} className="flex-1 py-4 bg-[#8D153A] text-slate-900 rounded-2xl font-black hover:bg-[#71112D] disabled:opacity-60 flex items-center justify-center gap-2">
                 {saving ? <><Loader2 size={18} className="animate-spin" />Saving...</> : 'Save Changes'}
               </button>
               <button onClick={() => setShowEditModal(false)} className="flex-1 py-4 bg-slate-100 text-slate-700 rounded-2xl font-black">Cancel</button>

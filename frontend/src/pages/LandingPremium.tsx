@@ -22,9 +22,9 @@ const TESTIMONIALS = [
 
 const STATS = [
   { value: 1842, label: 'Patients Served Today', suffix: '+', color: 'text-[#FFBE29]' },
-  { value: 248, label: 'Specialist Doctors', suffix: '+', color: 'text-white' },
+  { value: 248, label: 'Specialist Doctors', suffix: '+', color: 'text-slate-900' },
   { value: 25, label: 'Districts Connected', suffix: '', color: 'text-[#FFBE29]' },
-  { value: 4, label: 'Avg Emergency Response', suffix: 'min', color: 'text-white' },
+  { value: 4, label: 'Avg Emergency Response', suffix: 'min', color: 'text-slate-900' },
 ];
 
 function useCountUp(target: number, duration = 2000, start = false) {
@@ -47,10 +47,10 @@ function StatCounter({ value, label, suffix, color, start }: { value: number; la
   const count = useCountUp(value, 1800, start);
   return (
     <div className="text-center px-8 py-6">
-      <p className={`text-4xl md:text-5xl font-black tracking-tighter ${color}`}>
+      <p className={`text-4xl md:text-[#0284C7]xl font-black tracking-tighter ${color}`}>
         {count.toLocaleString()}{suffix}
       </p>
-      <p className="text-slate-400 font-bold text-sm mt-2 uppercase tracking-widest">{label}</p>
+      <p className="text-slate-600 font-bold text-sm mt-2 uppercase tracking-widest">{label}</p>
     </div>
   );
 }
@@ -137,7 +137,7 @@ export default function LandingPremium() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F] text-white overflow-x-hidden selection:bg-[#8D153A]/20">
+    <div className="min-h-screen bg-[#0A0A0F] text-slate-900 overflow-x-hidden selection:bg-[#8D153A]/20">
 
       {/* ============================================================
           NAVBAR — Glass morphism, fixed, responsive
@@ -148,7 +148,7 @@ export default function LandingPremium() {
           <Link to="/" className="flex items-center gap-3 group flex-shrink-0">
             <img src={logo} alt="MediConnect Lanka" className="h-10 w-auto brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-500 drop-shadow-lg" />
             <div className="hidden sm:block leading-none">
-              <p className="text-lg font-black tracking-tighter text-white leading-none">MediConnect <span className="text-[#FFBE29]">Lanka</span></p>
+              <p className="text-lg font-black tracking-tighter text-slate-900 leading-none">MediConnect <span className="text-[#FFBE29]">Lanka</span></p>
               <p className="text-[9px] font-bold text-slate-500 uppercase tracking-[0.3em] mt-1">National Health Network</p>
             </div>
           </Link>
@@ -157,7 +157,7 @@ export default function LandingPremium() {
           <div className="hidden lg:flex items-center gap-1">
             {navLinks.map(link => (
               <Link key={link.to} to={link.to}
-                className="px-4 py-2 rounded-xl text-sm font-bold text-slate-400 hover:text-white hover:bg-white/5 transition-all duration-200 uppercase tracking-wider">
+                className="px-4 py-2 rounded-xl text-sm font-bold text-slate-600 hover:text-slate-900 hover:bg-white/5 transition-all duration-200 uppercase tracking-wider">
                 {link.label}
               </Link>
             ))}
@@ -165,16 +165,16 @@ export default function LandingPremium() {
 
           {/* Desktop Auth CTAs */}
           <div className="hidden lg:flex items-center gap-3">
-            <Link to="/login" className="px-5 py-2.5 rounded-xl text-sm font-bold text-slate-300 hover:text-white hover:bg-white/5 transition-all">
+            <Link to="/login" className="px-5 py-2.5 rounded-xl text-sm font-bold text-slate-700 hover:text-slate-900 hover:bg-white/5 transition-all">
               Sign In
             </Link>
-            <Link to="/register" className="px-6 py-2.5 rounded-xl text-sm font-black bg-[#8D153A] hover:bg-[#71112D] text-white transition-all shadow-lg shadow-[#8D153A]/30 flex items-center gap-2">
+            <Link to="/register" className="px-6 py-2.5 rounded-xl text-sm font-black bg-[#8D153A] hover:bg-[#71112D] text-slate-900 transition-all shadow-lg shadow-[#8D153A]/30 flex items-center gap-2">
               Get Started <ArrowRight size={16} />
             </Link>
           </div>
 
           {/* Mobile Hamburger */}
-          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-2 rounded-xl text-white hover:bg-white/10 transition-all">
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-2 rounded-xl text-slate-900 hover:bg-white/10 transition-all">
             {mobileMenuOpen ? <X size={26} /> : <Menu size={26} />}
           </button>
         </div>
@@ -185,14 +185,14 @@ export default function LandingPremium() {
             <div className="space-y-1 mb-6">
               {navLinks.map(link => (
                 <Link key={link.to} to={link.to} onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all font-bold">
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 hover:text-slate-900 hover:bg-white/5 transition-all font-bold">
                   {link.label}
                 </Link>
               ))}
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="py-3 rounded-xl text-center text-sm font-bold border border-white/10 text-slate-300 hover:text-white hover:bg-white/5 transition-all">Sign In</Link>
-              <Link to="/register" onClick={() => setMobileMenuOpen(false)} className="py-3 rounded-xl text-center text-sm font-black bg-[#8D153A] text-white hover:bg-[#71112D] transition-all">Get Started</Link>
+              <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="py-3 rounded-xl text-center text-sm font-bold border border-white/10 text-slate-700 hover:text-slate-900 hover:bg-white/5 transition-all">Sign In</Link>
+              <Link to="/register" onClick={() => setMobileMenuOpen(false)} className="py-3 rounded-xl text-center text-sm font-black bg-[#8D153A] text-slate-900 hover:bg-[#71112D] transition-all">Get Started</Link>
             </div>
           </div>
         )}
@@ -219,7 +219,7 @@ export default function LandingPremium() {
                 <span style={{ color: heroSlides[currentSlide].accent }}>{heroSlides[currentSlide].badge}</span>
               </div>
 
-              <h1 className="text-4xl md:text-5xl lg:text-7xl font-black tracking-tighter leading-[1.0] mb-6 animate-slide-up text-white drop-shadow-2xl">
+              <h1 className="text-4xl md:text-[#0284C7]xl lg:text-7xl font-black tracking-tighter leading-[1.0] mb-6 animate-slide-up text-slate-900 drop-shadow-2xl">
                 {heroSlides[currentSlide].title.split(' ').map((word, i, arr) =>
                   i >= arr.length - 2
                     ? <span key={i} style={{ color: heroSlides[currentSlide].accent }}>{word} </span>
@@ -227,15 +227,15 @@ export default function LandingPremium() {
                 )}
               </h1>
 
-              <p className="text-lg md:text-xl text-slate-300 mb-10 max-w-xl leading-relaxed font-medium animate-slide-up">
+              <p className="text-lg md:text-xl text-slate-700 mb-10 max-w-xl leading-relaxed font-medium animate-slide-up">
                 {heroSlides[currentSlide].subtitle}
               </p>
 
               <div className="flex flex-wrap gap-4 animate-slide-up">
-                <Link to="/register" className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-[#8D153A] hover:bg-[#71112D] text-white font-black text-base transition-all shadow-2xl shadow-[#8D153A]/40 hover:scale-[1.03] hover:-translate-y-0.5 active:scale-95">
+                <Link to="/register" className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-[#8D153A] hover:bg-[#71112D] text-slate-900 font-black text-base transition-all shadow-2xl shadow-[#8D153A]/40 hover:scale-[1.03] hover:-translate-y-0.5 active:scale-95">
                   Create Health ID <ArrowRight size={20} />
                 </Link>
-                <Link to="/ai-checker" className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold text-base transition-all hover:bg-white/20 hover:-translate-y-0.5">
+                <Link to="/ai-checker" className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-slate-900 font-bold text-base transition-all hover:bg-white/20 hover:-translate-y-0.5">
                   <Play size={18} fill="white" /> Try AI Doctor
                 </Link>
               </div>
@@ -243,7 +243,7 @@ export default function LandingPremium() {
               {/* Trust indicators */}
               <div className="flex flex-wrap items-center gap-6 mt-10 animate-slide-up">
                 {['SLMC Certified', '256-bit Secure', '24/7 Available'].map(t => (
-                  <div key={t} className="flex items-center gap-2 text-xs font-bold text-slate-400">
+                  <div key={t} className="flex items-center gap-2 text-xs font-bold text-slate-600">
                     <CheckCircle size={14} className="text-emerald-400" />{t}
                   </div>
                 ))}
@@ -263,18 +263,18 @@ export default function LandingPremium() {
         {/* Carousel nav */}
         <div className="absolute bottom-8 right-6 lg:right-12 z-20 flex gap-3">
           <button onClick={() => setCurrentSlide(p => (p - 1 + heroSlides.length) % heroSlides.length)}
-            className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center text-white hover:bg-white/10 transition-all backdrop-blur-md">
+            className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center text-slate-900 hover:bg-white/10 transition-all backdrop-blur-md">
             <ChevronLeft size={22} />
           </button>
           <button onClick={() => setCurrentSlide(p => (p + 1) % heroSlides.length)}
-            className="w-12 h-12 rounded-full bg-[#8D153A] flex items-center justify-center text-white hover:bg-[#71112D] transition-all shadow-lg">
+            className="w-12 h-12 rounded-full bg-[#8D153A] flex items-center justify-center text-slate-900 hover:bg-[#71112D] transition-all shadow-lg">
             <ChevronRight size={22} />
           </button>
         </div>
 
         {/* Scroll indicator */}
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 animate-bounce hidden md:flex flex-col items-center gap-2">
-          <p className="text-[10px] font-black uppercase tracking-widest text-white/40">Scroll</p>
+          <p className="text-[10px] font-black uppercase tracking-widest text-slate-900/40">Scroll</p>
           <div className="w-5 h-8 rounded-full border border-white/20 flex items-start justify-center pt-1.5">
             <div className="w-1 h-2 bg-white/60 rounded-full animate-bounce" />
           </div>
@@ -305,7 +305,7 @@ export default function LandingPremium() {
               <AlertTriangle size={24} className="text-red-300 animate-pulse" />
             </div>
             <div>
-              <p className="font-black text-white text-lg leading-none">Medical Emergency?</p>
+              <p className="font-black text-slate-900 text-lg leading-none">Medical Emergency?</p>
               <p className="text-red-200 font-bold text-sm">Suwa Seriya dispatched in under 4 minutes with your medical history</p>
             </div>
           </div>
@@ -313,7 +313,7 @@ export default function LandingPremium() {
             <a href="tel:1990" className="flex items-center gap-3 px-8 py-3 bg-white text-red-700 rounded-2xl font-black text-lg hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-red-900/50 animate-pulse-border">
               <PhoneCall size={22} /> Call 1990
             </a>
-            <Link to="/emergency" className="flex items-center gap-3 px-6 py-3 bg-white/10 border border-white/20 text-white rounded-2xl font-bold text-sm hover:bg-white/20 transition-all">
+            <Link to="/emergency" className="flex items-center gap-3 px-6 py-3 bg-white/10 border border-white/20 text-slate-900 rounded-2xl font-bold text-sm hover:bg-white/20 transition-all">
               Find Hospitals <MapPin size={16} />
             </Link>
           </div>
@@ -337,7 +337,7 @@ export default function LandingPremium() {
                 <item.icon size={24} className={item.color} />
               </div>
               <div>
-                <p className="font-black text-white text-sm">{item.label}</p>
+                <p className="font-black text-slate-900 text-sm">{item.label}</p>
                 <p className="text-xs font-bold text-slate-500">{item.sub}</p>
               </div>
             </div>
@@ -353,10 +353,10 @@ export default function LandingPremium() {
           <div className="inline-block px-4 py-2 rounded-full border border-[#8D153A]/30 bg-[#8D153A]/10 text-[#FF6B8A] text-xs font-black uppercase tracking-[0.3em] mb-6">
             Innovative Ecosystem
           </div>
-          <h2 className="text-4xl md:text-5xl lg:text-7xl font-black tracking-tighter leading-[0.95] mb-6">
+          <h2 className="text-4xl md:text-[#0284C7]xl lg:text-7xl font-black tracking-tighter leading-[0.95] mb-6">
             Modern Healthcare,<br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8D153A] to-[#FFBE29]">Built for Lanka.</span>
           </h2>
-          <p className="text-xl text-slate-400 font-medium max-w-2xl mx-auto">
+          <p className="text-xl text-slate-600 font-medium max-w-2xl mx-auto">
             Every feature designed around Sri Lankan patients — our languages, our hospitals, our emergency numbers.
           </p>
         </div>
@@ -367,11 +367,11 @@ export default function LandingPremium() {
               className="group relative p-8 rounded-3xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.07] hover:border-white/10 transition-all duration-500 hover:-translate-y-2 overflow-hidden cursor-pointer">
               <div className={`absolute inset-0 bg-gradient-to-br ${f.color} opacity-0 group-hover:opacity-[0.05] transition-all duration-500 rounded-3xl`} />
               <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${f.color} flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-500`}>
-                <f.icon size={30} className="text-white" />
+                <f.icon size={30} className="text-slate-900" />
               </div>
-              <h3 className="text-xl font-black text-white mb-3 tracking-tight">{f.title}</h3>
-              <p className="text-slate-400 font-medium leading-relaxed text-sm mb-6">{f.desc}</p>
-              <div className="flex items-center gap-2 text-sm font-black text-slate-500 group-hover:text-white transition-colors">
+              <h3 className="text-xl font-black text-slate-900 mb-3 tracking-tight">{f.title}</h3>
+              <p className="text-slate-600 font-medium leading-relaxed text-sm mb-6">{f.desc}</p>
+              <div className="flex items-center gap-2 text-sm font-black text-slate-500 group-hover:text-slate-900 transition-colors">
                 Explore <ArrowRight size={16} className="group-hover:translate-x-2 transition-transform" />
               </div>
             </Link>
@@ -388,7 +388,7 @@ export default function LandingPremium() {
             <div className="inline-block px-4 py-2 rounded-full border border-[#FFBE29]/20 bg-[#FFBE29]/5 text-[#FFBE29] text-xs font-black uppercase tracking-[0.3em] mb-6">
               Patient Stories
             </div>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tighter leading-[0.95] mb-6">
+            <h2 className="text-4xl md:text-[#0284C7]xl font-black tracking-tighter leading-[0.95] mb-6">
               Trusted by<br /><span className="text-[#FFBE29]">Thousands</span><br />Across Lanka
             </h2>
             <div className="flex gap-2 mt-8">
@@ -405,13 +405,13 @@ export default function LandingPremium() {
                 <div className="flex gap-1 mb-4">
                   {Array.from({ length: t.rating }).map((_, j) => <Star key={j} size={14} fill="#FFBE29" className="text-[#FFBE29]" />)}
                 </div>
-                <p className="text-slate-300 font-medium leading-relaxed text-sm mb-6">"{t.text}"</p>
+                <p className="text-slate-700 font-medium leading-relaxed text-sm mb-6">"{t.text}"</p>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#8D153A] to-[#FFBE29] flex items-center justify-center text-white font-black">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#8D153A] to-[#FFBE29] flex items-center justify-center text-slate-900 font-black">
                     {t.avatar}
                   </div>
                   <div>
-                    <p className="font-black text-white text-sm">{t.name}</p>
+                    <p className="font-black text-slate-900 text-sm">{t.name}</p>
                     <p className="text-xs text-slate-500 font-bold">{t.role}</p>
                   </div>
                 </div>
@@ -426,10 +426,10 @@ export default function LandingPremium() {
       ============================================================ */}
       <section className="py-24 px-6 lg:px-12 max-w-[1400px] mx-auto w-full">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-black tracking-tighter mb-4">
+          <h2 className="text-4xl md:text-[#0284C7]xl font-black tracking-tighter mb-4">
             Start in <span className="text-[#FFBE29]">3 Steps</span>
           </h2>
-          <p className="text-slate-400 font-medium">No paperwork. No waiting rooms.</p>
+          <p className="text-slate-600 font-medium">No paperwork. No waiting rooms.</p>
         </div>
         <div className="grid md:grid-cols-3 gap-8 relative">
           <div className="hidden md:block absolute top-10 left-1/3 right-1/3 h-0.5 bg-gradient-to-r from-[#8D153A] to-[#FFBE29]" />
@@ -440,11 +440,11 @@ export default function LandingPremium() {
           ].map((s, i) => (
             <div key={i} className="relative text-center p-8 rounded-3xl bg-white/[0.02] border border-white/5">
               <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#8D153A] to-[#FFBE29] flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-[#8D153A]/30">
-                <s.icon size={32} className="text-white" />
+                <s.icon size={32} className="text-slate-900" />
               </div>
               <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#8D153A] mb-3">{s.step}</div>
-              <h3 className="text-2xl font-black text-white mb-4 tracking-tight">{s.title}</h3>
-              <p className="text-slate-400 font-medium leading-relaxed">{s.desc}</p>
+              <h3 className="text-2xl font-black text-slate-900 mb-4 tracking-tight">{s.title}</h3>
+              <p className="text-slate-600 font-medium leading-relaxed">{s.desc}</p>
             </div>
           ))}
         </div>
@@ -463,10 +463,10 @@ export default function LandingPremium() {
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/10 text-[#FFBE29] text-xs font-black uppercase tracking-[0.25em] mb-8">
                 <Sparkles size={12} /> Join 1,842+ patients served today
               </div>
-              <h2 className="text-4xl md:text-6xl font-black text-white leading-tight mb-6 tracking-tighter">
+              <h2 className="text-4xl md:text-6xl font-black text-slate-900 leading-tight mb-6 tracking-tighter">
                 Your Health ID<br />Awaits You.
               </h2>
-              <p className="text-xl text-white/70 font-medium leading-relaxed">
+              <p className="text-xl text-slate-900/70 font-medium leading-relaxed">
                 The most advanced healthcare platform in South Asia. Built for every Sri Lankan — from Jaffna to Galle.
               </p>
             </div>
@@ -474,7 +474,7 @@ export default function LandingPremium() {
               <Link to="/register" className="flex items-center justify-center gap-4 h-16 px-12 bg-white text-[#8D153A] text-lg rounded-2xl font-black shadow-2xl hover:scale-105 active:scale-95 transition-all min-w-[240px]">
                 Create Free Account <ArrowRight size={22} />
               </Link>
-              <Link to="/ai-checker" className="flex items-center justify-center gap-3 h-14 px-10 bg-white/10 border border-white/20 text-white text-base rounded-2xl font-bold hover:bg-white/20 transition-all">
+              <Link to="/ai-checker" className="flex items-center justify-center gap-3 h-14 px-10 bg-white/10 border border-white/20 text-slate-900 text-base rounded-2xl font-bold hover:bg-white/20 transition-all">
                 <Brain size={20} /> Try AI First, No Sign-Up
               </Link>
             </div>
@@ -511,11 +511,11 @@ export default function LandingPremium() {
               { title: 'Emergency', links: ['Call 1990', 'Nearest Hospitals', 'Blood Bank', 'Mental Health: 1926', 'Poison Control'] },
             ].map(col => (
               <div key={col.title}>
-                <p className="font-black text-white text-sm uppercase tracking-widest mb-5">{col.title}</p>
+                <p className="font-black text-slate-900 text-sm uppercase tracking-widest mb-5">{col.title}</p>
                 <ul className="space-y-3">
                   {col.links.map(link => (
                     <li key={link}>
-                      <Link to="/" className="text-slate-500 hover:text-white text-sm font-medium transition-colors">{link}</Link>
+                      <Link to="/" className="text-slate-500 hover:text-slate-900 text-sm font-medium transition-colors">{link}</Link>
                     </li>
                   ))}
                 </ul>

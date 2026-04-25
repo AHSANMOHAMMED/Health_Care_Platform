@@ -44,17 +44,17 @@ export default function RealTimeConsultation() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0C1220] text-slate-200">
+    <div className="min-h-screen bg-slate-50 text-slate-800">
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#111B2E] border-b border-[#1E3A5F]/50">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-slate-300/50">
         <div className="flex items-center justify-between px-4 h-14">
-          <Link to="/doctor" className="flex items-center gap-2 text-slate-400 hover:text-white">
+          <Link to="/doctor" className="flex items-center gap-2 text-slate-600 hover:text-slate-900">
             <ChevronLeft size={20} />
             <span>End Call</span>
           </Link>
           <div className="text-center">
-            <p className="font-medium text-white">Dr. Sarah Johnson</p>
-            <p className="text-xs text-slate-400">{formatTime(callDuration)}</p>
+            <p className="font-medium text-slate-900">Dr. Sarah Johnson</p>
+            <p className="text-xs text-slate-600">{formatTime(callDuration)}</p>
           </div>
           <div className="w-20" />
         </div>
@@ -71,13 +71,13 @@ export default function RealTimeConsultation() {
                 <div className="w-24 h-24 rounded-full bg-[#0EA5E9]/20 flex items-center justify-center mx-auto mb-4">
                   <span className="text-3xl font-bold text-[#0EA5E9]">Dr</span>
                 </div>
-                <p className="text-white font-medium">Dr. Sarah Johnson</p>
-                <p className="text-sm text-slate-400">Cardiologist</p>
+                <p className="text-slate-900 font-medium">Dr. Sarah Johnson</p>
+                <p className="text-sm text-slate-600">Cardiologist</p>
               </div>
             </div>
 
             {/* Self Video (Small - Picture in Picture) */}
-            <div className="absolute bottom-4 right-4 w-40 h-32 bg-[#111B2E] rounded-xl overflow-hidden border border-[#1E3A5F]/50">
+            <div className="absolute bottom-4 right-4 w-40 h-32 bg-white rounded-xl overflow-hidden border border-slate-300/50">
               {isVideoOff ? (
                 <div className="h-full flex items-center justify-center">
                   <span className="text-slate-500">Camera Off</span>
@@ -91,12 +91,12 @@ export default function RealTimeConsultation() {
           </div>
 
           {/* Call Controls */}
-          <div className="bg-[#111B2E] border-t border-[#1E3A5F]/50 p-4">
+          <div className="bg-white border-t border-slate-300/50 p-4">
             <div className="flex items-center justify-center gap-4">
               <button
                 onClick={() => setIsMuted(!isMuted)}
                 className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
-                  isMuted ? 'bg-red-500/20 text-red-400' : 'bg-[#1E3A5F]/50 text-white hover:bg-[#1E3A5F]'
+                  isMuted ? 'bg-red-500/20 text-red-400' : 'bg-[#1E3A5F]/50 text-slate-900 hover:bg-[#1E3A5F]'
                 }`}
               >
                 {isMuted ? <MicOff size={20} /> : <Mic size={20} />}
@@ -105,19 +105,19 @@ export default function RealTimeConsultation() {
               <button
                 onClick={() => setIsVideoOff(!isVideoOff)}
                 className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
-                  isVideoOff ? 'bg-red-500/20 text-red-400' : 'bg-[#1E3A5F]/50 text-white hover:bg-[#1E3A5F]'
+                  isVideoOff ? 'bg-red-500/20 text-red-400' : 'bg-[#1E3A5F]/50 text-slate-900 hover:bg-[#1E3A5F]'
                 }`}
               >
                 {isVideoOff ? <VideoOff size={20} /> : <Video size={20} />}
               </button>
 
-              <button className="w-12 h-12 rounded-full bg-[#1E3A5F]/50 text-white hover:bg-[#1E3A5F] flex items-center justify-center transition-all">
+              <button className="w-12 h-12 rounded-full bg-[#1E3A5F]/50 text-slate-900 hover:bg-[#1E3A5F] flex items-center justify-center transition-all">
                 <ScreenShare size={20} />
               </button>
 
               <Link
                 to="/doctor"
-                className="w-14 h-14 rounded-full bg-red-500 hover:bg-red-600 text-white flex items-center justify-center transition-all"
+                className="w-14 h-14 rounded-full bg-red-500 hover:bg-red-600 text-slate-900 flex items-center justify-center transition-all"
               >
                 <PhoneOff size={24} />
               </Link>
@@ -135,8 +135,8 @@ export default function RealTimeConsultation() {
                   onClick={() => setActiveTab(tab.id as any)}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                     activeTab === tab.id
-                      ? 'bg-[#0EA5E9] text-white'
-                      : 'bg-[#0C1220] text-slate-400 hover:text-white'
+                      ? 'bg-[#0EA5E9] text-slate-900'
+                      : 'bg-slate-50 text-slate-600 hover:text-slate-900'
                   }`}
                 >
                   <tab.icon size={16} />
@@ -149,9 +149,9 @@ export default function RealTimeConsultation() {
 
         {/* Sidebar */}
         {activeTab === 'chat' && (
-          <div className="w-80 bg-[#111B2E] border-l border-[#1E3A5F]/50 flex flex-col">
-            <div className="p-4 border-b border-[#1E3A5F]/50">
-              <h3 className="font-semibold text-white">Chat</h3>
+          <div className="w-80 bg-white border-l border-slate-300/50 flex flex-col">
+            <div className="p-4 border-b border-slate-300/50">
+              <h3 className="font-semibold text-slate-900">Chat</h3>
             </div>
 
             <div className="flex-1 overflow-y-auto p-4 space-y-3">
@@ -159,11 +159,11 @@ export default function RealTimeConsultation() {
                 <div key={msg.id} className={`flex ${msg.sender === 'me' ? 'justify-end' : 'justify-start'}`}>
                   <div className={`max-w-[80%] p-3 rounded-xl ${
                     msg.sender === 'me'
-                      ? 'bg-[#0EA5E9] text-white'
-                      : 'bg-[#0C1220] text-slate-300'
+                      ? 'bg-[#0EA5E9] text-slate-900'
+                      : 'bg-slate-50 text-slate-700'
                   }`}>
                     <p className="text-sm">{msg.text}</p>
-                    <p className={`text-xs mt-1 ${msg.sender === 'me' ? 'text-white/70' : 'text-slate-500'}`}>
+                    <p className={`text-xs mt-1 ${msg.sender === 'me' ? 'text-slate-900/70' : 'text-slate-500'}`}>
                       {msg.time}
                     </p>
                   </div>
@@ -171,9 +171,9 @@ export default function RealTimeConsultation() {
               ))}
             </div>
 
-            <div className="p-4 border-t border-[#1E3A5F]/50">
+            <div className="p-4 border-t border-slate-300/50">
               <div className="flex gap-2">
-                <button className="p-2 text-slate-400 hover:text-white">
+                <button className="p-2 text-slate-600 hover:text-slate-900">
                   <Paperclip size={20} />
                 </button>
                 <input
@@ -182,11 +182,11 @@ export default function RealTimeConsultation() {
                   onChange={(e) => setChatMessage(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
                   placeholder="Type a message..."
-                  className="flex-1 bg-[#0C1220] border border-[#1E3A5F]/50 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#0EA5E9]/50"
+                  className="flex-1 bg-slate-50 border border-slate-300/50 rounded-lg px-3 py-2 text-slate-900 text-sm focus:outline-none focus:border-[#0EA5E9]/50"
                 />
                 <button
                   onClick={sendMessage}
-                  className="p-2 bg-[#0EA5E9] text-white rounded-lg hover:bg-[#0284C7]"
+                  className="p-2 bg-[#0EA5E9] text-slate-900 rounded-lg hover:bg-[#0284C7]"
                 >
                   <MessageSquare size={20} />
                 </button>
@@ -196,26 +196,26 @@ export default function RealTimeConsultation() {
         )}
 
         {activeTab === 'participants' && (
-          <div className="w-80 bg-[#111B2E] border-l border-[#1E3A5F]/50">
-            <div className="p-4 border-b border-[#1E3A5F]/50">
-              <h3 className="font-semibold text-white">Participants (2)</h3>
+          <div className="w-80 bg-white border-l border-slate-300/50">
+            <div className="p-4 border-b border-slate-300/50">
+              <h3 className="font-semibold text-slate-900">Participants (2)</h3>
             </div>
             <div className="p-4 space-y-3">
-              <div className="flex items-center gap-3 p-3 bg-[#0C1220] rounded-lg">
+              <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
                 <div className="w-10 h-10 rounded-full bg-[#0EA5E9]/20 flex items-center justify-center">
                   <span className="text-[#0EA5E9] font-medium">Dr</span>
                 </div>
                 <div>
-                  <p className="font-medium text-white">Dr. Sarah Johnson</p>
+                  <p className="font-medium text-slate-900">Dr. Sarah Johnson</p>
                   <p className="text-xs text-emerald-400">● Speaking</p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 p-3 bg-[#0C1220] rounded-lg">
+              <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
                 <div className="w-10 h-10 rounded-full bg-[#1E3A5F]/50 flex items-center justify-center">
-                  <span className="text-slate-400 font-medium">You</span>
+                  <span className="text-slate-600 font-medium">You</span>
                 </div>
                 <div>
-                  <p className="font-medium text-white">You</p>
+                  <p className="font-medium text-slate-900">You</p>
                   <p className="text-xs text-slate-500">{isMuted ? 'Muted' : 'Unmuted'}</p>
                 </div>
               </div>

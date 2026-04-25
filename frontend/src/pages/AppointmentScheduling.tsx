@@ -86,25 +86,25 @@ export default function AppointmentScheduling() {
       case 'PENDING': return 'text-yellow-400 bg-yellow-400/10';
       case 'COMPLETED': return 'text-blue-400 bg-blue-400/10';
       case 'CANCELLED': return 'text-red-400 bg-red-400/10';
-      default: return 'text-slate-400 bg-slate-400/10';
+      default: return 'text-slate-600 bg-slate-400/10';
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#0C1220] text-slate-200">
+    <div className="min-h-screen bg-slate-50 text-slate-800">
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#0C1220]/90 backdrop-blur-md border-b border-[#1E3A5F]/30">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-slate-50/90 backdrop-blur-md border-b border-slate-300/30">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link to={user?.role === 'DOCTOR' ? '/doctor' : '/patient'} className="flex items-center gap-2 text-slate-400 hover:text-white" onClick={(e) => !user && e.preventDefault()}>
+            <Link to={user?.role === 'DOCTOR' ? '/doctor' : '/patient'} className="flex items-center gap-2 text-slate-600 hover:text-slate-900" onClick={(e) => !user && e.preventDefault()}>
               <ChevronLeft size={20} />
               <span>Dashboard</span>
             </Link>
           </div>
-          <h1 className="text-lg font-semibold text-white">Appointment Scheduling</h1>
+          <h1 className="text-lg font-semibold text-slate-900">Appointment Scheduling</h1>
           <Link
             to="/booking"
-            className="flex items-center gap-2 bg-[#0EA5E9] hover:bg-[#0284C7] text-white px-4 py-2 rounded-lg text-sm font-medium transition-all"
+            className="flex items-center gap-2 bg-[#0EA5E9] hover:bg-[#0284C7] text-slate-900 px-4 py-2 rounded-lg text-sm font-medium transition-all"
           >
             <Plus size={18} />
             New Appointment
@@ -117,22 +117,22 @@ export default function AppointmentScheduling() {
           <div className="grid lg:grid-cols-3 gap-6">
             {/* Calendar */}
             <div className="lg:col-span-2">
-              <div className="bg-[#111B2E] border border-[#1E3A5F]/50 rounded-2xl p-6">
+              <div className="bg-white border border-slate-300/50 rounded-2xl p-6">
                 {/* Calendar Header */}
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-semibold text-white">
+                  <h2 className="text-xl font-semibold text-slate-900">
                     {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
                   </h2>
                   <div className="flex gap-2">
                     <button
                       onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1))}
-                      className="p-2 rounded-lg bg-[#0C1220] hover:bg-[#1E3A5F]/50 text-slate-400 hover:text-white transition-all"
+                      className="p-2 rounded-lg bg-slate-50 hover:bg-[#1E3A5F]/50 text-slate-600 hover:text-slate-900 transition-all"
                     >
                       <ChevronLeft size={20} />
                     </button>
                     <button
                       onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1))}
-                      className="p-2 rounded-lg bg-[#0C1220] hover:bg-[#1E3A5F]/50 text-slate-400 hover:text-white transition-all"
+                      className="p-2 rounded-lg bg-slate-50 hover:bg-[#1E3A5F]/50 text-slate-600 hover:text-slate-900 transition-all"
                     >
                       <ChevronRight size={20} />
                     </button>
@@ -156,7 +156,7 @@ export default function AppointmentScheduling() {
                       onClick={() => day && setSelectedDate(`${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`)}
                       className={`aspect-square rounded-xl p-2 cursor-pointer transition-all ${
                         day
-                          ? 'bg-[#0C1220] hover:bg-[#1E3A5F]/30 border border-[#1E3A5F]/30'
+                          ? 'bg-slate-50 hover:bg-[#1E3A5F]/30 border border-slate-300/30'
                           : ''
                       } ${
                         selectedDate?.endsWith(`-${String(day).padStart(2, '0')}`)
@@ -166,7 +166,7 @@ export default function AppointmentScheduling() {
                     >
                       {day && (
                         <>
-                          <span className="text-sm text-slate-300">{day}</span>
+                          <span className="text-sm text-slate-700">{day}</span>
                           {getAppointmentsForDate(day).length > 0 && (
                             <div className="flex gap-1 mt-1">
                               {getAppointmentsForDate(day).slice(0, 3).map((_, i) => (
@@ -185,8 +185,8 @@ export default function AppointmentScheduling() {
             {/* Sidebar */}
             <div className="space-y-6">
               {/* Filters */}
-              <div className="bg-[#111B2E] border border-[#1E3A5F]/50 rounded-2xl p-4">
-                <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
+              <div className="bg-white border border-slate-300/50 rounded-2xl p-4">
+                <h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
                   <Filter size={18} />
                   Filter Appointments
                 </h3>
@@ -197,8 +197,8 @@ export default function AppointmentScheduling() {
                       onClick={() => setFilter(f)}
                       className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
                         filter === f
-                          ? 'bg-[#0EA5E9] text-white'
-                          : 'bg-[#0C1220] text-slate-400 hover:text-white'
+                          ? 'bg-[#0EA5E9] text-slate-900'
+                          : 'bg-slate-50 text-slate-600 hover:text-slate-900'
                       }`}
                     >
                       {f}
@@ -208,17 +208,17 @@ export default function AppointmentScheduling() {
               </div>
 
               {/* Quick Stats */}
-              <div className="bg-[#111B2E] border border-[#1E3A5F]/50 rounded-2xl p-4">
-                <h3 className="font-semibold text-white mb-4">Quick Stats</h3>
+              <div className="bg-white border border-slate-300/50 rounded-2xl p-4">
+                <h3 className="font-semibold text-slate-900 mb-4">Quick Stats</h3>
                 <div className="space-y-3">
                   {[
-                    { label: 'Total', count: appointments.length, color: 'text-slate-400' },
+                    { label: 'Total', count: appointments.length, color: 'text-slate-600' },
                     { label: 'Pending', count: appointments.filter(a => a.status === 'PENDING').length, color: 'text-yellow-400' },
                     { label: 'Confirmed', count: appointments.filter(a => a.status === 'CONFIRMED').length, color: 'text-emerald-400' },
                     { label: 'Completed', count: appointments.filter(a => a.status === 'COMPLETED').length, color: 'text-blue-400' },
                   ].map(stat => (
                     <div key={stat.label} className="flex items-center justify-between">
-                      <span className="text-sm text-slate-400">{stat.label}</span>
+                      <span className="text-sm text-slate-600">{stat.label}</span>
                       <span className={`text-lg font-semibold ${stat.color}`}>{stat.count}</span>
                     </div>
                   ))}
@@ -228,8 +228,8 @@ export default function AppointmentScheduling() {
           </div>
 
           {/* Appointments List */}
-          <div className="mt-6 bg-[#111B2E] border border-[#1E3A5F]/50 rounded-2xl p-6">
-            <h3 className="font-semibold text-white mb-4">
+          <div className="mt-6 bg-white border border-slate-300/50 rounded-2xl p-6">
+            <h3 className="font-semibold text-slate-900 mb-4">
               {selectedDate ? `Appointments for ${selectedDate}` : 'All Appointments'}
             </h3>
 
@@ -240,7 +240,7 @@ export default function AppointmentScheduling() {
             ) : filteredAppointments.length === 0 ? (
               <div className="text-center py-12">
                 <Calendar className="mx-auto text-slate-500 mb-4" size={48} />
-                <p className="text-slate-400">No appointments found</p>
+                <p className="text-slate-600">No appointments found</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -249,17 +249,17 @@ export default function AppointmentScheduling() {
                   .map(apt => (
                     <div
                       key={apt.id}
-                      className="flex items-center justify-between p-4 bg-[#0C1220] rounded-xl border border-[#1E3A5F]/30 hover:border-[#0EA5E9]/30 transition-all"
+                      className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-300/30 hover:border-[#0EA5E9]/30 transition-all"
                     >
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-xl bg-[#1E3A5F]/30 flex items-center justify-center">
                           <Calendar className="text-[#0EA5E9]" size={20} />
                         </div>
                         <div>
-                          <p className="font-medium text-white">
+                          <p className="font-medium text-slate-900">
                             {user?.role === 'DOCTOR' ? apt.patientName : apt.doctorName}
                           </p>
-                          <div className="flex items-center gap-3 text-sm text-slate-400">
+                          <div className="flex items-center gap-3 text-sm text-slate-600">
                             <span className="flex items-center gap-1">
                               <Clock size={14} />
                               {apt.time}
