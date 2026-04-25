@@ -111,3 +111,13 @@ spring:
 
 jwt:
   secret: ${JWT_SECRET:mediconnect_super_secret_jwt_key_that_must_be_long_enough}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      probes:
+        enabled: true
