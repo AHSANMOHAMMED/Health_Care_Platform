@@ -68,85 +68,117 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<Map<String, String>> register(@RequestBody RegisterRequest request) {
+        log.info("Received registration request for email: {}", request.getEmail());
+        
         if(userRepository.findByEmail(request.getEmail()).isPresent()) {
+            log.warn("Registration failed: Email {} already exists", request.getEmail());
             return ResponseEntity.badRequest().body(Map.of("message", "Email already exists"));
         }
-        UserCredentials user = new UserCredentials();
-        user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(request.getRole() != null ? request.getRole().toUpperCase() : "PATIENT");
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
-
-        // For demonstration purposes, auto-approve and auto-verify all users
-        user.setStatus("APPROVED");
-        user.setEmailVerified(true);
-
-        userRepository.save(user);
-
-        // Create verification token and send email
+        
         try {
-            String token = UUID.randomUUID().toString();
-            VerificationToken verificationToken = VerificationToken.builder()
-                    .token(token)
-                    .user(user)
-                    .expiryDate(LocalDateTime.now().plusHours(24))
-                    .build();
-            verificationTokenRepository.save(verificationToken);
+            UserCredentials user = new UserCredentials();
+            user.setEmail(request.getEmail());
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+            user.setRole(request.getRole() != null ? request.getRole().toUpperCase() : "PATIENT");
+            user.setFirstName(request.getFirstName());
+            user.setLastName(request.getLastName());
 
-            emailService.sendVerificationEmail(user.getEmail(), token, user.getFirstName());
-            log.info("Verification email sent to: {}", user.getEmail());
+            // For demonstration purposes, auto-approve and auto-verify all users
+            user.setStatus("APPROVED");
+            user.setEmailVerified(true);
+
+            userRepository.save(user);
+            log.info("User registered successfully: {}", user.getEmail());
+
+            // Create verification token and send email
+            try {
+                String token = UUID.randomUUID().toString();
+                VerificationToken verificationToken = VerificationToken.builder()
+                        .token(token)
+                        .user(user)
+                        .expiryDate(LocalDateTime.now().plusHours(24))
+                        .build();
+                verificationTokenRepository.save(verificationToken);
+
+                emailService.sendVerificationEmail(user.getEmail(), token, user.getFirstName());
+                log.info("Verification email sent to: {}", user.getEmail());
+            } catch (Exception e) {
+                log.error("Failed to send verification email for user: {}", user.getEmail(), e);
+                // Don't fail registration if email fails, user can resend
+            }
+
+            return ResponseEntity.ok(Map.of(
+                "message", "Registration successful. You can now log in.",
+                "requiresVerification", "false"
+            ));
         } catch (Exception e) {
-            log.error("Failed to send verification email", e);
-            // Don't fail registration if email fails, user can resend
+            log.error("Critical error during registration for email: {}", request.getEmail(), e);
+            return ResponseEntity.status(500).body(Map.of("message", "Internal server error during registration: " + e.getMessage()));
         }
-
-        return ResponseEntity.ok(Map.of(
-            "message", "Registration successful. Please check your email to verify your account.",
-            "requiresVerification", "true"
-        ));
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
-        Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-        if (authenticate.isAuthenticated()) {
-            UserCredentials user = userRepository.findByEmail(request.getEmail()).get();
-            
-            if (!"APPROVED".equalsIgnoreCase(user.getStatus())) {
-                return ResponseEntity.status(403).body(AuthResponse.builder()
-                    .message("Account is pending approval by administrator")
+        log.info("Received login request for email: {}", request.getEmail());
+        try {
+            Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+            if (authenticate.isAuthenticated()) {
+                UserCredentials user = userRepository.findByEmail(request.getEmail())
+                    .orElseThrow(() -> new RuntimeException("User not found after authentication"));
+                
+                log.info("User {} authenticated successfully with role {}", user.getEmail(), user.getRole());
+
+                if (!"APPROVED".equalsIgnoreCase(user.getStatus())) {
+                    log.warn("Login blocked: Account {} is {}", user.getEmail(), user.getStatus());
+                    return ResponseEntity.status(403).body(AuthResponse.builder()
+                        .message("Account is pending approval by administrator")
+                        .build());
+                }
+
+                // Check if email is verified
+                if (user.getEmailVerified() != null && !user.getEmailVerified()) {
+                    log.warn("Login blocked: Email {} is not verified", user.getEmail());
+                    return ResponseEntity.status(403).body(AuthResponse.builder()
+                        .message("Please verify your email before logging in.")
+                        .build());
+                }
+
+                String token = jwtService.generateToken(request.getEmail(), user.getId(), user.getRole());
+
+                AuthTokens tokens = AuthTokens.builder()
+                    .accessToken(token)
+                    .refreshToken(token)
+                    .build();
+
+                UserDTO userDto = UserDTO.builder()
+                    .id(user.getId())
+                    .email(user.getEmail())
+                    .role(user.getRole())
+                    .firstName(user.getFirstName())
+                    .lastName(user.getLastName())
+                    .build();
+
+                log.info("Generated JWT for user: {}", user.getEmail());
+                return ResponseEntity.ok(AuthResponse.builder()
+                    .tokens(tokens)
+                    .user(userDto)
+                    .build());
+            } else {
+                log.warn("Authentication failed for email: {}", request.getEmail());
+                return ResponseEntity.status(401).body(AuthResponse.builder()
+                    .message("Invalid email or password")
                     .build());
             }
-
-            // Check if email is verified (skip for OAuth users or if email verification is disabled)
-            if (user.getEmailVerified() != null && !user.getEmailVerified()) {
-                return ResponseEntity.status(403).body(AuthResponse.builder()
-                    .message("Please verify your email before logging in. Check your inbox for the verification link.")
-                    .build());
-            }
-
-            String token = jwtService.generateToken(request.getEmail(), user.getId(), user.getRole());
-
-            AuthTokens tokens = AuthTokens.builder()
-                .accessToken(token)
-                .refreshToken(token)
-                .build();
-
-            UserDTO userDto = UserDTO.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .role(user.getRole())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .build();
-
-            return ResponseEntity.ok(AuthResponse.builder()
-                .tokens(tokens)
-                .user(userDto)
+        } catch (org.springframework.security.core.AuthenticationException e) {
+            log.warn("Authentication failed for email: {}: {}", request.getEmail(), e.getMessage());
+            return ResponseEntity.status(401).body(AuthResponse.builder()
+                .message("Invalid email or password")
                 .build());
-        } else {
-            throw new RuntimeException("invalid access");
+        } catch (Exception e) {
+            log.error("Critical error during login for email: {}", request.getEmail(), e);
+            return ResponseEntity.status(500).body(AuthResponse.builder()
+                .message("Internal server error: " + e.getMessage())
+                .build());
         }
     }
 

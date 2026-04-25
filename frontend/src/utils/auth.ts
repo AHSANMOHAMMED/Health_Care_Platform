@@ -31,11 +31,14 @@ class TokenManager {
       const accessToken = this.getCookie(this.ACCESS_TOKEN_KEY);
       const refreshToken = this.getCookie(this.REFRESH_TOKEN_KEY);
       
-      if (!accessToken || !refreshToken) {
+      if (!accessToken) {
         return null;
       }
 
-      return { accessToken, refreshToken };
+      return { 
+        accessToken, 
+        refreshToken: refreshToken || accessToken // Fallback to access token if refresh is missing
+      };
     } catch (error) {
       console.error('Error getting tokens:', error);
       return null;
@@ -45,20 +48,20 @@ class TokenManager {
   // Set tokens in secure storage
   setTokens(tokens: AuthTokens): void {
     try {
-      // Set httpOnly cookies via server-side call
+      // Set cookies - Note: httpOnly cannot be set from JS, but we'll use secure cookies
       this.setCookie(this.ACCESS_TOKEN_KEY, tokens.accessToken, {
-        secure: true,
-        httpOnly: true,
+        secure: window.location.protocol === 'https:',
         sameSite: 'strict',
-        maxAge: 15 * 60 // 15 minutes
+        maxAge: 7 * 24 * 60 * 60 // 7 days (as per backend expiration)
       });
 
-      this.setCookie(this.REFRESH_TOKEN_KEY, tokens.refreshToken, {
-        secure: true,
-        httpOnly: true,
-        sameSite: 'strict',
-        maxAge: 7 * 24 * 60 * 60 // 7 days
-      });
+      if (tokens.refreshToken) {
+        this.setCookie(this.REFRESH_TOKEN_KEY, tokens.refreshToken, {
+          secure: window.location.protocol === 'https:',
+          sameSite: 'strict',
+          maxAge: 7 * 24 * 60 * 60 // 7 days
+        });
+      }
     } catch (error) {
       console.error('Error setting tokens:', error);
       throw error;
@@ -107,9 +110,9 @@ class TokenManager {
 
   // Check if user is authenticated
   isAuthenticated(): boolean {
-    const tokens = this.getTokens();
+    const accessToken = this.getAccessToken();
     const user = this.getUser();
-    return !!(tokens && user);
+    return !!(accessToken && user);
   }
 
   // Get access token for API calls
@@ -122,24 +125,15 @@ class TokenManager {
     try {
       const refreshToken = this.getCookie(this.REFRESH_TOKEN_KEY);
       if (!refreshToken) {
-        throw new Error('No refresh token available');
+        return null;
       }
 
-      const response = await api.post('/auth/refresh', { refreshToken });
-      const { accessToken } = response.data;
-
-      // Update access token
-      this.setCookie(this.ACCESS_TOKEN_KEY, accessToken, {
-        secure: true,
-        httpOnly: true,
-        sameSite: 'strict',
-        maxAge: 15 * 60 // 15 minutes
-      });
-
-      return accessToken;
+      // If backend doesn't support refresh yet, just return current
+      // const response = await api.post('/auth/refresh', { refreshToken });
+      // return response.data.accessToken;
+      return refreshToken; 
     } catch (error) {
       console.error('Error refreshing token:', error);
-      this.clearTokens();
       return null;
     }
   }
@@ -147,7 +141,6 @@ class TokenManager {
   // Cookie utilities
   private setCookie(name: string, value: string, options: {
     secure?: boolean;
-    httpOnly?: boolean;
     sameSite?: 'strict' | 'lax' | 'none';
     maxAge?: number;
     path?: string;
@@ -155,10 +148,9 @@ class TokenManager {
     let cookieString = `${name}=${value};`;
     
     if (options.secure) cookieString += ' Secure;';
-    if (options.httpOnly) cookieString += ' HttpOnly;';
     if (options.sameSite) cookieString += ` SameSite=${options.sameSite};`;
     if (options.maxAge) cookieString += ` Max-Age=${options.maxAge};`;
-    if (options.path) cookieString += ` Path=${options.path};`;
+    cookieString += ` Path=${options.path || '/'};`;
     
     document.cookie = cookieString;
   }

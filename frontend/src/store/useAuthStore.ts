@@ -28,6 +28,10 @@ export const useAuthStore = create<AuthState>()(
       isLoading: false,
 
       setAuth: (token: string, user: User) => {
+        // Persist tokens and user data
+        tokenManager.setTokens({ accessToken: token, refreshToken: token });
+        tokenManager.setUser(user);
+        
         set({
           user,
           token,
@@ -164,38 +168,46 @@ export const useAuthStore = create<AuthState>()(
 export const useUser = () => useAuthStore((state) => state.user);
 export const useIsAuthenticated = () => useAuthStore((state) => state.isAuthenticated);
 export const useIsLoading = () => useAuthStore((state) => state.isLoading);
-export const useAuthActions = () => useAuthStore((state) => ({
-  login: async (email: string, password: string) => {
-    state.set({ isLoading: true });
-    try {
-      const response = await authService.login(email, password);
-      state.setAuth(response.tokens.accessToken, response.user);
-    } catch (error) {
-      state.set({ isLoading: false });
-      throw error;
-    }
-  },
-  register: async (userData: {
-    email: string;
-    password: string;
-    role: 'PATIENT' | 'DOCTOR';
-    firstName?: string;
-    lastName?: string;
-  }) => {
-    state.set({ isLoading: true });
-    try {
-      await authService.register(userData);
-      state.set({ isLoading: false });
-    } catch (error) {
-      state.set({ isLoading: false });
-      throw error;
-    }
-  },
-  logout: state.logout,
-  updateUser: state.updateUser,
-  checkAuth: state.checkAuth,
-  clearAuth: state.clearAuth
-}));
+export const useAuthActions = () => {
+  const setAuth = useAuthStore((state) => state.setAuth);
+  const logout = useAuthStore((state) => state.logout);
+  const updateUser = useAuthStore((state) => state.updateUser);
+  const checkAuth = useAuthStore((state) => state.checkAuth);
+  const clearAuth = useAuthStore((state) => state.clearAuth);
+
+  return {
+    login: async (email: string, password: string) => {
+      useAuthStore.setState({ isLoading: true });
+      try {
+        const response = await authService.login(email, password);
+        setAuth(response.tokens.accessToken, response.user);
+      } catch (error) {
+        useAuthStore.setState({ isLoading: false });
+        throw error;
+      }
+    },
+    register: async (userData: {
+      email: string;
+      password: string;
+      role: 'PATIENT' | 'DOCTOR';
+      firstName?: string;
+      lastName?: string;
+    }) => {
+      useAuthStore.setState({ isLoading: true });
+      try {
+        await authService.register(userData);
+        useAuthStore.setState({ isLoading: false });
+      } catch (error) {
+        useAuthStore.setState({ isLoading: false });
+        throw error;
+      }
+    },
+    logout,
+    updateUser,
+    checkAuth,
+    clearAuth
+  };
+};
 
 // Utility hooks
 export const useRequireAuth = () => {
