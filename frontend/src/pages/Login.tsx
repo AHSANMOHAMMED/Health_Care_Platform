@@ -212,7 +212,7 @@ export default function Login() {
             </div>
 
             <button type="submit" disabled={loading}
-              className="w-full py-3 rounded-xl bg-[#0EA5E9] hover:bg-[#0284C7] text-slate-900 font-semibold text-sm transition-all flex items-center justify-center gap-2 disabled:opacity-60 shadow-lg shadow-[#0EA5E9]/20">
+              className="w-full py-3 rounded-xl bg-[#0EA5E9] hover:bg-[#0284C7] text-white font-semibold text-sm transition-all flex items-center justify-center gap-2 disabled:opacity-60 shadow-lg shadow-[#0EA5E9]/20">
               {loading ? <><Loader2 size={16} className="animate-spin" />{loadingMessage}</> : <>Sign In <ArrowRight size={16} /></>}
             </button>
           </form>

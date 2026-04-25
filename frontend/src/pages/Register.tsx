@@ -24,7 +24,8 @@ interface FormData {
   email: string; phone: string; whatsapp: string; province: string; district: string; address: string;
   emergencyContactName: string; emergencyContactPhone: string; emergencyContactRelation: string;
   bloodType: string; allergies: string; chronicConditions: string; preferredLanguage: string;
-  specialization: string; licenseNumber: string; password: string; confirmPassword: string;
+  specialization: string; licenseNumber: string; qualifications: string; hospitalAffiliation: string;
+  password: string; confirmPassword: string;
 }
 
 const INITIAL: FormData = {
@@ -32,7 +33,7 @@ const INITIAL: FormData = {
   email: '', phone: '+94', whatsapp: '', province: 'Western', district: '', address: '',
   emergencyContactName: '', emergencyContactPhone: '+94', emergencyContactRelation: '',
   bloodType: 'Unknown', allergies: '', chronicConditions: '', preferredLanguage: 'Sinhala',
-  specialization: 'General Practice', licenseNumber: '',
+  specialization: 'General Practice', licenseNumber: '', qualifications: '', hospitalAffiliation: '',
   password: '', confirmPassword: '',
 };
 
@@ -45,7 +46,7 @@ function RoleSelectModal({ platform, onSelect, onClose }: { platform: string; on
             <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Sign up with {platform}</p>
             <h3 className="text-lg font-bold text-slate-900">Select your role</h3>
           </div>
-          <button onClick={onClose} className="p-2 rounded-lg hover:bg-white/10 text-slate-600 hover:text-slate-900 transition-colors">
+          <button onClick={onClose} className="p-2 rounded-lg hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition-colors">
             <X size={18} />
           </button>
         </div>
@@ -115,6 +116,16 @@ export default function Register() {
     return null;
   };
 
+  const validateStep3 = (): string | null => {
+    if (role === 'DOCTOR') {
+      if (!form.licenseNumber.trim()) return 'Medical License Number (SLMC) is required for doctors';
+      if (!form.qualifications.trim()) return 'Education / Qualifications are required';
+    }
+    if (form.password.length < 8) return 'Password must be at least 8 characters';
+    if (form.password !== form.confirmPassword) return 'Passwords do not match';
+    return null;
+  };
+
   const goNext = (e: React.MouseEvent) => {
     e.preventDefault();
     setError('');
@@ -166,8 +177,9 @@ export default function Register() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (form.password.length < 8) { setError('Password must be at least 8 characters'); return; }
-    if (form.password !== form.confirmPassword) { setError('Passwords do not match'); return; }
+    const err = validateStep3();
+    if (err) { setError(err); return; }
+
     setLoading(true);
     setError('');
     try {
@@ -204,21 +216,21 @@ export default function Register() {
       {socialPlatform && <RoleSelectModal platform={socialPlatform} onSelect={handleSocialRole} onClose={() => setSocialPlatform(null)} />}
 
       <div className="hidden lg:flex lg:w-[40%] relative flex-col justify-between p-16 overflow-hidden">
-        <img src={hero3} alt="Medical" className="absolute inset-0 w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0C1220] via-[#0EA5E9]/40 to-[#0C1220]/80" />
-        <Link to="/" className="relative z-10 flex items-center gap-3">
-          <img src={logo} alt="Logo" className="h-10 w-auto brightness-0 invert" />
-          <p className="text-xl font-bold text-slate-900 tracking-tighter">MediConnect <span className="text-[#0EA5E9]">Lanka</span></p>
+        <img src={hero3} alt="Medical" className="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-50" />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent" />
+        <Link to="/" className="relative z-10 flex items-center gap-3 group">
+          <img src={logo} alt="Logo" className="h-10 w-auto brightness-0 invert group-hover:scale-105 transition-transform" />
+          <p className="text-xl font-bold text-white tracking-tighter">MediConnect <span className="text-[#0EA5E9]">Lanka</span></p>
         </Link>
         <div className="relative z-10">
-          <h2 className="text-[#0284C7]xl font-bold text-slate-900 tracking-tighter leading-[0.95] mb-6">Start your<br /><span className="text-[#0EA5E9]">Health ID</span><br />journey today.</h2>
-          <p className="text-slate-700 text-sm max-w-sm mb-10">One secure digital ID for all your medical needs in Sri Lanka.</p>
+          <h2 className="text-5xl font-black text-white tracking-tighter leading-[1.05] mb-6">Start your<br /><span className="text-[#0EA5E9]">Health ID</span><br />journey today.</h2>
+          <p className="text-slate-300 text-lg font-medium max-w-sm mb-10">One secure digital ID for all your medical needs in Sri Lanka.</p>
           <div className="space-y-4">
             {[{ icon: ShieldCheck, text: 'HIPAA & ISO Compliant Security', color: 'text-emerald-400' },
-              { icon: Globe, text: 'National Multi-language Support', color: 'text-sky-400' }].map((item, i) => (
+              { icon: Globe, text: 'National Multi-language Support', color: 'text-[#0EA5E9]' }].map((item, i) => (
               <div key={i} className="flex items-center gap-3">
-                <item.icon size={18} className={item.color} />
-                <span className="text-slate-700 font-medium text-sm">{item.text}</span>
+                <item.icon size={20} className={item.color} />
+                <span className="text-white font-bold text-sm">{item.text}</span>
               </div>
             ))}
           </div>
@@ -229,12 +241,12 @@ export default function Register() {
         <div className="w-full max-w-xl mx-auto p-6 lg:p-16 flex flex-col gap-8">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Register</h1>
-              <p className="text-sm text-slate-500">Step {step} of 3: {stepLabels[step-1]}</p>
+              <h1 className="text-3xl font-black text-slate-900 tracking-tight">Register</h1>
+              <p className="text-sm font-bold text-slate-500 uppercase tracking-widest mt-1">Step {step} of 3: {stepLabels[step-1]}</p>
             </div>
             <div className="flex gap-2">
               {([1, 2, 3] as const).map(s => (
-                <div key={s} className={`h-1.5 w-8 rounded-full transition-all ${step >= s ? 'bg-[#0EA5E9]' : 'bg-[#1E3A5F]'}`} />
+                <div key={s} className={`h-1.5 w-8 rounded-full transition-all ${step >= s ? 'bg-[#0EA5E9]' : 'bg-slate-200'}`} />
               ))}
             </div>
           </div>
@@ -242,16 +254,16 @@ export default function Register() {
           <div className="flex items-center gap-2 mb-4">
             {([1, 2, 3] as const).map((s, i) => (
               <div key={s} className="flex items-center gap-2 flex-1">
-                <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 ${step === s ? 'bg-[#0EA5E9] text-slate-900 shadow-lg shadow-[#0EA5E9]/30' : step > s ? 'bg-emerald-500/20 text-emerald-400' : 'bg-[#1E3A5F]/30 text-slate-600'}`}>
-                  {step > s ? <CheckCircle size={18} /> : i === 0 ? <User size={18} /> : i === 1 ? <MapPin size={18} /> : <Heart size={18} />}
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 ${step === s ? 'bg-[#0EA5E9] text-white shadow-lg shadow-[#0EA5E9]/30' : step > s ? 'bg-emerald-500/20 text-emerald-600' : 'bg-slate-200 text-slate-500'}`}>
+                  {step > s ? <CheckCircle size={20} /> : i === 0 ? <User size={20} /> : i === 1 ? <MapPin size={20} /> : <Heart size={20} />}
                 </div>
-                {i < 2 && <div className={`flex-1 h-0.5 transition-all duration-500 ${step > s ? 'bg-emerald-500/40' : 'bg-[#1E3A5F]/30'}`} />}
+                {i < 2 && <div className={`flex-1 h-1 rounded-full transition-all duration-500 ${step > s ? 'bg-emerald-400' : 'bg-slate-200'}`} />}
               </div>
             ))}
           </div>
 
           {error && (
-            <div className="p-4 bg-red-900/20 border border-red-700/40 rounded-xl flex items-center gap-3 text-red-400 text-sm font-medium">
+            <div className="p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-red-600 text-sm font-bold shadow-sm">
               <AlertCircle size={18} /> {error}
             </div>
           )}
@@ -263,9 +275,9 @@ export default function Register() {
                 <div className="grid grid-cols-2 gap-3">
                   {([['PATIENT', Users], ['DOCTOR', Stethoscope]] as const).map(([r, Icon]) => (
                     <button key={r} type="button" onClick={() => setRole(r as Role)}
-                      className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all ${role === r ? 'border-[#0EA5E9] bg-[#0EA5E9]/10 text-slate-900' : 'border-slate-300 text-slate-500 hover:border-slate-300/80'}`}>
-                      <Icon size={24} />
-                      <span className="text-xs font-bold uppercase tracking-wider">{r}</span>
+                      className={`p-4 rounded-2xl border-2 flex flex-col items-center gap-2 transition-all ${role === r ? 'border-[#0EA5E9] bg-[#0EA5E9]/10 text-slate-900 shadow-sm' : 'border-slate-200 bg-white text-slate-500 hover:border-[#0EA5E9]/50'}`}>
+                      <Icon size={28} className={role === r ? 'text-[#0EA5E9]' : ''} />
+                      <span className="text-xs font-black uppercase tracking-wider">{r}</span>
                     </button>
                   ))}
                 </div>
@@ -275,7 +287,7 @@ export default function Register() {
                 <div className="grid grid-cols-3 gap-3">
                   {['Google', 'Apple', 'Facebook'].map(p => (
                     <button key={p} type="button" onClick={() => handleSocialClick(p)}
-                      className="h-12 rounded-xl bg-white border border-slate-300/60 flex items-center justify-center gap-2 text-slate-900 text-xs font-bold hover:bg-slate-100">
+                      className="h-12 rounded-xl bg-white border border-slate-200 shadow-sm flex items-center justify-center gap-2 text-slate-900 text-xs font-bold hover:bg-slate-50 transition-all hover:border-slate-300">
                       {p}
                     </button>
                   ))}
@@ -297,7 +309,7 @@ export default function Register() {
                   <input type="text" className="clinical-input" placeholder="901234567V" value={form.nic} onChange={e => setF('nic', e.target.value)} />
                 </Field>
               </div>
-              <button type="button" onClick={goNext} className="w-full btn-primary justify-center py-4 text-base">Next: Contact Info <ChevronRight size={18} /></button>
+              <button type="button" onClick={goNext} className="w-full btn-primary justify-center py-4 text-base shadow-lg shadow-[#0EA5E9]/30">Next: Contact Info <ChevronRight size={18} /></button>
             </div>
           )}
 
@@ -317,45 +329,66 @@ export default function Register() {
               <Field label="Full Address" req>
                 <textarea rows={2} className="clinical-input resize-none" placeholder="No. 42, Galle Road..." value={form.address} onChange={e => setF('address', e.target.value)} />
               </Field>
-              <div className="p-4 bg-[#1E3A5F]/20 rounded-xl space-y-4">
-                <p className="text-[10px] font-bold text-[#0EA5E9] uppercase tracking-widest">Emergency Contact</p>
+              <div className="p-5 bg-sky-50 border border-sky-100 rounded-2xl space-y-4">
+                <p className="text-[10px] font-black text-[#0EA5E9] uppercase tracking-widest">Emergency Contact</p>
                 <div className="grid grid-cols-2 gap-4">
                   <Field label="Contact Name" req>
-                    <input type="text" className="clinical-input" placeholder="Kasun" value={form.emergencyContactName} onChange={e => setF('emergencyContactName', e.target.value)} />
+                    <input type="text" className="clinical-input bg-white" placeholder="Kasun" value={form.emergencyContactName} onChange={e => setF('emergencyContactName', e.target.value)} />
                   </Field>
                   <Field label="Emergency Phone" req>
-                    <input type="tel" className="clinical-input" placeholder="+94 71 123 4567" value={form.emergencyContactPhone} onChange={e => setF('emergencyContactPhone', e.target.value)} />
+                    <input type="tel" className="clinical-input bg-white" placeholder="+94 71 123 4567" value={form.emergencyContactPhone} onChange={e => setF('emergencyContactPhone', e.target.value)} />
                   </Field>
                 </div>
               </div>
               <div className="flex gap-3">
-                <button type="button" onClick={goBack} className="btn-secondary px-8">Back</button>
-                <button type="button" onClick={goNext} className="flex-1 btn-primary justify-center py-4 text-base">Next: Health Profile <ChevronRight size={18} /></button>
+                <button type="button" onClick={goBack} className="btn-secondary px-8 border-slate-200">Back</button>
+                <button type="button" onClick={goNext} className="flex-1 btn-primary justify-center py-4 text-base shadow-lg shadow-[#0EA5E9]/30">Next: Health Profile <ChevronRight size={18} /></button>
               </div>
             </div>
           )}
 
           {step === 3 && (
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-2 gap-4">
-                <Field label="Blood Type">
-                  <select className="clinical-input" value={form.bloodType} onChange={e => setF('bloodType', e.target.value)}>
-                    {BLOOD_TYPES.map(b => <option key={b} className="bg-slate-50">{b}</option>)}
-                  </select>
-                </Field>
-                <Field label="Preferred Language">
-                  <select className="clinical-input" value={form.preferredLanguage} onChange={e => setF('preferredLanguage', e.target.value)}>
-                    {LANGUAGES.map(l => <option key={l} className="bg-slate-50">{l}</option>)}
-                  </select>
-                </Field>
-              </div>
-              {role === 'DOCTOR' && (
-                <Field label="Specialization" req>
-                  <select className="clinical-input" value={form.specialization} onChange={e => setF('specialization', e.target.value)}>
-                    {SPECIALIZATIONS.map(s => <option key={s} className="bg-slate-50">{s}</option>)}
-                  </select>
-                </Field>
+              {role === 'DOCTOR' ? (
+                <>
+                  <div className="p-5 bg-indigo-50 border border-indigo-100 rounded-2xl space-y-4 mb-6">
+                    <p className="text-[10px] font-black text-indigo-600 uppercase tracking-widest flex items-center gap-2">
+                      <Stethoscope size={14} /> Medical Credentials
+                    </p>
+                    <p className="text-xs text-indigo-800 font-medium mb-2">These details are required for Admin approval of your Doctor account.</p>
+                    <div className="grid grid-cols-2 gap-4">
+                      <Field label="Specialization" req>
+                        <select className="clinical-input bg-white" value={form.specialization} onChange={e => setF('specialization', e.target.value)}>
+                          {SPECIALIZATIONS.map(s => <option key={s}>{s}</option>)}
+                        </select>
+                      </Field>
+                      <Field label="SLMC License Number" req>
+                        <input type="text" className="clinical-input bg-white" placeholder="SLMC-12345" value={form.licenseNumber} onChange={e => setF('licenseNumber', e.target.value)} />
+                      </Field>
+                    </div>
+                    <Field label="Education / Qualifications" req>
+                      <input type="text" className="clinical-input bg-white" placeholder="MBBS (Colombo), MD (Cardiology)" value={form.qualifications} onChange={e => setF('qualifications', e.target.value)} />
+                    </Field>
+                    <Field label="Primary Hospital Affiliation">
+                      <input type="text" className="clinical-input bg-white" placeholder="Lanka Hospitals" value={form.hospitalAffiliation} onChange={e => setF('hospitalAffiliation', e.target.value)} />
+                    </Field>
+                  </div>
+                </>
+              ) : (
+                <div className="grid grid-cols-2 gap-4">
+                  <Field label="Blood Type">
+                    <select className="clinical-input" value={form.bloodType} onChange={e => setF('bloodType', e.target.value)}>
+                      {BLOOD_TYPES.map(b => <option key={b}>{b}</option>)}
+                    </select>
+                  </Field>
+                  <Field label="Preferred Language">
+                    <select className="clinical-input" value={form.preferredLanguage} onChange={e => setF('preferredLanguage', e.target.value)}>
+                      {LANGUAGES.map(l => <option key={l}>{l}</option>)}
+                    </select>
+                  </Field>
+                </div>
               )}
+              
               <Field label="Password" req>
                 <input type="password" required className="clinical-input" placeholder="Min. 8 characters" value={form.password} onChange={e => setF('password', e.target.value)} />
               </Field>
@@ -363,15 +396,15 @@ export default function Register() {
                 <input type="password" required className="clinical-input" placeholder="Repeat password" value={form.confirmPassword} onChange={e => setF('confirmPassword', e.target.value)} />
               </Field>
               <div className="flex gap-3">
-                <button type="button" onClick={goBack} className="btn-secondary px-8">Back</button>
-                <button type="submit" disabled={loading} className="flex-1 btn-primary justify-center py-4 text-base">
+                <button type="button" onClick={goBack} className="btn-secondary px-8 border-slate-200">Back</button>
+                <button type="submit" disabled={loading} className="flex-1 btn-primary justify-center py-4 text-base shadow-lg shadow-[#0EA5E9]/30">
                   {loading ? <><Loader2 className="animate-spin" /> {loadingMessage}</> : 'Complete Registration'}
                 </button>
               </div>
             </form>
           )}
 
-          <p className="text-center text-sm text-slate-500">
+          <p className="text-center text-sm font-medium text-slate-500">
             Already have a Health ID? <Link to="/login" className="text-[#0EA5E9] hover:underline font-bold">Sign In</Link>
           </p>
         </div>
