@@ -204,9 +204,9 @@ export default function LandingPremium() {
       <section className="relative h-screen min-h-[700px] w-full overflow-hidden bg-white">
         {heroSlides.map((slide, idx) => (
           <div key={idx} className={`absolute inset-0 transition-all duration-[2000ms] ease-in-out ${idx === currentSlide ? 'opacity-100 scale-100' : 'opacity-0 scale-110 pointer-events-none'}`}>
-            <img src={slide.image} alt={slide.title} className="w-full h-full object-cover opacity-20" />
-            <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-white/20" />
+            <img src={slide.image} alt={slide.title} className="w-full h-full object-cover opacity-80" />
+            <div className="absolute inset-0 bg-gradient-to-r from-white via-white/40 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-white/60 via-transparent to-transparent" />
           </div>
         ))}
 
